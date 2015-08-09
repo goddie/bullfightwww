@@ -14,11 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xiaba2.cms.dao.IMemberDao;
+import com.xiaba2.cms.dao.IUserDao;
 import com.xiaba2.cms.domain.Member;
+import com.xiaba2.cms.domain.User;
 import com.xiaba2.core.BaseService;
 import com.xiaba2.core.IBaseDao;
-import com.xiaba2.invest.dao.IUserDao;
-import com.xiaba2.invest.domain.User;
+ 
 
 @Service
 public class MemberService extends BaseService<Member, UUID> {
@@ -83,4 +84,6 @@ public class MemberService extends BaseService<Member, UUID> {
 		return list.get(0);
 
 	}
+	
+	
 }

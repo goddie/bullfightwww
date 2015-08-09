@@ -14,9 +14,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.WebUtils;
 
 import com.xiaba2.cms.domain.Member;
+import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.MemberService;
-import com.xiaba2.invest.domain.User;
-import com.xiaba2.invest.service.UserService;
+ 
 
 @Component
 public class SessionUtil {

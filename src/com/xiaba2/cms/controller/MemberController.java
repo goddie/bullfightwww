@@ -1,6 +1,5 @@
 package com.xiaba2.cms.controller;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -20,14 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
- 
-
-
 import com.xiaba2.cms.domain.Member;
+import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.MemberService;
+import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
-import com.xiaba2.invest.domain.User;
-import com.xiaba2.invest.service.UserService;
+
 import com.xiaba2.util.HttpUtil;
 
 @RestController
@@ -35,27 +32,27 @@ import com.xiaba2.util.HttpUtil;
 public class MemberController {
 	@Resource
 	private MemberService memberService;
-	
+
 	@Resource
 	private UserService userService;
 
 	/**
 	 * 登录页面
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/page/{name}")
 	public ModelAndView getPage(@PathVariable String name) {
-		return  new ModelAndView("member_"+name);
+		return new ModelAndView("member_" + name);
 	}
-	
+
 	/**
 	 * 登录
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/login")
-	public ModelAndView login(Member entity, RedirectAttributes attr,
-			HttpServletRequest request) {
+	public ModelAndView login(Member entity, RedirectAttributes attr, HttpServletRequest request) {
 
 		ModelAndView mv = new ModelAndView();
 		DetachedCriteria criteria = memberService.createDetachedCriteria();
@@ -64,25 +61,21 @@ public class MemberController {
 		criteria.add(Restrictions.eq("password", entity.getPassword()));
 
 		List<Member> list = memberService.findByCriteria(criteria);
-		
-		
-		
 
 		if (!list.isEmpty()) {
 			// attr.addAttribute("loginMember", list.get(0).getId().toString());
-			
+
 			DetachedCriteria criteria2 = userService.createDetachedCriteria();
 			criteria2.add(Restrictions.eq("member", list.get(0)));
 
 			List<User> list2 = userService.findByCriteria(criteria2);
-			
-			
+
 			WebUtils.setSessionAttribute(request, "member", list.get(0));
 			WebUtils.setSessionAttribute(request, "user", list2.get(0));
-			
-//			session.setAttribute("member", list.get(0));
-//			session.setAttribute("user", list2.get(0));
-			
+
+			// session.setAttribute("member", list.get(0));
+			// session.setAttribute("user", list2.get(0));
+
 			attr.addFlashAttribute("msg", "登录成功!");
 			mv.setViewName("redirect:/page/ucenter_userconfig.jsp");
 		} else {
@@ -93,8 +86,6 @@ public class MemberController {
 		return mv;
 	}
 
-
-
 	/**
 	 * 注册
 	 * 
@@ -102,7 +93,7 @@ public class MemberController {
 	 * @return
 	 */
 	@RequestMapping(value = "/reg")
-	public ModelAndView reg(Member entity,RedirectAttributes attr,HttpServletRequest request) {
+	public ModelAndView reg(Member entity, RedirectAttributes attr, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 		entity.setEmail(entity.getUsername());
 		entity.setRegIp(HttpUtil.getIpAddr(request));
@@ -113,7 +104,6 @@ public class MemberController {
 		return mv;
 	}
 
-	
 	@RequestMapping(value = "/list")
 	public ModelAndView list(RedirectAttributes attr) {
 
@@ -126,16 +116,16 @@ public class MemberController {
 
 		return mv;
 	}
-	
-	
+
 	/**
 	 * 登录
+	 * 
 	 * @param entity
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/json/login")
-	public JsonResult jsonLogin(Member entity,HttpServletRequest request) {
+	public JsonResult jsonLogin(Member entity, HttpServletRequest request) {
 
 		DetachedCriteria criteria = memberService.createDetachedCriteria();
 
@@ -143,71 +133,68 @@ public class MemberController {
 		criteria.add(Restrictions.eq("password", entity.getPassword()));
 
 		List<Member> list = memberService.findByCriteria(criteria);
-		
+
 		if (!list.isEmpty()) {
 			// attr.addAttribute("loginMember", list.get(0).getId().toString());
-			
+
 			DetachedCriteria criteria2 = userService.createDetachedCriteria();
 			criteria2.add(Restrictions.eq("member", list.get(0)));
 
 			List<User> list2 = userService.findByCriteria(criteria2);
-			
+
 			if (!list2.isEmpty()) {
-				
+
 				JsonResult rs = new JsonResult();
 				rs.setCode(1);
 				rs.setData(list2.get(0));
 				rs.setMsg("登录成功!");
-				
+
 				return rs;
 			}
-			
-			
-		} 
-		
+
+		}
+
 		return new JsonResult();
 	}
-	
-	
+
 	/**
 	 * 注册
+	 * 
 	 * @param entity
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/json/reg")
-	public JsonResult jsonReg(Member entity,HttpServletRequest request) {
+	public JsonResult jsonReg(Member entity, HttpServletRequest request) {
 
-		
 		if (StringUtils.isEmpty(entity.getUsername())) {
-			
-			JsonResult rs =new JsonResult();
+
+			JsonResult rs = new JsonResult();
 			rs.setCode(JsonResult.FAIL);
 			rs.setMsg("注册失败");
 			return rs;
-			
+
 		}
-		
+
 		entity.setEmail(entity.getUsername());
 		entity.setRegIp(HttpUtil.getIpAddr(request));
 		entity.setRegTime(new Date());
 		memberService.save(entity);
-		
+
 		User user = userService.getByMember(entity);
-		
-		
-		if (user==null) {
-			
-			JsonResult rs =new JsonResult();
+
+		if (user == null) {
+
+			JsonResult rs = new JsonResult();
 			rs.setCode(JsonResult.FAIL);
 			rs.setMsg("注册失败");
 			return rs;
 		}
-		
-		JsonResult rs =new JsonResult();
+
+		JsonResult rs = new JsonResult();
 		rs.setCode(JsonResult.SUCCESS);
 		rs.setData(user);
-		
+
 		return rs;
 	}
 
