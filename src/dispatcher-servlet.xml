@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop       
+       	http://www.springframework.org/schema/aop/spring-aop.xsd
+       	http://www.springframework.org/schema/data/jpa 
+       	http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+       	http://www.springframework.org/schema/data/repository   
+       	http://www.springframework.org/schema/data/repository/spring-repository.xsd
+       	http://www.springframework.org/schema/cache 
+       	http://www.springframework.org/schema/cache/spring-cache.xsd
+        ">
+
+
+	<!-- 添加注解驱动 -->
+	<mvc:annotation-driven />
+	<!-- 允许对静态资源文件的访问 -->
+	<mvc:default-servlet-handler />
+	<mvc:resources location="/resource/" mapping="/resource/**" />
+	<!-- 注解探测器 -->
+	<context:annotation-config />
+
+	<!-- <context:component-scan base-package="com.xiaba2" /> -->
+
+	<!-- 自动扫描组件，这里要把controler下面的 controller去除，他们是在springMvc-servlet.xml中配置的，如果不去除会影响事务管理的。 -->
+	<context:component-scan base-package="com.xiaba2">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="url">
+			<value>jdbc:mysql://101.200.235.199:3306/db_touzimao</value>
+		</property>
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>goddie</value>
+		</property>
+		<!-- <property name="url"> -->
+		<!-- <value>jdbc:mysql://localhost:3306/db_chaorenmatou</value> -->
+
+		<!-- </property> -->
+		<!-- <property name="username"> -->
+		<!-- <value>root</value> -->
+		<!-- </property> -->
+		<!-- <property name="password"> -->
+		<!-- <value>goddie</value> -->
+		<!-- </property> -->
+	</bean>
+
+	<!-- HIBERNATE配置 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<!-- 设置数据库方言 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!-- 设置自动创建|更新|验证数据库表结构 -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- 是否在控制台显示sql -->
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- 是否格式化sql，优化显示 -->
+				<prop key="hibernate.format_sql">true</prop>
+				<!-- 是否开启二级缓存 -->
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
+				<!-- 是否开启查询缓存 -->
+				<prop key="hibernate.cache.use_query_cache">false</prop>
+				<!-- 数据库批量查询最大数 -->
+				<prop key="hibernate.jdbc.fetch_size">50</prop>
+				<!-- 数据库批量更新、添加、删除操作最大数 -->
+				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<!-- 是否自动提交事务 -->
+				<prop key="hibernate.connection.autocommit">true</prop>
+				<!-- 指定hibernate在何时释放JDBC连接 -->
+				<prop key="hibernate.connection.release_mode">auto</prop>
+				<!-- 创建session方式 hibernate4.x 的方式 org.springframework.orm.hibernate4.SpringSessionContext -->
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext
+				</prop>
+				<!-- javax.persistence.validation.mode默认情况下是auto的，就是说如果不设置的话它是会自动去你的classpath下面找一个bean-validation**包 
+					所以把它设置为none即可 -->
+				<prop key="javax.persistence.validation.mode">none</prop>
+
+			</props>
+		</property>
+
+		<property name="packagesToScan">
+			<list>
+				<value>com.xiaba2.*.domain</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- 事务配置 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<property name="dataSource" ref="dataSource" /> </bean> -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 定义跳转的文件的前后缀 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/page/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 annotation默认的办法映射适配器 -->
+	<bean id="handlerMapping"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+
+	<bean id="handlerAdapter"
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设置上传文件的最大尺寸为10MB -->
+		<property name="maxUploadSize">
+			<value>10485760</value>
+		</property>
+	</bean>
+
+
+	<!-- 返回JSON模版 -->
+	<bean name="jsonTemplate"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+
+
+
+	<!-- 避免IE在ajax请求时，返回json出现下载 -->
+	<!-- <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"> 
+		<property name="supportedMediaTypes"> <list> <value>text/html;charset=UTF-8</value> 
+		</list> </property> </bean> -->
+
+	<!-- <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> 
+		设置日志输出级别，不定义则默认不输出警告等错误日志信息 <property name="warnLogCategory" value="WARN"></property> 
+		默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 <property name="defaultErrorView" 
+		value="errors/error"></property> 默认HTTP状态码 <property name="defaultStatusCode" 
+		value="500"></property> </bean> -->
+
+</beans>
