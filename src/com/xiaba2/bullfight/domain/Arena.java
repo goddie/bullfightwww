@@ -4,8 +4,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.xiaba2.cms.domain.User;
 import com.xiaba2.core.BaseUUIDEntity;
 
 /**
@@ -35,6 +37,30 @@ public class Arena extends BaseUUIDEntity {
 	 */
 	@Column
 	private double lat;
+	
+	@Column
+	private int status;
+	
+	@ManyToOne
+	private User user;
+	
+	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 
 	public String getAddress() {
 		return address;

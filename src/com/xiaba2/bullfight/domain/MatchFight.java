@@ -20,7 +20,7 @@ public class MatchFight extends BaseUUIDEntity {
 	private int matchType;
 
 	/**
-	 * 0 未开始 1待应战 2已结束
+	 * 1 未开始 0待应战 2已结束
 	 */
 	@Column
 	private int status;
@@ -104,8 +104,55 @@ public class MatchFight extends BaseUUIDEntity {
 	 */
 	@ManyToOne
 	private Team loser;
+	
+	/**
+	 * 是否支付
+	 */
+	@Column
+	private int isPay;
 
 	
+	
+	public int getDraw() {
+		return draw;
+	}
+
+
+	public void setDraw(int draw) {
+		this.draw = draw;
+	}
+
+
+	public Team getWinner() {
+		return winner;
+	}
+
+
+	public void setWinner(Team winner) {
+		this.winner = winner;
+	}
+
+
+	public Team getLoser() {
+		return loser;
+	}
+
+
+	public void setLoser(Team loser) {
+		this.loser = loser;
+	}
+
+
+	public int getIsPay() {
+		return isPay;
+	}
+
+
+	public void setIsPay(int isPay) {
+		this.isPay = isPay;
+	}
+
+
 	public Arena getArena() {
 		return arena;
 	}
