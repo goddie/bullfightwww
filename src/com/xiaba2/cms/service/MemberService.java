@@ -54,12 +54,19 @@ public class MemberService extends BaseService<Member, UUID> {
 		}
 		entity.setCreatedDate(new Date());
 
+		entity.setNickname(entity.getUsername());
+		
 		entity = memberDao.save(entity);
 
 		User user = new User();
 		user.setMember(entity);
+		user.setCreatedDate(new Date());
+		user.setUsername(entity.getUsername());
+		user.setPassword(entity.getPassword());
 
 		userDao.save(user);
+		entity.setUser(user);
+		memberDao.saveOrUpdate(entity);
 
 		return entity;
 	}

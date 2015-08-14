@@ -2,11 +2,17 @@ package com.xiaba2.bullfight.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.core.BaseUUIDEntity;
 
+/**
+ * 球员比赛得分
+ * @author goddie
+ *
+ */
 @Entity
 @Table(name = "db_bullfight_matchdatauser")
 public class MatchDataUser extends BaseUUIDEntity {
@@ -14,12 +20,12 @@ public class MatchDataUser extends BaseUUIDEntity {
 	/**
 	 * 比赛
 	 */
-	@Column
+	@ManyToOne
 	private MatchFight matchFight;
 	/**
 	 * 球员
 	 */
-	@Column
+	@ManyToOne
 	private User user;
 
 	/**

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
 import com.fasterxml.jackson.core.JsonEncoding;
@@ -36,17 +37,27 @@ public class AlbumController {
 
 	@Resource
 	private AlbumService albumService;
+	
+	
+	@RequestMapping(value = "/page/upload")
+	public ModelAndView jspUpload()
+	{
+		ModelAndView mv=new ModelAndView("upfile");
+		return mv;
+	}
 
-	@SuppressWarnings("deprecation")
+
 	@RequestMapping(value = "/upload")
 	public ModelAndView upload(
-			@RequestParam(value = "file", required = false) MultipartFile file) {
+			@RequestParam(value = "file", required = false) MultipartFile file,HttpServletRequest request) {
 
-		String path = this.getClass().getClassLoader().getResource("/")
-				.getPath();
+		//String path = System.getProperty("myapp.root") + "upload";
+		
+		String path = this.getClass().getClassLoader().getResource("/").getPath();
 
-		path = path.replace("WEB-INF" + File.separator + "classes"
-				+ File.separator, "upload");
+		path = path.replace("WEB-INF" + File.separator + "classes" + File.separator, "upload");
+		
+		
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
@@ -77,7 +88,7 @@ public class AlbumController {
 			e.printStackTrace();
 		}
 
-		String extPath = "upload/" + pdate + "/";
+		String extPath =request.getContextPath() + "/upload/" + pdate + "/";
 
 		Upfile uf = new Upfile();
 
@@ -100,8 +111,11 @@ public class AlbumController {
 			e.printStackTrace();
 		}
 		
-		ModelAndView mv=new ModelAndView();
-
+		
+		ModelAndView mv=new ModelAndView("forward:/album/page/upload");
+//		attr.addFlashAttribute("js", "<script>alert('a')</script>");
+		mv.addObject("js", "<script>parent.upfile('"+json+"')</script>");
+//		mv.addObject("js",  json);
 		//return "<script>parent.upfile('" + json + "');</script>";
 		return mv;
 	}

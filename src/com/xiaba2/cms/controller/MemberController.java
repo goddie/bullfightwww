@@ -45,6 +45,26 @@ public class MemberController {
 	public ModelAndView getPage(@PathVariable String name) {
 		return new ModelAndView("member_" + name);
 	}
+	
+	/**
+	 * 登录页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/reg")
+	public ModelAndView pageReg() {
+		return new ModelAndView("admin_reg");
+	}
+	
+	/**
+	 * 登录页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/login")
+	public ModelAndView pageLogin() {
+		return new ModelAndView("admin_login");
+	}
 
 	/**
 	 * 登录
@@ -80,7 +100,7 @@ public class MemberController {
 			mv.setViewName("redirect:/page/ucenter_userconfig.jsp");
 		} else {
 			attr.addFlashAttribute("msg", "账号不存在!");
-			mv.setViewName("redirect:/member/jsplogin");
+			mv.setViewName("redirect:/member/admin/login");
 		}
 
 		return mv;
@@ -100,7 +120,7 @@ public class MemberController {
 		entity.setRegTime(new Date());
 		memberService.save(entity);
 		attr.addFlashAttribute("msg", "帐号重复存在!");
-		mv.setViewName("redirect:/member/page/login");
+		mv.setViewName("redirect:/member/admin/login");
 		return mv;
 	}
 

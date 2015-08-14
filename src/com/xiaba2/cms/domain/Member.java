@@ -139,6 +139,19 @@ public class Member extends BaseUUIDEntity {
 	 */
 	@Column
 	private String loginIp;
+	
+	@ManyToOne
+	private User user;
+	
+	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public String getEmail() {
 		return email;

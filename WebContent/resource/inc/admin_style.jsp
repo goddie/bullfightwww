@@ -23,8 +23,11 @@
 <!-- Vendors -->
 <link rel="stylesheet" media="screen"
 	href="${pageContext.request.contextPath}/resource/bsadmin/vendors/bootstrap-datepicker/css/datepicker.css">
+
 <link rel="stylesheet" media="screen"
 	href="${pageContext.request.contextPath}/resource/bsadmin/css/datepicker.fixes.css">
+<link rel="stylesheet" media="screen"
+	href="${pageContext.request.contextPath}/resource/bsadmin/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
 <link rel="stylesheet" media="screen"
 	href="${pageContext.request.contextPath}/resource/bsadmin/vendors/uniform/themes/default/css/uniform.default.min.css">
 <link rel="stylesheet" media="screen"

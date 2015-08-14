@@ -7,6 +7,11 @@ import javax.persistence.Table;
 
 import com.xiaba2.core.BaseUUIDEntity;
 
+/**
+ * 队伍比赛数据
+ * @author goddie
+ *
+ */
 @Entity
 @Table(name = "db_bullfight_matchdatateam")
 public class MatchDataTeam extends BaseUUIDEntity {

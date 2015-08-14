@@ -20,6 +20,7 @@
 			<div class="col-md-10"></div>
 		</div>
 	</div>
+	
 	<jsp:include page="/resource/inc/admin_script.jsp"></jsp:include>
 </body>
 </html>

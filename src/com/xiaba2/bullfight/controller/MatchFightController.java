@@ -9,7 +9,10 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +25,7 @@ import com.xiaba2.bullfight.service.ArenaService;
 import com.xiaba2.bullfight.service.MatchFightService;
 import com.xiaba2.bullfight.service.TeamService;
 import com.xiaba2.core.JsonResult;
+import com.xiaba2.core.Page;
 
 @RestController
 @RequestMapping("/matchfight")
@@ -34,6 +38,85 @@ public class MatchFightController {
 
 	@Resource
 	private ArenaService arenaService;
+
+	@RequestMapping(value = "/admin/{name}")
+	public ModelAndView getPage(@PathVariable String name) {
+		return new ModelAndView("admin_matchfight_" + name);
+	}
+
+	@RequestMapping(value = "/admin/list")
+	public ModelAndView pageList(MatchFight entity, HttpServletRequest request) {
+
+		ModelAndView mv = new ModelAndView("admin_matchfight_list");
+
+		Page<MatchFight> page = new Page<MatchFight>();
+		page.setPageSize(10);
+		page.setPageNo(1);
+		page.addOrder("createdDate", "desc");
+
+		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
+		page = matchFightService.findPageByCriteria(criteria, page);
+
+		mv.addObject("list", page.getResult());
+
+		return mv;
+	}
+
+	@RequestMapping("/add")
+	public ModelAndView add(MatchFight entity, HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("admin_matchfight_add");
+
+		String hostTeamId = request.getParameter("hostteam");
+		String guestTeamId = request.getParameter("guestteam");
+		String arenaId = request.getParameter("arenaid");
+		
+		if(StringUtils.isEmpty(hostTeamId)||StringUtils.isEmpty(arenaId))
+		{
+			return mv;
+		}
+		
+		Team host = teamService.get(UUID.fromString(hostTeamId));
+
+		if(!StringUtils.isEmpty(guestTeamId))
+		{
+			Team guest = teamService.get(UUID.fromString(guestTeamId));
+			entity.setGuest(guest);
+		}
+		
+		
+		
+		Arena arena = arenaService.get(UUID.fromString(arenaId));
+		
+		
+		entity.setArena(arena);
+		entity.setHost(host);
+		
+		entity.setCreatedDate(new Date());
+		entity.setStatus(0);
+		entity.setIsPay(0);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+		Date dstart;
+		Date dend;
+
+		try {
+
+			dstart = sdf.parse(request.getParameter("startDateStr"));
+			entity.setStart(dstart);
+
+			dend = sdf.parse(request.getParameter("endDateStr"));
+			entity.setEnd(dend);
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		matchFightService.save(entity);
+
+
+		return mv;
+	}
 
 	/**
 	 * 创建

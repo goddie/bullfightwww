@@ -6,19 +6,24 @@
 	<display-name>SpringFramework</display-name>
 	<welcome-file-list>
 		<welcome-file>page/index.jsp</welcome-file>
-	</welcome-file-list> 
+	</welcome-file-list>
+
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>myapp.root</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+	</listener>
 
 	<!-- 加载所有的配置文件 -->
-<!-- 	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:/spring-*.xml</param-value>
-	</context-param> -->
+	<!-- <context-param> <param-name>contextConfigLocation</param-name> <param-value>classpath:/spring-*.xml</param-value> 
+		</context-param> -->
 
 	<!-- 配置Spring监听 -->
-<!-- 	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
- -->
+	<!-- <listener> <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> 
+		</listener> -->
 	<!-- 配置SpringMVC -->
 	<servlet>
 		<servlet-name>springMVC</servlet-name>
@@ -27,7 +32,7 @@
 			<!-- 默认/WEB-INF/[servlet名字]-servlet.xml加载上下文， 如果配置了contextConfigLocation参数， 
 				将使用classpath:/gdispatcher-servlet.xml加载上下文 -->
 			<param-name>contextConfigLocation</param-name>
-<!-- 			<param-value>WEB-INF/dispatcher-servlet.xml</param-value> -->
+			<!-- <param-value>WEB-INF/dispatcher-servlet.xml</param-value> -->
 			<param-value>classpath:/dispatcher-servlet.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

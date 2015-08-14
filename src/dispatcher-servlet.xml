@@ -19,7 +19,7 @@
        	http://www.springframework.org/schema/data/repository   
        	http://www.springframework.org/schema/data/repository/spring-repository.xsd
        	http://www.springframework.org/schema/cache 
-       	http://www.springframework.org/schema/cache/spring-cache.xsd
+       	http://www.springframework.org/schema/cache/spring-cache.xsd-
         ">
 
 

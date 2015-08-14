@@ -53,10 +53,10 @@ public class MatchFight extends BaseUUIDEntity {
 	private int hostScore;
 
 	@Column
-	private int guestMember;
+	private String guestMember;
 
 	@Column
-	private int hostMember;
+	private String hostMember;
 	
 	
 
@@ -113,93 +113,76 @@ public class MatchFight extends BaseUUIDEntity {
 
 	
 	
+	public Arena getArena() {
+		return arena;
+	}
+
+
+	public int getDataRecord() {
+		return dataRecord;
+	}
+
+
 	public int getDraw() {
 		return draw;
 	}
 
 
-	public void setDraw(int draw) {
-		this.draw = draw;
+	public Date getEnd() {
+		return end;
 	}
 
 
-	public Team getWinner() {
-		return winner;
+	public Team getGuest() {
+		return guest;
 	}
 
 
-	public void setWinner(Team winner) {
-		this.winner = winner;
+	public String getGuestMember() {
+		return guestMember;
 	}
 
 
-	public Team getLoser() {
-		return loser;
+	public int getGuestScore() {
+		return guestScore;
 	}
 
 
-	public void setLoser(Team loser) {
-		this.loser = loser;
+	public Team getHost() {
+		return host;
 	}
 
+
+	public String getHostMember() {
+		return hostMember;
+	}
+
+	
+	public int getHostScore() {
+		return hostScore;
+	}
 
 	public int getIsPay() {
 		return isPay;
 	}
 
-
-	public void setIsPay(int isPay) {
-		this.isPay = isPay;
-	}
-
-
-	public Arena getArena() {
-		return arena;
-	}
-
 	
-	public int getDataRecord() {
-		return dataRecord;
-	}
-
-	public Date getEnd() {
-		return end;
-	}
-
-	
-	public Team getGuest() {
-		return guest;
-	}
-	
-	public int getGuestMember() {
-		return guestMember;
-	}
-	
-	public int getGuestScore() {
-		return guestScore;
-	}
-	
-	public Team getHost() {
-		return host;
-	}
-	
-	public int getHostMember() {
-		return hostMember;
-	}
-	
-	
-
-	public int getHostScore() {
-		return hostScore;
-	}
-
 	public int getJudge() {
 		return judge;
 	}
-
+	
+ 
+	
+	public Team getLoser() {
+		return loser;
+	}
+	
 	public int getMatchType() {
 		return matchType;
 	}
+	
+ 
+	
 
 	public Date getStart() {
 		return start;
@@ -217,12 +200,20 @@ public class MatchFight extends BaseUUIDEntity {
 		return weather;
 	}
 
+	public Team getWinner() {
+		return winner;
+	}
+
 	public void setArena(Arena arena) {
 		this.arena = arena;
 	}
 
 	public void setDataRecord(int dataRecord) {
 		this.dataRecord = dataRecord;
+	}
+
+	public void setDraw(int draw) {
+		this.draw = draw;
 	}
 
 	public void setEnd(Date end) {
@@ -233,28 +224,44 @@ public class MatchFight extends BaseUUIDEntity {
 		this.guest = guest;
 	}
 
-	public void setGuestMember(int guestMember) {
+	public void setGuestMember(String guestMember) {
 		this.guestMember = guestMember;
 	}
+
+ 
 
 	public void setGuestScore(int guestScore) {
 		this.guestScore = guestScore;
 	}
 
+
 	public void setHost(Team host) {
 		this.host = host;
 	}
 
-	public void setHostMember(int hostMember) {
+
+	public void setHostMember(String hostMember) {
 		this.hostMember = hostMember;
 	}
+
 
 	public void setHostScore(int hostScore) {
 		this.hostScore = hostScore;
 	}
 
+
+	public void setIsPay(int isPay) {
+		this.isPay = isPay;
+	}
+
 	public void setJudge(int judge) {
 		this.judge = judge;
+	}
+
+ 
+
+	public void setLoser(Team loser) {
+		this.loser = loser;
 	}
 
 	public void setMatchType(int matchType) {
@@ -275,6 +282,10 @@ public class MatchFight extends BaseUUIDEntity {
 
 	public void setWeather(String weather) {
 		this.weather = weather;
+	}
+
+	public void setWinner(Team winner) {
+		this.winner = winner;
 	}
 
 }

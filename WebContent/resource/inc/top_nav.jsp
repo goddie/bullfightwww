@@ -19,11 +19,13 @@
                         </div>
                         <div class="collapse navbar-collapse main-navbar-collapse">
                             <ul class="nav navbar-nav">
-                                <li class="active"><a href="${pageContext.request.contextPath}/page/ucenter_userconfig.jsp">账户设置</a></li>
-                                <li><a href="${pageContext.request.contextPath}/page/admin_user.jsp">用户管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/page/admin_fund.jsp">基金管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/page/admin_traderecord.jsp">交易记录</a></li>
-                                <li><a href="${pageContext.request.contextPath}/page/admin_popular.jsp">投资猫达人</a></li>
+                                
+                                <li><a href="${pageContext.request.contextPath}/user/admin/list">球员管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/team/admin/list">球队管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/arena/admin/list">场地管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/matchfight/admin/list">对战管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/payrecord/admin/list">交易记录</a></li>
+                                <li><a href="${pageContext.request.contextPath}/page/ucenter_userconfig.jsp">账户设置</a></li>
                             </ul>
                         </div><!-- /.navbar-collapse -->
                     </div>
