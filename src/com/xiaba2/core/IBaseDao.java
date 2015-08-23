@@ -203,12 +203,12 @@ public interface IBaseDao<T, ID extends Serializable> {
 			Integer maxResults);
 
 	 
+
 	/**
-	 * 使用指定的检索标准来检索数
+	 * 分页
 	 * @param criteria
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return 分页实体
+	 * @param page
+	 * @return
 	 */
 	Page<T> findPageByCriteria(DetachedCriteria criteria, Page<T> page);
 

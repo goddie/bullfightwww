@@ -26,6 +26,11 @@ import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
 import com.xiaba2.core.Page;
 
+/**
+ * @author goddie
+ * 6p4t58mkqxtfyso57xr3mvl161uxfjcl
+ * 2088911907194201
+ */
 @RestController
 @RequestMapping("/payrecord")
 public class PayRecordController {

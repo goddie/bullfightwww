@@ -61,6 +61,24 @@ public class MatchDataTeam extends BaseUUIDEntity {
 	 */
 	@Column
 	private float turnover;
+	
+	/**
+	 * 犯规次数
+	 */
+	@Column
+	private float foul;
+	
+	
+
+
+	public float getFoul() {
+		return foul;
+	}
+
+
+	public void setFoul(float foul) {
+		this.foul = foul;
+	}
 
 
 	public float getAssist() {

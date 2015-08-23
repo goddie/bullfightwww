@@ -13,9 +13,6 @@ import com.xiaba2.core.BaseUUIDEntity;
 @Table(name = "db_cms_user")
 public class User extends BaseUUIDEntity {
 
-	@ManyToOne
-	private Member member;
-
 	@Column
 	private String username;
 
@@ -29,6 +26,12 @@ public class User extends BaseUUIDEntity {
 
 	@Column
 	private String avatar;
+	
+	/**
+	 * 球龄
+	 */
+	@Column
+	private int age;
 	
 	/**
 	 * 电话
@@ -60,7 +63,7 @@ public class User extends BaseUUIDEntity {
 	private Date birthday;
 	
 	@Column
-	private int position;
+	private String position;
 	/**
 	 * 总得分
 	 */
@@ -96,7 +99,14 @@ public class User extends BaseUUIDEntity {
 	 */
 	@Column
 	private float rebound;
+	
+	@Column
+	private float block;
+	
+	@Column
+	private float steal;
 
+	
 	/**
 	 * 助攻
 	 */
@@ -156,7 +166,46 @@ public class User extends BaseUUIDEntity {
 	@Column
 	private String payPassword;
 	
+	/**
+	 * 犯规次数
+	 */
+	@Column
+	private float foul;
 	
+	
+	
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public float getFoul() {
+		return foul;
+	}
+
+	public void setFoul(float foul) {
+		this.foul = foul;
+	}
+
+	public float getSteal() {
+		return steal;
+	}
+
+	public void setSteal(float steal) {
+		this.steal = steal;
+	}
+
+	public float getBlock() {
+		return block;
+	}
+
+	public void setBlock(float block) {
+		this.block = block;
+	}
 
 	public String getBankNo() {
 		return bankNo;
@@ -288,11 +337,12 @@ public class User extends BaseUUIDEntity {
 
  
 
-	public int getPosition() {
+ 
+	public String getPosition() {
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public void setPosition(String position) {
 		this.position = position;
 	}
 
@@ -352,9 +402,7 @@ public class User extends BaseUUIDEntity {
 		return email;
 	}
 
-	public Member getMember() {
-		return member;
-	}
+ 
 
 	public String getNickname() {
 		return nickname;
@@ -376,9 +424,7 @@ public class User extends BaseUUIDEntity {
 		this.email = email;
 	}
 
-	public void setMember(Member member) {
-		this.member = member;
-	}
+ 
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;

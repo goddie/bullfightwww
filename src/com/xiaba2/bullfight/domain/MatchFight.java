@@ -47,10 +47,10 @@ public class MatchFight extends BaseUUIDEntity {
 	private Team host;
 
 	@Column
-	private int guestScore;
+	private float guestScore;
 
 	@Column
-	private int hostScore;
+	private float hostScore;
 
 	@Column
 	private String guestMember;
@@ -110,9 +110,31 @@ public class MatchFight extends BaseUUIDEntity {
 	 */
 	@Column
 	private int isPay;
+	
+	/**
+	 * 城市
+	 */
+	@Column
+	private String city;
+	
+	/**
+	 * 比赛费用
+	 */
+	@Column
+	private float fee;
 
 	
 	
+	public String getCity() {
+		return city;
+	}
+
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+
 	public Arena getArena() {
 		return arena;
 	}
@@ -143,8 +165,26 @@ public class MatchFight extends BaseUUIDEntity {
 	}
 
 
-	public int getGuestScore() {
+ 
+
+
+	public float getGuestScore() {
 		return guestScore;
+	}
+
+
+	public void setGuestScore(float guestScore) {
+		this.guestScore = guestScore;
+	}
+
+
+	public float getHostScore() {
+		return hostScore;
+	}
+
+
+	public void setHostScore(float hostScore) {
+		this.hostScore = hostScore;
 	}
 
 
@@ -156,11 +196,7 @@ public class MatchFight extends BaseUUIDEntity {
 	public String getHostMember() {
 		return hostMember;
 	}
-
-	
-	public int getHostScore() {
-		return hostScore;
-	}
+ 
 
 	public int getIsPay() {
 		return isPay;

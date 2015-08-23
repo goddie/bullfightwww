@@ -107,9 +107,68 @@ public class Team extends BaseUUIDEntity {
 	 */
 	@Column
 	private float playCount;
+	
+	
+	/**
+	 * 投篮命中率
+	 */
+	@Column
+	private float goalPercent;
+	
+	/**
+	 * 场均犯规
+	 */
+	@Column
+	private float foul;
+	
+	
+	/**
+	 * 罚球命中率
+	 */
+	@Column
+	private float freeGoalPercent;
+	
+	
+	/**
+	 * 三分命中率
+	 */
+	@Column
+	private float threeGoalPercent;
  
 	
 	
+	public float getFreeGoalPercent() {
+		return freeGoalPercent;
+	}
+
+	public void setFreeGoalPercent(float freeGoalPercent) {
+		this.freeGoalPercent = freeGoalPercent;
+	}
+
+	public float getThreeGoalPercent() {
+		return threeGoalPercent;
+	}
+
+	public void setThreeGoalPercent(float threeGoalPercent) {
+		this.threeGoalPercent = threeGoalPercent;
+	}
+
+	public float getFoul() {
+		return foul;
+	}
+
+	public void setFoul(float foul) {
+		this.foul = foul;
+	}
+
+	public float getGoalPercent() {
+		return goalPercent;
+	}
+
+	public void setGoalPercent(float goalPercent) {
+		this.goalPercent = goalPercent;
+	}
+
 	public String getCity() {
 		return city;
 	}

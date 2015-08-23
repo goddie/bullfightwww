@@ -27,6 +27,12 @@ public class MatchDataUser extends BaseUUIDEntity {
 	 */
 	@ManyToOne
 	private User user;
+	
+	/**
+	 * 代表队伍
+	 */
+	@ManyToOne
+	private Team team;
 
 	/**
 	 * 位置
@@ -123,12 +129,37 @@ public class MatchDataUser extends BaseUUIDEntity {
 	 */
 	@Column
 	private float playTime;
+	
+	/**
+	 * 失误
+	 */
+	@Column
+	private float turnover;
 
 	/**
 	 * 犯规次数
 	 */
 	@Column
 	private float foul;
+	
+	
+	
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	public float getTurnover() {
+		return turnover;
+	}
+
+	public void setTurnover(float turnover) {
+		this.turnover = turnover;
+	}
 
 	public float getAssist() {
 		return assist;

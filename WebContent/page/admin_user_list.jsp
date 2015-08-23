@@ -11,7 +11,25 @@
 <body class="bootstrap-admin-with-small-navbar">
 
 	<jsp:include page="/resource/inc/top_nav.jsp"></jsp:include>
-
+	<div class="modal fade" id="myModal1" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">选择队伍</h4>
+				</div>
+				<div class="modal-body">
+					<iframe marginheight="0" marginwidth="0" frameborder="0"
+						width="100%"
+						src="${pageContext.request.contextPath}/team/admin/sel"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div class="container">
 		<div class="row">
@@ -50,8 +68,9 @@
 
 												<th role="columnheader" style="width: 10%;">城市</th>
 
- 
+
 												<th role="columnheader">注册时间</th>
+												<th role="columnheader">队伍</th>
 												<th role="columnheader" style="width: 20%;">操作</th>
 											</tr>
 										</thead>
@@ -62,18 +81,24 @@
 
 												<tr class="gradeA odd">
 													<td class="sorting_1">${status.index+1}</td>
-													<td class=""><img src="${m.avatar }" width="30" height="30" /></td>
+													<td class=""><img src="${m.avatar }" width="30"
+														height="30" /></td>
 													<td class="">${m.username}</td>
 													<td class="center ">${m.nickname}</td>
 													<td class="">${m.city}</td>
-													
- 
+
+
 													<td class="center ">${m.createdDate}</td>
-													<td class="action"><a
-														href="${pageContext.request.contextPath}/user/edit/${m.id}">
-															修改 </a> <a
-														href="${pageContext.request.contextPath}/user/del/${m.id}">
-															删除 </a></td>
+													<td class="center ">${teamList[status.index]}</td>
+													<td class="action">
+														<button type="button" class="btn btn-primary"
+															data-toggle="modal" data-target="#myModal1"
+															onclick="setUser('${m.id}')">加队伍</button> <a
+														href="${pageContext.request.contextPath}/user/edit/${m.id}"
+														style="display: none;"> 修改 </a> <a
+														href="${pageContext.request.contextPath}/user/action/del?uid=${m.id}">
+															删除 </a>
+													</td>
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -106,3 +131,43 @@
 	<jsp:include page="/resource/inc/admin_script.jsp"></jsp:include>
 </body>
 </html>
+
+
+
+
+<script type="text/javascript">
+	var nameEle;
+	var valueEle;
+
+	var curUser;
+
+	$('#myModal1').on('show.bs.modal', function(e) {
+		nameEle = $("#hostteamname");
+		valueEle = $("#hostteam");
+	})
+
+	function setUser(uid) {
+		curUser = uid;
+		//alert(curUser);
+	}
+
+	function onsel(e, k, v) {
+
+		if (e == "team") {
+			//nameEle.val(k);
+			//valueEle.val(v);
+			$('#myModal1').modal('hide');
+		}
+
+		$.getJSON("${pageContext.request.contextPath}/teamuser/json/join", {
+			tid : v,
+			uid : curUser,
+			t : new Date()
+		}, function(data) {
+
+			alert(data.msg);
+
+		});
+
+	}
+</script>

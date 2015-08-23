@@ -161,6 +161,15 @@
 												</select>
 											</div>
 										</div>
+										
+										<div class="form-group">
+											<label class="col-lg-2 control-label" for="typeahead">天气</label>
+											<div class="col-lg-10">
+												<input name="weather" type="text" value="晴"
+													class="form-control col-md-6" id="weather" />
+											</div>
+
+										</div>
 
 										<div class="form-group">
 											<label class="col-lg-2 control-label" for="typeahead">开始时间</label>

@@ -55,7 +55,7 @@
 												<th role="columnheader" style="width: 6%;">盖帽</th>
 												<th role="columnheader" style="width: 6%;">抢断</th>
 												<th role="columnheader" style="width: 6%;">失误</th>
-
+												<th role="columnheader" style="width: 6%;">操作</th>
 
 											</tr>
 										</thead>
@@ -78,7 +78,7 @@
 													<td>${m.block}</td>
 													<td>${m.steal}</td>
 													<td>${m.turnover}</td>
-
+													<td><a href="${pageContext.request.contextPath}/team/admin/uprecord?tid=${m.id}">修改数据</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>

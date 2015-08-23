@@ -52,6 +52,7 @@
 												<th role="columnheader" style="width: 10%;">队伍人数</th>
 												<th role="columnheader">比赛时间</th>
 												<th role="columnheader" style="width: 10%;">比分</th>
+												<th role="columnheader" style="width: 10%;">状态</th>
 												<th role="columnheader" style="width: 20%;">操作</th>
 											</tr>
 										</thead>
@@ -68,8 +69,14 @@
 													<td class="center ">${m.teamSize}</td>
 
 													<td class="center ">${m.createdDate}</td>
-													<td class="center ">${m.guestScore}${m.hostScore}</td>
+													<td class="center ">${m.hostScore}-${m.guestScore}</td>
+													<td class="center ">${m.status}</td>
 													<td class="action"><a
+														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.host.id}">
+															主队成绩 </a> <a
+														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.guest.id}">
+															客队成绩 </a> <a href="javascript:void(0)"
+														onclick="finish('${m.id}')"> 结束比赛 </a> <a
 														href="${pageContext.request.contextPath}/team/edit/${m.id}">
 															编辑 </a> <a
 														href="${pageContext.request.contextPath}/team/del/${m.id}">
@@ -106,3 +113,15 @@
 	<jsp:include page="/resource/inc/admin_script.jsp"></jsp:include>
 </body>
 </html>
+
+<script type="text/javascript">
+	function finish(mfid) {
+		$.getJSON("${pageContext.request.contextPath}/matchfight/json/finish",
+				{
+					mfid : mfid,
+					t : new Date()
+				}, function(json) {
+					alert(json.msg);
+				});
+	}
+</script>

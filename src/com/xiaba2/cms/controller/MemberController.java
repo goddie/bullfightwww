@@ -86,9 +86,13 @@ public class MemberController {
 			// attr.addAttribute("loginMember", list.get(0).getId().toString());
 
 			DetachedCriteria criteria2 = userService.createDetachedCriteria();
-			criteria2.add(Restrictions.eq("member", list.get(0)));
+			criteria.add(Restrictions.eq("username", entity.getUsername()));
+			criteria.add(Restrictions.eq("password", entity.getPassword()));
 
 			List<User> list2 = userService.findByCriteria(criteria2);
+			
+			
+			
 
 			WebUtils.setSessionAttribute(request, "member", list.get(0));
 			WebUtils.setSessionAttribute(request, "user", list2.get(0));
