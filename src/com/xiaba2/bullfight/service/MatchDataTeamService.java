@@ -71,20 +71,7 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 		
 		matchDataTeamDao.saveOrUpdate(entity);
 		
-		Team t = matchDataUser.getTeam();
-		MatchFight mf = entity.getMatchFight();
-		
-		if(t.getId().equals(mf.getHost().getId()))
-		{
-			mf.setHostScore(entity.getScoring());
-		}
-		
-		if(t.getId().equals(mf.getGuest().getId()))
-		{
-			mf.setGuestScore(entity.getScoring());
-		}
-		
-		matchFightDao.saveOrUpdate(mf);
+
 		
 	}
 }

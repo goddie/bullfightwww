@@ -70,18 +70,20 @@
 													<td class="center ">${m.status}</td>
 
 													<td class="center ">${m.createdDate}</td>
-													<td class="action"><a
+													<td class="action">
+													<div style="display:none">
+													<a
 														href="${pageContext.request.contextPath}/team/edit/${m.id}">
 															编辑 </a> <a
 														href="${pageContext.request.contextPath}/team/del/${m.id}">
 															删除 </a> <a
 														href="${pageContext.request.contextPath}/team/member/">
-															查看成员 </a></td>
+															查看成员 </a></div></td>
 												</tr>
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
+									<div class="row" style="display:none">
 
 										<div class="col-md-6">
 											<div class="dataTables_paginate paging_bootstrap">

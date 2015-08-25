@@ -149,24 +149,26 @@ public class MatchFightController {
 			return js;
 		}
 
+		
 		entity.setHost(team);
+		entity.setArena(arena);
 		entity.setCreatedDate(new Date());
 		
 		
 		entity.setStatus(0);
-		entity.setIsPay(0);
+		entity.setIsPay(1);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		Date dstart;
 		Date dend;
 
 		try {
 
-			dstart = sdf.parse(request.getParameter("start"));
+			dstart = sdf.parse(request.getParameter("startStr"));
 			entity.setStart(dstart);
 
-			dend = sdf.parse(request.getParameter("end"));
+			dend = sdf.parse(request.getParameter("endStr"));
 			entity.setEnd(dend);
 
 		} catch (ParseException e) {

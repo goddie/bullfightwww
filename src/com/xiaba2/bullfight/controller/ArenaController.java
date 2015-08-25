@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -60,10 +62,11 @@ public class ArenaController {
 		ModelAndView mv=new ModelAndView("admin_arena_list");
 		
 		Page<Arena> page = new Page<Arena>();
-		page.setPageSize(10);
+		page.setPageSize(999);
 		page.setPageNo(1);
 		
 		DetachedCriteria criteria = arenaService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
 		page = arenaService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());
@@ -79,10 +82,11 @@ public class ArenaController {
 		ModelAndView mv=new ModelAndView("admin_arena_sel");
 		
 		Page<Arena> page = new Page<Arena>();
-		page.setPageSize(10);
+		page.setPageSize(999);
 		page.setPageNo(1);
 		
 		DetachedCriteria criteria = arenaService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
 		page = arenaService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());
@@ -114,6 +118,25 @@ public class ArenaController {
 		return rs;
 	}
 	
+	
+	@RequestMapping("/json/list")
+	public JsonResult jsonList(@RequestParam("p") int p) {
+
+		JsonResult rs = new JsonResult();
+
+		
+		Page<Arena> page = new Page<Arena>();
+		page.setPageSize(999);
+		page.setPageNo(1);
+		
+		DetachedCriteria criteria = arenaService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		page = arenaService.findPageByCriteria(criteria, page);
+		
+		rs.setData(page.getResult());
+		rs.setCode(JsonResult.SUCCESS);
+		return rs;
+	}
 	
 	
 	

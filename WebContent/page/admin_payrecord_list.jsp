@@ -67,7 +67,7 @@
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
+									<div class="row" style="display:none">
 
 										<div class="col-md-6">
 											<div class="dataTables_paginate paging_bootstrap">

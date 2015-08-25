@@ -151,9 +151,7 @@ public class MatchDataUserController {
 		criteria.add(Restrictions.eq("matchFight", matchFight));
 		criteria.add(Restrictions.eq("user", user));
 		criteria.add(Restrictions.eq("team", team));
-
-
-		matchDataTeamService.updateTeamByUser(entity, 1);
+		
 
 		entity.setCreatedDate(new Date());
 
@@ -166,7 +164,23 @@ public class MatchDataUserController {
 		}
 
 		matchDataUserService.save(entity);
+		
+		matchDataTeamService.updateTeamByUser(entity, 1);
 
+		
+		if(team.getId().equals(matchFight.getHost().getId()))
+		{
+			matchFight.setHostScore(entity.getScoring());
+		}
+		
+		if(team.getId().equals(matchFight.getGuest().getId()))
+		{
+			matchFight.setGuestScore(entity.getScoring());
+		}
+		
+		matchFightService.saveOrUpdate(matchFight);
+		
+		
 		return mv;
 	}
 

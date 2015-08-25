@@ -105,7 +105,7 @@
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
+									<div class="row" style="display:none">
 										<div class="col-md-6">
 											<div class="dataTables_info" id="example_info">Showing
 												1 to 10 of 57 entries</div>
