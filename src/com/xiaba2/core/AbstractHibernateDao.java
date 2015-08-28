@@ -166,9 +166,10 @@ public abstract class AbstractHibernateDao<T, ID extends Serializable>
 		List<T> list = criteriaExecute.list();
 
 		Criteria criteriaCount = criteria.getExecutableCriteria(getSession());
-		long rowCount = (Long) criteriaCount.setProjection(
-				Projections.rowCount()).uniqueResult();
 
+		Object rs = criteriaCount.setProjection(Projections.rowCount())
+				.uniqueResult();
+		long rowCount = rs == null ? 0 : (Long) rs;
 		page.setResult(list);
 		page.setTotalCount(rowCount);
 
@@ -264,7 +265,7 @@ public abstract class AbstractHibernateDao<T, ID extends Serializable>
 	}
 
 	public T save(T entity) {
-		
+
 		getSession().save(entity);
 		return entity;
 	}

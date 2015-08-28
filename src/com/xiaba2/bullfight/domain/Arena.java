@@ -44,7 +44,21 @@ public class Arena extends BaseUUIDEntity {
 	@ManyToOne
 	private User user;
 	
+	/**
+	 * 单价
+	 */
+	@Column
+	private float price;
 	
+	
+
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
 
 	public User getUser() {
 		return user;

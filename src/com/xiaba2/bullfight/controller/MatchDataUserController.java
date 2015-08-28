@@ -191,7 +191,7 @@ public class MatchDataUserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/json/usermatch")
-	public JsonResult jsonUserMatch(@RequestParam("uid") String uid) {
+	public JsonResult jsonUserMatch(@RequestParam("uid") String uid,@RequestParam("p") int p,HttpServletRequest request) {
 		JsonResult rs = new JsonResult();
 
 		if (StringUtils.isEmpty(uid)) {
@@ -202,10 +202,17 @@ public class MatchDataUserController {
 				.createDetachedCriteria();
 		criteria.add(Restrictions.eq("user.id", UUID.fromString(uid)));
 		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		
+//		String statusStr =  request.getParameter("status");
+//		if(!StringUtils.isEmpty(statusStr))
+//		{
+//			criteria.add(Restrictions.eq("matchFight.status", Integer.parseInt(statusStr)));
+//		}
 
 		Page<MatchDataUser> page = new Page<MatchDataUser>();
-		page.setPageNo(1);
-		page.setPageSize(20);
+		page.setPageNo(p);
+		page.setPageSize(15);
 		page.addOrder("createdDate", "desc");
 
 		page = matchDataUserService.findPageByCriteria(criteria, page);

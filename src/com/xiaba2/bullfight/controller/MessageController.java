@@ -116,7 +116,7 @@ public class MessageController {
 		criteria.add(Restrictions.eq("isDelete", 0));
 		Page<Message> page =new Page<Message>();
 		page.setPageNo(1);
-		page.setPageSize(999);
+		page.setPageSize(p);
 		page.addOrder("createdDate","desc");
 		
 		page = messageService.findPageByCriteria(criteria, page);

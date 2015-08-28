@@ -1,8 +1,13 @@
 package com.xiaba2.bullfight.controller;
 
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +20,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.domain.TeamUser;
 import com.xiaba2.bullfight.service.TeamService;
 import com.xiaba2.bullfight.service.TeamUserService;
+import com.xiaba2.cms.controller.AlbumController;
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
@@ -228,6 +235,160 @@ public class TeamController {
 		return js;
 	}
 	
+	
+	
+	/**
+	 * 上传队标
+	 * @param file
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/json/upavatar")
+	public JsonResult jsonUpavatar(
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			HttpServletRequest request) {
+
+		JsonResult rs = new JsonResult();
+
+
+
+		// String path = System.getProperty("myapp.root") + "upload";
+		String path = this.getClass().getClassLoader().getResource("/")
+				.getPath();
+		path = path.replace("WEB-INF" + File.separator + "classes"
+				+ File.separator, "upload");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String pdate = sdf.format(new Date());
+		path = path + File.separator + pdate;
+		String ext = file.getOriginalFilename().substring(
+				file.getOriginalFilename().lastIndexOf("."));
+		String fileName = UUID.randomUUID().toString().replace("-", "") + ext;
+		// String fileName = new Date().getTime()+".jpg";
+		Logger.getLogger(AlbumController.class.toString())
+				.log(Level.INFO, path);
+		// System.out.println(path);
+		File targetFile = new File(path, fileName);
+		if (!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+		// 保存
+		try {
+			file.transferTo(targetFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String extPath = request.getContextPath() + "/upload/" + pdate + "/";
+		
+		
+		rs.setCode(JsonResult.SUCCESS);
+		
+		String tid = request.getParameter("tid");
+		if (!StringUtils.isEmpty(tid)) {
+			Team entity = teamService.get(UUID.fromString(tid));
+			entity.setAvatar(extPath+fileName);
+			teamService.saveOrUpdate(entity);
+			
+			rs.setData(entity);
+			
+			return rs;
+		}
+		
+		
+		
+		Team t = new Team();
+		t.setAvatar(extPath+fileName);
+		
+		rs.setData(t);
+		
+		return rs;
+	}
+	
+	/**
+	 * 更新队伍资料
+	 * @param tid
+	 * @return
+	 */
+	@RequestMapping("/json/update")
+	public JsonResult jsonUpdate(@RequestParam("tid") UUID tid,HttpServletRequest request) {
+		JsonResult js = new JsonResult();
+
+		
+		
+		Team team = teamService.get(tid);
+		
+		
+		team.setName(request.getParameter("name"));
+		team.setCity(request.getParameter("city"));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date birthday;
+ 
+		try {
+
+			birthday = sdf.parse(request.getParameter("found"));
+			team.setCreatedDate(birthday);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		team.setInfo(request.getParameter("info"));
+		
+		
+		teamService.saveOrUpdate(team);
+		
+		js.setMsg("修改成功!");
+		js.setData(team);
+		js.setCode(JsonResult.SUCCESS);
+		return js;
+	}
+	
+	
+	/**
+	 * 创建队伍
+	 * @param tid
+	 * @return
+	 */
+	@RequestMapping("/json/create")
+	public JsonResult jsonCreate(@RequestParam("uid") UUID uid,HttpServletRequest request) {
+		JsonResult js = new JsonResult();
+		
+		Team team=new Team();
+		
+		team.setName(request.getParameter("name"));
+		team.setCity(request.getParameter("city"));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date birthday;
+ 
+		try {
+
+			birthday = sdf.parse(request.getParameter("found"));
+			team.setCreatedDate(birthday);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		team.setInfo(request.getParameter("info"));
+		
+		String avatar = request.getParameter("avatar");
+		if(!StringUtils.isEmpty(avatar))
+		{
+			team.setAvatar(avatar);
+		}
+		
+		User user = userService.get(uid);
+		team.setAdmin(user);
+		
+		teamService.save(team);
+
+		js.setMsg("创建成功，快去邀请成员加入队伍吧!");
+		js.setData(team);
+		js.setCode(JsonResult.SUCCESS);
+		return js;
+	}
 	
 	/**
 	 * 用户是否队长

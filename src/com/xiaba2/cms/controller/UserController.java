@@ -1,14 +1,20 @@
 package com.xiaba2.cms.controller;
 
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
@@ -18,7 +24,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import sun.swing.StringUIClientPropertyKey;
 
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.domain.TeamUser;
@@ -264,12 +273,16 @@ public class UserController {
 		return rs;
 	}
 
+	/**
+	 * 用户信息
+	 * @param uid
+	 * @return
+	 */
 	@RequestMapping(value = "/json/getuser")
 	public JsonResult jsonGetUser(@RequestParam("uid") String uid) {
 		JsonResult rs = new JsonResult();
 
 		if (StringUtils.isEmpty(uid)) {
-			rs.setMsg("请输入手机号");
 			return rs;
 		}
 
@@ -547,6 +560,107 @@ public class UserController {
 	
 	
 	
+	/**
+	 * 上传头像
+	 * @param file
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/json/upavatar")
+	public JsonResult jsonUpavatar(
+			@RequestParam(value = "file", required = false) MultipartFile file,
+			HttpServletRequest request) {
+
+		JsonResult rs = new JsonResult();
+
+		String uid = request.getParameter("uid");
+		if (StringUtils.isEmpty(uid)) {
+			return rs;
+		}
+
+		// String path = System.getProperty("myapp.root") + "upload";
+		String path = this.getClass().getClassLoader().getResource("/")
+				.getPath();
+		path = path.replace("WEB-INF" + File.separator + "classes"
+				+ File.separator, "upload");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String pdate = sdf.format(new Date());
+		path = path + File.separator + pdate;
+		String ext = file.getOriginalFilename().substring(
+				file.getOriginalFilename().lastIndexOf("."));
+		String fileName = UUID.randomUUID().toString().replace("-", "") + ext;
+		// String fileName = new Date().getTime()+".jpg";
+		Logger.getLogger(AlbumController.class.toString())
+				.log(Level.INFO, path);
+		// System.out.println(path);
+		File targetFile = new File(path, fileName);
+		if (!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+		// 保存
+		try {
+			file.transferTo(targetFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String extPath = request.getContextPath() + "/upload/" + pdate + "/";
+		
+		User user = userService.get(UUID.fromString(uid));
+		
+		
+		user.setAvatar(extPath+fileName);
+		
+		userService.saveOrUpdate(user);
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(user);
+		
+		return rs;
+	}
 	
+	
+	@RequestMapping(value = "/json/update")
+	public JsonResult jsonUpdate(@RequestParam("uid") UUID uid, HttpServletRequest request) {
+		JsonResult rs = new JsonResult();
+		
+		User user = userService.get(uid);
+		
+		
+		user.setNickname(request.getParameter("nickname"));
+		user.setCity(request.getParameter("city"));
+		user.setAge(Integer.parseInt(request.getParameter("age")));
+		user.setHeight(Integer.parseInt(request.getParameter("height")));
+		user.setWeight(Integer.parseInt(request.getParameter("weight")));
+		
+		String pos = request.getParameter("position");
+		
+		if(!StringUtils.isEmpty(pos))
+		{
+			user.setPosition(request.getParameter("position"));
+		}
+		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date birthday;
+ 
+		try {
+
+			birthday = sdf.parse(request.getParameter("birthday"));
+			user.setBirthday(birthday);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		userService.saveOrUpdate(user);
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(user);
+		rs.setMsg("修改成功!");
+	
+		return rs;
+	}
+
 
 }

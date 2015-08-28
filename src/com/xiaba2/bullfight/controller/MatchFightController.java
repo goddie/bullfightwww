@@ -137,20 +137,31 @@ public class MatchFightController {
 	 * @return
 	 */
 	@RequestMapping("/json/add")
-	public JsonResult jsonAdd(MatchFight entity,
-			@RequestParam("tid") String tid, @RequestParam("aid") String aid,
+	public JsonResult jsonAdd(MatchFight entity, @RequestParam("aid") String aid,
 			HttpServletRequest request) {
 		JsonResult js = new JsonResult();
 
-		Team team = teamService.get(UUID.fromString(tid));
+		
+		String tid = request.getParameter("tid");
+		
+		
 		Arena arena = arenaService.get(UUID.fromString(aid));
 
-		if (team == null || arena == null) {
+		if (arena == null) {
 			return js;
 		}
 
+		if(!StringUtils.isEmpty(tid))
+		{
+			Team team = teamService.get(UUID.fromString(tid));
+			if(team!=null)
+			{
+				entity.setHost(team);
+			}
+			
+		}
+
 		
-		entity.setHost(team);
 		entity.setArena(arena);
 		entity.setCreatedDate(new Date());
 		
@@ -189,15 +200,15 @@ public class MatchFightController {
 	 * @return
 	 */
 	@RequestMapping("/json/matchlist")
-	public JsonResult jsonMatchList(HttpServletRequest request) {
+	public JsonResult jsonMatchList(@RequestParam("p") int p, HttpServletRequest request) {
 		JsonResult rs = new JsonResult();
 		
 		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
 		
 		Page<MatchFight> page = new Page<MatchFight>();
-		page.setPageSize(10);
-		page.setPageNo(1);
+		page.setPageSize(15);
+		page.setPageNo(p);
 		page.addOrder("createdDate", "desc");
 
 		
@@ -233,12 +244,12 @@ public class MatchFightController {
 		
 		
 		
-		String pg = request.getParameter("page");
-		if(!StringUtils.isEmpty(pg))
-		{
-			int p = Integer.parseInt(pg);
-			page.setPageNo(p);
-		}
+//		String pg = request.getParameter("page");
+//		if(!StringUtils.isEmpty(pg))
+//		{
+//			int p = Integer.parseInt(pg);
+//			page.setPageNo(p);
+//		}
 		
 		
 		page = matchFightService.findPageByCriteria(criteria, page);
