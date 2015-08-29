@@ -15,11 +15,6 @@ import com.xiaba2.core.BaseUUIDEntity;
 @Table(name = "db_bullfight_sysconfig")
 public class SysConfig extends BaseUUIDEntity {
 
-	/**
-	 * 序号
-	 */
-	@Column
-	private int no;
 	
 	/**
 	 * 键
@@ -28,17 +23,25 @@ public class SysConfig extends BaseUUIDEntity {
 	private String key;
 	
 	/**
+	 * 说明
+	 */
+	@Column
+	private String info;
+	
+	/**
 	 * 值
 	 */
 	@Column
 	private String value;
 
-	public int getNo() {
-		return no;
+ 
+
+	public String getInfo() {
+		return info;
 	}
 
-	public void setNo(int no) {
-		this.no = no;
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
 	public String getKey() {

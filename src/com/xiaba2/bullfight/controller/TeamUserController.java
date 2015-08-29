@@ -292,6 +292,46 @@ public class TeamUserController {
 		return js;
 	}
 	
+	
+	
+	/**
+	 * 我效力的队伍
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping("/json/mytopteam")
+	public JsonResult jsonMyTopTeam(@RequestParam("uid") String uid,@RequestParam("count") int count)
+	{
+
+		JsonResult js = new JsonResult();
+
+		User user = userService.get(UUID.fromString(uid));
+		DetachedCriteria criteria = teamUserService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("user", user));
+		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		Page<TeamUser> page = new Page<TeamUser>();
+		page.setPageNo(1);
+		page.setPageSize(count);
+		page.addOrder("createdDate", "desc");
+		
+		page = teamUserService.findPageByCriteria(criteria, page);
+		
+		List<Team> list =new ArrayList<Team>();
+		
+		for (TeamUser tu : page.getResult()) {
+			
+			list.add(tu.getTeam());
+			
+		}
+		
+		js.setData(list);
+		js.setCode(JsonResult.SUCCESS);
+ 
+
+		return js;
+	}
+	
 	/**
 	 * 我管理的球队
 	 * @param uid

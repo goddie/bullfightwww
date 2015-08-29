@@ -255,7 +255,7 @@ public abstract class BaseService<T, ID extends Serializable> {
 	 * @return 记录数
 	 */
 	@Transactional(readOnly = true)
-	public Integer getRowCount(DetachedCriteria criteria) {
+	public Long getRowCount(DetachedCriteria criteria) {
 
 		return getEntityDao().getRowCount(criteria);
 	}

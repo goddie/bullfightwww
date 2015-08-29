@@ -207,9 +207,9 @@ public abstract class AbstractHibernateDao<T, ID extends Serializable>
 		return entity;
 	}
 
-	public Integer getRowCount(DetachedCriteria criteria) {
+	public Long getRowCount(DetachedCriteria criteria) {
 		criteria.setProjection(Projections.rowCount());
-		return (Integer) this.findByCriteria(criteria, 0, 1).get(0);
+		return  (Long)this.findByCriteria(criteria, 0, 1).get(0);
 	}
 
 	/**

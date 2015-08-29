@@ -28,6 +28,10 @@ public class Message extends BaseUUIDEntity {
 	@ManyToOne
 	private User sendTo;
 	
+	/**
+	 * 0 未读
+	 * 1 已读
+	 */
 	@Column
 	private int status;
 	

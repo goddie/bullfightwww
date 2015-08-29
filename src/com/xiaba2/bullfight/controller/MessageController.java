@@ -111,17 +111,46 @@ public class MessageController {
 			return rs;
 		}
 		
+		User user = userService.get(UUID.fromString(uid));
+		
 		DetachedCriteria criteria = messageService.createDetachedCriteria();
-		criteria.add(Restrictions.eq("sendTo.id", UUID.fromString(uid)));
+		criteria.add(Restrictions.eq("sendTo", user));
 		criteria.add(Restrictions.eq("isDelete", 0));
 		Page<Message> page =new Page<Message>();
-		page.setPageNo(1);
-		page.setPageSize(p);
+		page.setPageNo(p);
+		page.setPageSize(15);
 		page.addOrder("createdDate","desc");
 		
 		page = messageService.findPageByCriteria(criteria, page);
 		
 		rs.setData(page.getResult());
+		rs.setCode(JsonResult.SUCCESS);
+		
+		return rs;
+	}
+	
+	
+	
+	/**
+	 * 我的新消息
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping(value = "/json/countnew")
+	public JsonResult jsonCountNew(@RequestParam("uid") UUID uid) {
+		JsonResult rs = new JsonResult();
+
+		User user = userService.get(uid);
+		
+		DetachedCriteria criteria = messageService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("sendTo", user));
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("status", 0));
+		
+		
+		long count = messageService.getRowCount(criteria);
+		
+		rs.setData(count);
 		rs.setCode(JsonResult.SUCCESS);
 		
 		return rs;
@@ -199,6 +228,29 @@ public class MessageController {
 		}
 		
 		
+		rs.setCode(JsonResult.SUCCESS);
+		
+		return rs;
+		
+	}
+	
+	
+
+	/**
+	 * 标记已读
+	 * @param nickname
+	 * @return
+	 */
+	@RequestMapping(value = "/json/updateread")
+	public JsonResult jsonUpdateRead(@RequestParam("mid") UUID mid) 
+	{
+		JsonResult rs = new JsonResult();
+		
+		
+		Message message = messageService.get(mid);
+		message.setStatus(1);
+		
+		messageService.saveOrUpdate(message);
 		rs.setCode(JsonResult.SUCCESS);
 		
 		return rs;

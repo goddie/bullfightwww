@@ -59,7 +59,7 @@ public interface IBaseDao<T, ID extends Serializable> {
 	 *            一个DetachedCriteria对象
 	 * @return 记录数
 	 */
-	Integer getRowCount(DetachedCriteria criteria);
+	Long getRowCount(DetachedCriteria criteria);
 
 	/**
 	 * 

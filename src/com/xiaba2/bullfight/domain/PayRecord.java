@@ -63,6 +63,7 @@ public class PayRecord extends BaseUUIDEntity {
 	@Column
 	private int status;
 	
+	
 	@ManyToOne
 	private MatchFight matchFight;
 	

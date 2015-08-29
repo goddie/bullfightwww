@@ -166,7 +166,7 @@ public class MatchFightController {
 		entity.setCreatedDate(new Date());
 		
 		
-		entity.setStatus(0);
+		//entity.setStatus(0);
 		entity.setIsPay(1);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
