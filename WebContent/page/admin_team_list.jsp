@@ -83,21 +83,9 @@
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row" style="display:none">
+									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_paginate paging_bootstrap">
-												<ul class="pagination">
-													<li class="prev disabled"><a href="#">← 上页</a></li>
-													<li class="active"><a href="#">1</a></li>
-													<li><a href="#">2</a></li>
-													<li><a href="#">3</a></li>
-													<li><a href="#">4</a></li>
-													<li><a href="#">5</a></li>
-													<li class="next"><a href="#">下页 → </a></li>
-												</ul>
-											</div>
-										</div>
+										${pageHtml }
 									</div>
 								</div>
 							</div>

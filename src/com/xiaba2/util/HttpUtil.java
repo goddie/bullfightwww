@@ -18,6 +18,11 @@ import org.apache.log4j.Logger;
 public class HttpUtil {
 
 	public static int IMAGE_SIZE = 120;
+	
+	/**
+	 * 每页记录数
+	 */
+	public static int PAGE_SIZE = 50;
 
 	/**
 	 * 获取客户端IP

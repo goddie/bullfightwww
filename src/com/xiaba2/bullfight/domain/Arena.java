@@ -50,7 +50,22 @@ public class Arena extends BaseUUIDEntity {
 	@Column
 	private float price;
 	
+	/**
+	 * 1 团队 2野战
+	 */
+	@Column
+	private int matchType;
 	
+	
+	
+
+	public int getMatchType() {
+		return matchType;
+	}
+
+	public void setMatchType(int matchType) {
+		this.matchType = matchType;
+	}
 
 	public float getPrice() {
 		return price;

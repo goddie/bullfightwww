@@ -5,7 +5,7 @@
 		<ul class="nav navbar-collapse bootstrap-admin-navbar-side">
 			<li><a href="${pageContext.request.contextPath}/arena/admin/add"><i
 					class="glyphicon glyphicon-chevron-right"></i>新增场地</a></li>
-			<li><a href="${pageContext.request.contextPath}/arena/admin/list"><i
+			<li><a href="${pageContext.request.contextPath}/arena/admin/list?p=1"><i
 					class="glyphicon glyphicon-chevron-right"></i>场地列表</a></li>
 		</ul></li>
 

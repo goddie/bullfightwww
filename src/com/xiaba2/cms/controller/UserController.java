@@ -18,6 +18,7 @@ import javax.servlet.http.HttpUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -146,13 +147,13 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/admin/list")
-	public ModelAndView pageList() {
+	public ModelAndView pageList(@RequestParam("p") int p, HttpServletRequest request) {
 
 		ModelAndView mv = new ModelAndView("admin_user_list");
 
 		Page<User> page = new Page<User>();
-		page.setPageSize(999);
-		page.setPageNo(1);
+		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.setPageNo(p);
 		page.addOrder("createdDate", "desc");
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
@@ -186,7 +187,7 @@ public class UserController {
 		
 
 		mv.addObject("teamList", list);
-		
+		mv.addObject("pageHtml",page.genPageHtml(request));
 		
 
 		return mv;
@@ -210,13 +211,13 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/admin/recordlist")
-	public ModelAndView pageRecordList() {
+	public ModelAndView pageRecordList(@RequestParam("p") int p, HttpServletRequest request) {
 
 		ModelAndView mv = new ModelAndView("admin_user_recordlist");
 
 		Page<User> page = new Page<User>();
-		page.setPageSize(10);
-		page.setPageNo(1);
+		page.setPageSize(15);
+		page.setPageNo(p);
 		page.addOrder("createdDate", "desc");
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
@@ -224,6 +225,7 @@ public class UserController {
 		page = userService.findPageByCriteria(criteria, page);
 
 		mv.addObject("list", page.getResult());
+		mv.addObject("pageHtml",page.genPageHtml(request));
 
 		return mv;
 	}
@@ -288,6 +290,10 @@ public class UserController {
 
 		User entity = userService.get(UUID.fromString(uid));
 
+		if(entity==null)
+		{
+			return rs;
+		}
 		rs.setData(entity);
 		rs.setCode(JsonResult.SUCCESS);
 
@@ -310,17 +316,36 @@ public class UserController {
 		criteria.add(Restrictions.eq("password", password));
 
 		List<User> list = userService.findByCriteria(criteria);
-		if (list.isEmpty()) {
-			rs.setMsg("登录失败");
-			return rs;
+		if (!list.isEmpty()) {
+//			rs.setMsg("登录失败");
+//			return rs;
+			User entity = list.get(0);
+
+			rs.setMsg("登录成功");
+			rs.setData(entity);
+			rs.setCode(JsonResult.SUCCESS);
+		}
+		
+		
+		
+		DetachedCriteria criteria2 = userService.createDetachedCriteria();
+		criteria2.add(Restrictions.eq("isDelete", 0));
+		criteria2.add(Restrictions.eq("phone", username));
+		criteria2.add(Restrictions.eq("password", password));
+
+		List<User> list2 = userService.findByCriteria(criteria2);
+		if (!list2.isEmpty()) {
+//			rs.setMsg("登录失败");
+//			return rs;
+			User entity = list2.get(0);
+
+			rs.setMsg("登录成功");
+			rs.setData(entity);
+			rs.setCode(JsonResult.SUCCESS);
 		}
 
-		User entity = list.get(0);
-
-		rs.setMsg("登录成功");
-		rs.setData(entity);
-		rs.setCode(JsonResult.SUCCESS);
-
+		
+		rs.setMsg("登录失败");
 		return rs;
 	}
 
@@ -477,6 +502,113 @@ public class UserController {
 		return rs;
 	}
 	
+	
+	
+	
+	
+	/** 
+	 * 找回密码 短信验证
+	 * @param phone
+	 * @return
+	 */
+	@RequestMapping(value = "/json/pswdsms")
+	public JsonResult jsonPswdSms(@RequestParam("phone") String phone) {
+		JsonResult rs = new JsonResult();
+		// rs.setCode(JsonResult.SUCCESS);
+		// return rs;
+		
+		if (StringUtils.isEmpty(phone)) {
+			rs.setMsg("请输入手机号");
+			return rs;
+		}
+
+		Pattern p = null;
+		Matcher m = null;
+
+		p = Pattern.compile("^[1][0-9]{10}$"); // 验证手机号
+		m = p.matcher(phone);
+
+		if (!m.matches()) {
+			rs.setMsg("手机号不正确");
+			return rs;
+		}
+
+
+
+		
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(SendSMS.getRand());
+		sb.append(SendSMS.getRand());
+		sb.append(SendSMS.getRand());
+		sb.append(SendSMS.getRand());
+		sb.append(SendSMS.getRand());
+		sb.append(SendSMS.getRand());
+
+		String mess = "【来斗牛】您的验证码是" + sb.toString() + "。如非本人操作，请忽略本短信";
+
+		// String mess = "您的校验码是：" + sb.toString() +
+		// "。请不要把校验码泄露给其他人。如非本人操作，可不用理会！";
+
+		// String code = "2";
+		String code = SendSMSYUNPIAN.sendSMSYUNPIAN(phone, mess);
+
+		if (!code.endsWith("0")) {
+			
+			rs.setMsg("短信发送失败");
+			return rs;
+		}
+		
+		
+		DetachedCriteria criteria = userService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("phone", phone));
+
+		List<User> list = userService.findByCriteria(criteria);
+		if (list.isEmpty()) {
+			return rs;
+		}
+		
+		
+		User user = list.get(0);
+		user.setPayPassword(sb.toString());
+		userService.saveOrUpdate(user);
+
+		rs.setMsg("已发送短信到手机:"+phone);
+		rs.setCode(JsonResult.SUCCESS);
+		return rs;
+	}
+	
+	
+	
+	/**
+	 * 修改密码 验证码检测
+	 * @param phone
+	 * @param code
+	 * @return
+	 */
+	@RequestMapping(value = "/json/pswdcheck")
+	public JsonResult jsonPswdCheck(@RequestParam("phone") String phone,@RequestParam("code") String code) {
+		JsonResult rs = new JsonResult();
+		
+		DetachedCriteria criteria = userService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("phone", phone));
+		criteria.add(Restrictions.eq("payPassword", code));
+
+		List<User> list = userService.findByCriteria(criteria);
+		if (list.isEmpty()) {
+			rs.setMsg("验证码有误");
+			return rs;
+		}
+
+ 		User entity = list.get(0);
+
+		rs.setData(entity);
+		rs.setCode(JsonResult.SUCCESS);
+
+		return rs;
+	}
 	/**
 	 * 验证码检测
 	 * @param phone
@@ -543,7 +675,7 @@ public class UserController {
 		JsonResult rs = new JsonResult();
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
-		criteria.add(Restrictions.eq("nickname", nickname));
+		criteria.add(Restrictions.like("nickname", nickname,MatchMode.ANYWHERE));
 		
 		List<User> list = userService.findByCriteria(criteria);
 		if(list==null||list.size()==0)
@@ -662,5 +794,20 @@ public class UserController {
 		return rs;
 	}
 
-
+	@RequestMapping(value = "/json/uppassword")
+	public JsonResult jsonUpPassword(@RequestParam("uid") UUID uid, @RequestParam("password") String password) {
+		JsonResult rs = new JsonResult();
+		
+		User user = userService.get(uid);
+		
+		user.setPassword(password);
+		 
+		userService.saveOrUpdate(user);
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(user);
+		rs.setMsg("修改成功!");
+	
+		return rs;
+	}
 }

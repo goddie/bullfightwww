@@ -6,35 +6,34 @@ import javax.persistence.Table;
 
 import com.xiaba2.core.BaseUUIDEntity;
 
-/**
- * 系统配置
- * @author goddie
- *
- */
 @Entity
-@Table(name = "db_bullfight_sysconfig")
-public class SysConfig extends BaseUUIDEntity {
-
-	
+@Table(name = "db_bullfight_keyvalue")
+public class KeyValue extends BaseUUIDEntity {
 	/**
 	 * 键
 	 */
 	@Column
-	private String key;
-	
+	private String dictKey;
+
 	/**
 	 * 说明
 	 */
 	@Column
 	private String info;
-	
+
 	/**
 	 * 值
 	 */
 	@Column
-	private String value;
+	private String dictValue;
 
- 
+	public String getDictKey() {
+		return dictKey;
+	}
+
+	public void setDictKey(String dictKey) {
+		this.dictKey = dictKey;
+	}
 
 	public String getInfo() {
 		return info;
@@ -44,23 +43,13 @@ public class SysConfig extends BaseUUIDEntity {
 		this.info = info;
 	}
 
-	public String getKey() {
-		return key;
+	public String getDictValue() {
+		return dictValue;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setDictValue(String dictValue) {
+		this.dictValue = dictValue;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
-	
-	
-	
+	 
 }

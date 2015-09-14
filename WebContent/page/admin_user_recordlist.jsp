@@ -51,8 +51,8 @@
 												<th role="columnheader">位置</th>
 												<th role="columnheader">总分</th>
 												<th role="columnheader">场均</th>
-												<th role="columnheader">总命中率</th>
-												<th role="columnheader">三分</th>
+												<th role="columnheader">命中率</th>
+												<th role="columnheader">罚球命中率</th>
 												<th role="columnheader">三分命中率</th>
 												<th role="columnheader">篮板</th>
 												<th role="columnheader">助攻</th>
@@ -78,7 +78,7 @@
 													<td class="center ">${m.scoring}</td>
 													<td class="center ">${m.scoringAvg}</td>
 													<td class="center ">${m.goalPercent}</td>
-													<td class="center ">${m.threeGoal}</td>
+													<td class="center ">${m.freeGoalPercent}</td>
 													<td class="center ">${m.threeGoalPercent}</td>
 													<td class="center ">${m.rebound}</td>
 													<td class="center ">${m.assist}</td>
@@ -93,19 +93,7 @@
 									</table>
 									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_paginate paging_bootstrap">
-												<ul class="pagination">
-													<li class="prev disabled"><a href="#">← 上页</a></li>
-													<li class="active"><a href="#">1</a></li>
-													<li><a href="#">2</a></li>
-													<li><a href="#">3</a></li>
-													<li><a href="#">4</a></li>
-													<li><a href="#">5</a></li>
-													<li class="next"><a href="#">下页 → </a></li>
-												</ul>
-											</div>
-										</div>
+										${pageHtml }
 									</div>
 								</div>
 							</div>

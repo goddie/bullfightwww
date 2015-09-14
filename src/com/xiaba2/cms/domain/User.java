@@ -83,16 +83,19 @@ public class User extends BaseUUIDEntity {
 	private float goalPercent;
 
 	/**
-	 * 三分命中
+	 * 罚球命中率
 	 */
 	@Column
-	private float threeGoal;
+	private float freeGoalPercent;
 
+	
 	/**
 	 * 三分命中率
 	 */
 	@Column
 	private float threeGoalPercent;
+	
+
 
 	/**
 	 * 篮板
@@ -172,8 +175,37 @@ public class User extends BaseUUIDEntity {
 	@Column
 	private float foul;
 	
+	/**
+	 * 失误
+	 */
+	@Column
+	private float turnover;
 	
 	
+
+//	public float getThreeGoal() {
+//		return threeGoal;
+//	}
+//
+//	public void setThreeGoal(float threeGoal) {
+//		this.threeGoal = threeGoal;
+//	}
+
+	public float getFreeGoalPercent() {
+		return freeGoalPercent;
+	}
+
+	public void setFreeGoalPercent(float freeGoalPercent) {
+		this.freeGoalPercent = freeGoalPercent;
+	}
+
+	public float getTurnover() {
+		return turnover;
+	}
+
+	public void setTurnover(float turnover) {
+		this.turnover = turnover;
+	}
 
 	public int getAge() {
 		return age;
@@ -362,13 +394,7 @@ public class User extends BaseUUIDEntity {
 		this.goalPercent = goalPercent;
 	}
 
-	public float getThreeGoal() {
-		return threeGoal;
-	}
-
-	public void setThreeGoal(float threeGoal) {
-		this.threeGoal = threeGoal;
-	}
+ 
 
 	public float getThreeGoalPercent() {
 		return threeGoalPercent;

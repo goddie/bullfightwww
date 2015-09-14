@@ -1,24 +1,30 @@
 package com.xiaba2.bullfight.service;
 
-import java.util.Date;
+ 
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
-import javax.swing.text.StyledEditorKit.BoldAction;
 import javax.transaction.Transactional;
+
+ 
+
+
+
+
+
+
+
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import com.xiaba2.bullfight.dao.IMatchDataTeamDao;
-import com.xiaba2.bullfight.dao.IMatchFightDao;
 import com.xiaba2.bullfight.domain.MatchDataTeam;
 import com.xiaba2.bullfight.domain.MatchDataUser;
 import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.Team;
-import com.xiaba2.cms.domain.User;
 import com.xiaba2.core.BaseService;
 import com.xiaba2.core.IBaseDao;
 
@@ -27,7 +33,8 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 	@Resource
 	private IMatchDataTeamDao matchDataTeamDao;
 	
-	private IMatchFightDao matchFightDao;
+	@Resource
+	private TeamService teamService;
 
 	@Override
 	protected IBaseDao<MatchDataTeam, UUID> getEntityDao() {
@@ -43,35 +50,52 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 	@Transactional
 	public void updateTeamByUser(MatchDataUser matchDataUser,int add)
 	{
+		matchDataTeamDao.updateTeamByUser(matchDataUser, add);
+	}
+	
+	@Transactional
+	void countTeam(MatchDataUser matchDataUser)
+	{
+ 
+		List<Float> rs =  matchDataTeamDao.countTeam(matchDataUser);
+ 
+		
+		Team t = teamService.get(matchDataUser.getTeam().getId()) ;
+		
+		t.setScoring(rs.get(0));
+		t.setRebound(rs.get(1));
+		t.setAssist(rs.get(2));
+		t.setBlock(rs.get(3));
+		t.setSteal(rs.get(4));
+		t.setTurnover(rs.get(5));
+		t.setFoul(rs.get(6));
+		t.setGoalPercent(rs.get(7));
+		t.setFreeGoalPercent(rs.get(8));
+		t.setThreeGoalPercent(rs.get(9));
+		t.setPlayCount(rs.get(10));
+		
+		teamService.save(t);
+	}
+	
+	
+	/**
+	 * 获取一场比赛的成绩
+	 * @param matchFight
+	 * @param team
+	 * @return
+	 */
+	@Transactional
+	public MatchDataTeam getByMatchFight(MatchFight matchFight,Team team)
+	{
 		DetachedCriteria criteria = matchDataTeamDao.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
-		criteria.add(Restrictions.eq("matchFight", matchDataUser.getMatchFight()));
-		criteria.add(Restrictions.eq("team", matchDataUser.getTeam()));
-		//criteria.add(Restrictions.eq("user", matchDataUser.getUser()));
-		
-		MatchDataTeam entity = new MatchDataTeam();
+		criteria.add(Restrictions.eq("matchFight", matchFight));
+		criteria.add(Restrictions.eq("team", team));
 		
 		List<MatchDataTeam> list = matchDataTeamDao.findByCriteria(criteria);
-		if(list!=null&&list.size()>0)
-		{
-			entity = list.get(0);
-		}
 		
-		entity.setMatchFight(matchDataUser.getMatchFight());
-		entity.setTeam(matchDataUser.getTeam());
-		entity.setLastModifiedDate(new Date());
-		entity.setScoring(entity.getScoring()+matchDataUser.getScoring()*add);
-		entity.setRebound(entity.getRebound()+matchDataUser.getRebound()*add);
-		entity.setAssist(entity.getAssist()+matchDataUser.getAssist()*add);
-		entity.setBlock(entity.getBlock()+matchDataUser.getBlock()*add);
-		entity.setSteal(entity.getSteal()+matchDataUser.getSteal()*add);
-		entity.setTurnover(entity.getTurnover()+matchDataUser.getTurnover()*add);
-		
-		//entity.setCreatedDate(new Date());
-		
-		matchDataTeamDao.saveOrUpdate(entity);
-		
-
-		
+		return list.isEmpty()?null:list.get(0);
 	}
+ 
+	
 }

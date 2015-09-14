@@ -45,16 +45,17 @@
 											<tr role="row">
 												<th role="columnheader" style="width: 6%">序号</th>
 												<th role="columnheader" style="width: 6%;">队标</th>
-												<th role="columnheader">名称</th>
-												<th role="columnheader" style="width: 10%;">比赛场次</th>
+												<th role="columnheader" style="width: 12%;">名称</th>
+												<th role="columnheader" style="width: 6%;">比赛场次</th>
 												<th role="columnheader" style="width: 6%;">胜利</th>
 												<th role="columnheader" style="width: 6%;">失败</th>
 												<th role="columnheader" style="width: 6%;">平局</th>
-												<th role="columnheader" style="width: 8%;">总得分</th>
+												<th role="columnheader" style="width: 6%;">总得分</th>
 												<th role="columnheader" style="width: 6%;">篮板</th>
 												<th role="columnheader" style="width: 6%;">盖帽</th>
 												<th role="columnheader" style="width: 6%;">抢断</th>
 												<th role="columnheader" style="width: 6%;">失误</th>
+												<th role="columnheader" style="">命中/三分/罚球</th>
 												<th role="columnheader" style="width: 6%;">操作</th>
 
 											</tr>
@@ -78,6 +79,7 @@
 													<td>${m.block}</td>
 													<td>${m.steal}</td>
 													<td>${m.turnover}</td>
+													<td>${m.goalPercent}/${m.threeGoalPercent}/${m.freeGoalPercent}</td>
 													<td><a href="${pageContext.request.contextPath}/team/admin/uprecord?tid=${m.id}">修改数据</a></td>
 												</tr>
 											</c:forEach>

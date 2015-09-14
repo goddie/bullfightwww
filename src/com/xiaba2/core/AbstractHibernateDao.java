@@ -15,6 +15,7 @@ import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -150,6 +151,16 @@ public abstract class AbstractHibernateDao<T, ID extends Serializable>
 		Integer firstResult = (page.getPageNo() - 1) * page.getPageSize();
 		Integer maxResults = page.getPageSize();
 
+		Criteria criteriaCount = criteria.getExecutableCriteria(getSession());
+
+		Object rs = criteriaCount.setProjection(Projections.rowCount())
+				.uniqueResult();
+		criteriaCount.setProjection(null);
+		criteriaCount.setResultTransformer(CriteriaSpecification.ROOT_ENTITY);
+
+		long rowCount = rs == null ? 0 : (Long) rs;
+		
+
 		Criteria criteriaExecute = criteria.getExecutableCriteria(getSession());
 		criteriaExecute.setFirstResult(firstResult);
 		criteriaExecute.setMaxResults(maxResults);
@@ -165,11 +176,6 @@ public abstract class AbstractHibernateDao<T, ID extends Serializable>
 
 		List<T> list = criteriaExecute.list();
 
-		Criteria criteriaCount = criteria.getExecutableCriteria(getSession());
-
-		Object rs = criteriaCount.setProjection(Projections.rowCount())
-				.uniqueResult();
-		long rowCount = rs == null ? 0 : (Long) rs;
 		page.setResult(list);
 		page.setTotalCount(rowCount);
 
@@ -209,7 +215,7 @@ public abstract class AbstractHibernateDao<T, ID extends Serializable>
 
 	public Long getRowCount(DetachedCriteria criteria) {
 		criteria.setProjection(Projections.rowCount());
-		return  (Long)this.findByCriteria(criteria, 0, 1).get(0);
+		return (Long) this.findByCriteria(criteria, 0, 1).get(0);
 	}
 
 	/**

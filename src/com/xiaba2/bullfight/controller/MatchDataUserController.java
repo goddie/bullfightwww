@@ -144,41 +144,47 @@ public class MatchDataUserController {
 		User user = userService.get(uid);
 		entity.setUser(user);
 		
-		
-		DetachedCriteria criteria = matchDataUserService
-				.createDetachedCriteria();
-		criteria.add(Restrictions.eq("isDelete", 0));
-		criteria.add(Restrictions.eq("matchFight", matchFight));
-		criteria.add(Restrictions.eq("user", user));
-		criteria.add(Restrictions.eq("team", team));
-		
-
 		entity.setCreatedDate(new Date());
-
-
-		List<MatchDataUser> list = matchDataUserService
-				.findByCriteria(criteria);
 		
+		DetachedCriteria criteria = matchDataUserService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("matchFight", entity.getMatchFight()));
+		criteria.add(Restrictions.eq("user", entity.getUser()));
+		criteria.add(Restrictions.eq("team", entity.getTeam()));
+
+		List<MatchDataUser> list = matchDataUserService.findByCriteria(criteria);
+
 		if (list != null && list.size() > 0) {
-			matchDataUserService.delete(list.get(0));
+			matchDataUserService.deleteAndUpdate(list.get(0));
 		}
+		
+		matchDataUserService.saveUserData(entity);
+ 
+		
 
-		matchDataUserService.save(entity);
-		
-		matchDataTeamService.updateTeamByUser(entity, 1);
-
-		
-		if(team.getId().equals(matchFight.getHost().getId()))
-		{
-			matchFight.setHostScore(entity.getScoring());
-		}
-		
-		if(team.getId().equals(matchFight.getGuest().getId()))
-		{
-			matchFight.setGuestScore(entity.getScoring());
-		}
-		
-		matchFightService.saveOrUpdate(matchFight);
+//		List<MatchDataUser> list = matchDataUserService
+//				.findByCriteria(criteria);
+//		
+//		if (list != null && list.size() > 0) {
+//			matchDataUserService.delete(list.get(0));
+//		}
+//
+//		matchDataUserService.save(entity);
+//		
+//		matchDataTeamService.updateTeamByUser(entity, 1);
+//
+////		
+//		if(team.getId().equals(matchFight.getHost().getId()))
+//		{
+//			matchFight.setHostScore(entity.getScoring());
+//		}
+//		
+//		if(team.getId().equals(matchFight.getGuest().getId()))
+//		{
+//			matchFight.setGuestScore(entity.getScoring());
+//		}
+//		
+//		matchFightService.saveOrUpdate(matchFight);
 		
 		
 		return mv;

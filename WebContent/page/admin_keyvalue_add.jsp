@@ -16,7 +16,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/arena_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/sysconfig_left.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10">
 
@@ -34,48 +34,39 @@
 						</c:if>
 						<div class="panel panel-default bootstrap-admin-no-table-panel">
 							<div class="panel-heading">
-								<div class="text-muted bootstrap-admin-box-title">新增场地</div>
+								<div class="text-muted bootstrap-admin-box-title">新增配置</div>
 							</div>
 							<div
 								class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
-								<form action="${pageContext.request.contextPath}/arena/add"
+								<form action="${pageContext.request.contextPath}/keyvalue/action/add"
 									name="form1" method="post" class="form-horizontal">
 									<fieldset>
 										<div class="form-group">
-											<label class="col-lg-2 control-label" for="select02">比赛类型</label>
+											<label class="col-lg-2 control-label" for="typeahead">配置名称</label>
 											<div class="col-lg-10">
-												<select id="matchType" name="matchType"
-													class="selectize-select" style="width: 150px">
-													<option value="1">团队约战</option>
-													<option value="2">野球娱乐</option>
-												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-lg-2 control-label" for="typeahead">名称</label>
-											<div class="col-lg-10">
-												<input name="name" type="text" class="form-control col-md-6"
-													id="city" />
+												<input name="info" type="text" class="form-control col-md-6"
+													id="info" />
 												<p class="help-block"></p>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="col-lg-2 control-label" for="typeahead">地址</label>
+											<label class="col-lg-2 control-label" for="typeahead">英文缩写</label>
 											<div class="col-lg-10">
-												<input name="address" type="text"
-													class="form-control col-md-6" id="city" />
+												<input name="dictKey" type="text" class="form-control col-md-6"
+													id="key" />
+												<p class="help-block"></p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-2 control-label" for="typeahead">数值</label>
+											<div class="col-lg-10">
+												<input name="dictValue" type="text"
+													class="form-control col-md-6" id=""value"" />
 												<p class="help-block"></p>
 											</div>
 										</div>
 
-										<div class="form-group">
-											<label class="col-lg-2 control-label" for="typeahead">费用(元/小时)</label>
-											<div class="col-lg-10">
-												<input name="price" type="text"
-													class="form-control col-md-6" id="price" />
-												<p class="help-block"></p>
-											</div>
-										</div>
+
 
 
 										<button type="submit" class="btn btn-primary">提交</button>

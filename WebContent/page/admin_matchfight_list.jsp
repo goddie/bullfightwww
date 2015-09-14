@@ -79,7 +79,7 @@
 														onclick="finish('${m.id}')"> 结束比赛 </a> <a
 														href="${pageContext.request.contextPath}/team/edit/${m.id}">
 															编辑 </a> <a
-														href="${pageContext.request.contextPath}/team/del/${m.id}">
+														href="${pageContext.request.contextPath}/matchfight/action/del?mfid=${m.id}">
 															删除 </a></td>
 												</tr>
 											</c:forEach>
@@ -87,19 +87,7 @@
 									</table>
 									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_paginate paging_bootstrap">
-												<ul class="pagination">
-													<li class="prev disabled"><a href="#">← 上页</a></li>
-													<li class="active"><a href="#">1</a></li>
-													<li><a href="#">2</a></li>
-													<li><a href="#">3</a></li>
-													<li><a href="#">4</a></li>
-													<li><a href="#">5</a></li>
-													<li class="next"><a href="#">下页 → </a></li>
-												</ul>
-											</div>
-										</div>
+										${pageHtml }
 									</div>
 								</div>
 							</div>
@@ -116,6 +104,12 @@
 
 <script type="text/javascript">
 	function finish(mfid) {
+		
+		if(!confirm('确定要结束比赛吗?'))
+		{
+			return ;
+		}
+		
 		$.getJSON("${pageContext.request.contextPath}/matchfight/json/finish",
 				{
 					mfid : mfid,

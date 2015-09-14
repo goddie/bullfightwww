@@ -1,5 +1,6 @@
 package com.xiaba2.bullfight.controller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.dao.support.DaoSupport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xiaba2.bullfight.domain.Arena;
+import com.xiaba2.bullfight.domain.MatchDataTeam;
 import com.xiaba2.bullfight.domain.MatchFight;
+import com.xiaba2.bullfight.domain.MatchFightUser;
+import com.xiaba2.bullfight.domain.PayRecord;
 import com.xiaba2.bullfight.domain.Team;
+import com.xiaba2.bullfight.domain.TeamUser;
 import com.xiaba2.bullfight.service.ArenaService;
+import com.xiaba2.bullfight.service.KeyValueService;
+import com.xiaba2.bullfight.service.MatchDataTeamService;
 import com.xiaba2.bullfight.service.MatchFightService;
+import com.xiaba2.bullfight.service.PayRecordService;
 import com.xiaba2.bullfight.service.TeamService;
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
 import com.xiaba2.core.Page;
+import com.xiaba2.util.HttpUtil;
 
 @RestController
 @RequestMapping("/matchfight")
@@ -44,6 +54,15 @@ public class MatchFightController {
 	
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private KeyValueService keyValueService;
+	
+	@Resource
+	private PayRecordService payRecordService;
+	
+	@Resource
+	private MatchDataTeamService matchDataTeamService;
 
 	@RequestMapping(value = "/admin/{name}")
 	public ModelAndView getPage(@PathVariable String name) {
@@ -51,13 +70,13 @@ public class MatchFightController {
 	}
 
 	@RequestMapping(value = "/admin/list")
-	public ModelAndView pageList(MatchFight entity, HttpServletRequest request) {
+	public ModelAndView pageList(MatchFight entity, @RequestParam("p") int p, HttpServletRequest request) {
 
 		ModelAndView mv = new ModelAndView("admin_matchfight_list");
 
 		Page<MatchFight> page = new Page<MatchFight>();
-		page.setPageSize(999);
-		page.setPageNo(1);
+		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.setPageNo(p);
 		page.addOrder("createdDate", "desc");
 
 		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
@@ -65,10 +84,26 @@ public class MatchFightController {
 		page = matchFightService.findPageByCriteria(criteria, page);
 
 		mv.addObject("list", page.getResult());
-
+		mv.addObject("pageHtml",page.genPageHtml(request));
+		
 		return mv;
 	}
 
+	
+	@RequestMapping("/action/del")
+	public ModelAndView actionDel(@RequestParam("mfid") UUID mfid) {
+		ModelAndView mv = new ModelAndView("redirect:/matchfight/admin/list");
+
+		MatchFight entity = matchFightService.get(mfid);
+		entity.setIsDelete(1);
+		
+		matchFightService.saveOrUpdate(entity);
+
+		return mv;
+	}
+	
+	
+	
 	@RequestMapping("/add")
 	public ModelAndView add(MatchFight entity, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("admin_matchfight_add");
@@ -140,17 +175,11 @@ public class MatchFightController {
 	public JsonResult jsonAdd(MatchFight entity, @RequestParam("aid") String aid,
 			HttpServletRequest request) {
 		JsonResult js = new JsonResult();
-
-		
 		String tid = request.getParameter("tid");
-		
-		
 		Arena arena = arenaService.get(UUID.fromString(aid));
-
 		if (arena == null) {
 			return js;
 		}
-
 		if(!StringUtils.isEmpty(tid))
 		{
 			Team team = teamService.get(UUID.fromString(tid));
@@ -161,13 +190,12 @@ public class MatchFightController {
 			
 		}
 
-		
 		entity.setArena(arena);
 		entity.setCreatedDate(new Date());
+
+		entity.setStatus(0);
+		entity.setIsPay(0);
 		
-		
-		//entity.setStatus(0);
-		entity.setIsPay(1);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -187,12 +215,85 @@ public class MatchFightController {
 		}
 
 		matchFightService.save(entity);
-
+		
+		//团队约战要收钱
+		if(entity.getMatchType()==1)
+		{
+			createPayRecord(entity);
+		}
+		
+		//野球娱乐自动加入
+		if(entity.getMatchType()==2)
+		{
+			//joinMatchFight(entity);
+		}
+		
+		js.setData(entity);
 		js.setCode(JsonResult.SUCCESS);
 		js.setMsg("创建成功");
 
 		return js;
 	}
+	
+	void joinMatchFight(MatchFight matchFight)
+	{
+		MatchFightUser matchFightUser=new MatchFightUser();
+
+	}
+	
+	
+	/**
+	 * 创建2个待支付记录
+	 * @param matchFight
+	 */
+	void createPayRecord(MatchFight matchFight)
+	{
+		//相差小时数
+		double hour = (matchFight.getEnd().getTime() -  matchFight.getStart().getTime())/(1000 * 60 * 60);
+ 
+		BigDecimal b = new BigDecimal(String.valueOf(hour));
+		double d = b.doubleValue();
+		
+		int countHour = (int)Math.ceil(d);
+		
+		float arenaPay = matchFight.getArena().getPrice() * countHour *0.5f;
+		
+		String judgeFee = keyValueService.getByKey("judge");
+		float judgePay = Float.parseFloat(judgeFee) * matchFight.getJudge()*0.5f;
+		
+		String recordFee = keyValueService.getByKey("dataRecord");
+		float recordPay = Float.parseFloat(recordFee) * matchFight.getDataRecord()*0.5f;
+		
+		PayRecord payRecord = new PayRecord();
+		payRecord.setArenaFee(arenaPay);
+		payRecord.setJudgeFee(judgePay);
+		payRecord.setDataRecordFee(recordPay);
+		payRecord.setTotal(arenaPay+judgePay+recordPay);
+		payRecord.setMatchFight(matchFight);
+		payRecord.setUser(matchFight.getHost().getAdmin());
+		payRecord.setCreatedDate(new Date());
+		payRecord.setStatus(0);
+		
+		payRecordService.save(payRecord);
+		
+		
+		
+		
+		
+		PayRecord payRecord2 = new PayRecord();
+		payRecord2.setArenaFee(arenaPay);
+		payRecord2.setJudgeFee(judgePay);
+		payRecord2.setDataRecordFee(recordPay);
+		payRecord2.setTotal(arenaPay+judgePay+recordPay);
+		payRecord2.setMatchFight(matchFight);
+//		payRecord2.setUser(matchFight.getHost().getAdmin());
+		payRecord2.setCreatedDate(new Date());
+		payRecord2.setStatus(0);
+		
+		payRecordService.save(payRecord2);
+	}
+	
+	
 	
 	/**
 	 * 筛选比赛
@@ -220,6 +321,13 @@ public class MatchFightController {
 		{
 			matchType = Integer.parseInt(mt);
 			criteria.add(Restrictions.eq("matchType", matchType));
+			
+			if(matchType==1)
+			{
+				criteria.add(Restrictions.eq("isPay", 1));
+			}
+			
+			
 		}
 		
 		//比赛状态
@@ -282,19 +390,26 @@ public class MatchFightController {
 			return rs;
 		}
 
-		if (matchFight.getHostScore() == 0
-				|| matchFight.getGuestScore() == 0) {
-			rs.setMsg("比赛双方比分不正确");
-			return rs;
-		}
+//		if (matchFight.getHostScore() == 0
+//				|| matchFight.getGuestScore() == 0) {
+//			rs.setMsg("比赛双方比分不正确");
+//			return rs;
+//		}
 		
+		MatchDataTeam hostData = matchDataTeamService.getByMatchFight(matchFight, host);
+		matchFight.setHostScore(hostData.getScoring());
+ 
+		
+		MatchDataTeam guestData = matchDataTeamService.getByMatchFight(matchFight, guest);
+		matchFight.setGuestScore(guestData.getScoring());
 		
 
 		if (matchFight.getHostScore() > matchFight.getGuestScore()) {
 			matchFight.setWinner(matchFight.getHost());
+			
 			host.setWin(host.getWin() + 1);
 			guest.setLose(guest.getLose() + 1);
-
+		
 		}
 
 		if (matchFight.getHostScore() < matchFight.getGuestScore()) {
@@ -311,6 +426,9 @@ public class MatchFightController {
 
 		}
 
+//		host.setPlayCount(host.getPlayCount()+1);
+//		guest.setPlayCount(guest.getPlayCount()+1);
+		
 		teamService.saveOrUpdate(host);
 		teamService.saveOrUpdate(guest);
 		

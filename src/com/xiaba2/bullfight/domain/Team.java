@@ -108,19 +108,18 @@ public class Team extends BaseUUIDEntity {
 	@Column
 	private float playCount;
 	
-	
-	/**
-	 * 投篮命中率
-	 */
-	@Column
-	private float goalPercent;
-	
 	/**
 	 * 场均犯规
 	 */
 	@Column
 	private float foul;
 	
+	
+	/**
+	 * 投篮命中率
+	 */
+	@Column
+	private float goalPercent;
 	
 	/**
 	 * 罚球命中率

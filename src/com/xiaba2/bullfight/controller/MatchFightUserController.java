@@ -45,10 +45,7 @@ public class MatchFightUserController {
 		
 		
 		JsonResult rs=new JsonResult();
- 
-		
 		User user  = userService.get(uid);
-		
 		MatchFight matchFight = matchFightService.get(mfid);
 		
 		DetachedCriteria criteria = matchFightUserService.createDetachedCriteria();
@@ -118,7 +115,7 @@ public class MatchFightUserController {
 	 * @return
 	 */
 	@RequestMapping(value = "/json/listuser")
-	public JsonResult jsonListUser(@RequestParam("mfid") UUID mfid, HttpServletRequest request) {
+	public JsonResult jsonListUser(@RequestParam("mfid") UUID mfid,@RequestParam("count") int count, HttpServletRequest request) {
 		
 		
 		JsonResult rs=new JsonResult();
@@ -132,7 +129,7 @@ public class MatchFightUserController {
 		
 		Page<MatchFightUser> page = new Page<MatchFightUser>();
 		page.setPageNo(1);
-		page.setPageSize(15);
+		page.setPageSize(count);
 		page.addOrder("createdDate", "desc");
 		
 		page = matchFightUserService.findPageByCriteria(criteria, page);

@@ -20,11 +20,11 @@
                         <div class="collapse navbar-collapse main-navbar-collapse">
                             <ul class="nav navbar-nav">
                                 
-                                <li><a href="${pageContext.request.contextPath}/user/admin/list">球员管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/team/admin/list">球队管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/arena/admin/list">场地管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/matchfight/admin/list">对战管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/payrecord/admin/list">交易记录</a></li>
+                                <li><a href="${pageContext.request.contextPath}/user/admin/list?p=1">球员管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/team/admin/list?p=1">球队管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/arena/admin/list?p=1">场地管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/matchfight/admin/list?p=1">对战管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/payrecord/admin/list?p=1">交易记录</a></li>
                                 <li><a href="${pageContext.request.contextPath}/page/ucenter_userconfig.jsp">账户设置</a></li>
                             </ul>
                         </div><!-- /.navbar-collapse -->

@@ -32,6 +32,7 @@ import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
 import com.xiaba2.core.Page;
+import com.xiaba2.util.HttpUtil;
 
 @RestController
 @RequestMapping("/team")
@@ -51,38 +52,42 @@ public class TeamController {
 	}
 	
 	@RequestMapping(value = "/admin/list")
-	public ModelAndView pageList() {
+	public ModelAndView pageList(@RequestParam("p") int p, HttpServletRequest request) {
 		
 		
 		ModelAndView mv=new ModelAndView("admin_team_list");
 		
 		Page<Team> page = new Page<Team>();
-		page.setPageSize(999);
-		page.setPageNo(1);
+		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.setPageNo(p);
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete",0));
+		
 		page = teamService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());
-		
+		mv.addObject("pageHtml",page.genPageHtml(request));
 		return mv;
 	}
 	
 	
 	@RequestMapping(value = "/admin/recordlist")
-	public ModelAndView pageRecordList() {
+	public ModelAndView pageRecordList(@RequestParam("p") int p, HttpServletRequest request) {
 		
 		
 		ModelAndView mv=new ModelAndView("admin_team_recordlist");
 		
 		Page<Team> page = new Page<Team>();
-		page.setPageSize(10);
-		page.setPageNo(1);
+		page.setPageSize(50);
+		page.setPageNo(p);
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete",0));
 		page = teamService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());
+		mv.addObject("pageHtml",page.genPageHtml(request));
 		
 		return mv;
 	}
@@ -98,6 +103,7 @@ public class TeamController {
 		page.setPageNo(1);
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete",0));
 		page = teamService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());
@@ -122,7 +128,6 @@ public class TeamController {
 		
 		return mv;
 	}
-	
 	
 	
 	
@@ -180,6 +185,14 @@ public class TeamController {
 			js.setMsg("创建失败");
 			return js;
 		}
+		
+		TeamUser teamUser = new TeamUser();
+		teamUser.setTeam(entity);
+		teamUser.setUser(u);
+		teamUser.setCreatedDate(new Date());
+ 
+		teamUserService.save(teamUser);
+		
 
 		js.setCode(JsonResult.SUCCESS);
 		js.setMsg("创建成功");
@@ -396,17 +409,24 @@ public class TeamController {
 	 * @return
 	 */
 	@RequestMapping("/json/checkuser")
-	public JsonResult jsonCheckUser(@RequestParam("uid") String uid)
+	public JsonResult jsonCheckUser(@RequestParam("uid") UUID uid)
 	{
 		JsonResult rs = new JsonResult();
 		
+		User user = userService.get(uid);
+		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
-		criteria.add(Restrictions.eq("admin.id", UUID.fromString(uid)));
+		criteria.add(Restrictions.eq("isDelete",0));
+		criteria.add(Restrictions.eq("admin", user));
 		
-		List<Team> list = teamService.findByCriteria(criteria);
 		
-		if(!list.isEmpty())
+		long count = teamService.getRowCount(criteria);
+		
+//		List<Team> list = teamService.findByCriteria(criteria);
+		
+		if(count>0)
 		{
+			rs.setData(count);
 			rs.setCode(JsonResult.SUCCESS);
 			return rs;
 		}

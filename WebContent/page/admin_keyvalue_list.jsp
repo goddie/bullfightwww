@@ -16,14 +16,14 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/arena_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/sysconfig_left.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10">
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<div class="text-muted bootstrap-admin-box-title">场地列表</div>
+								<div class="text-muted bootstrap-admin-box-title">队伍列表</div>
 								</a>
 							</div>
 
@@ -44,13 +44,11 @@
 										<thead>
 											<tr role="row">
 												<th role="columnheader" style="width: 80px;">序号</th>
-												<th role="columnheader" style="width: 15%;">名称</th>
-												<th role="columnheader" style="width: 10%;">地址</th>
-<th role="columnheader" style="width: 10%;">费用</th>
-												<th role="columnheader" style="width: 10%;">创建人</th>
+												<th role="columnheader" style="">名称</th>
+												<th role="columnheader" style="width: 15%;">英文缩写</th>
+												<th role="columnheader" style="width: 10%;">数值</th>
 
-												<th role="columnheader" style="width: 10%;">状态</th>
-												<th role="columnheader">成立时间</th>
+
 												<th role="columnheader" style="width: 20%;">操作</th>
 											</tr>
 										</thead>
@@ -61,25 +59,40 @@
 
 												<tr class="gradeA odd">
 													<td class="sorting_1">${status.index+1}</td>
-													<td class="">${m.name}</td>
-													<td class="">${m.address}</td>
-													<td class="">${m.price}</td>
-													<td class="center ">${m.user.nickname}</td>
-													<td class="center ">${m.status}</td>
+													<td class="">${m.info }</td>
+													<td class="">${m.dictKey}</td>
+													<td class="">${m.dictValue}</td>
 
-													<td class="center ">${m.createdDate}</td>
-													<td class="action"><a
-														href="${pageContext.request.contextPath}/team/edit/${m.id}">
-															编辑 </a> <a
-														href="${pageContext.request.contextPath}/team/del/${m.id}">
-															删除 </a></td>
+													<td class="action">
+														<div style="display: none">
+															<a
+																href="${pageContext.request.contextPath}/team/edit/${m.id}">
+																编辑 </a> <a
+																href="${pageContext.request.contextPath}/team/del/${m.id}">
+																删除 </a> <a
+																href="${pageContext.request.contextPath}/team/member/">
+																查看成员 </a>
+														</div>
+													</td>
 												</tr>
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
+									<div class="row" style="display: none">
 
-										${pageHtml }
+										<div class="col-md-6">
+											<div class="dataTables_paginate paging_bootstrap">
+												<ul class="pagination">
+													<li class="prev disabled"><a href="#">← 上页</a></li>
+													<li class="active"><a href="#">1</a></li>
+													<li><a href="#">2</a></li>
+													<li><a href="#">3</a></li>
+													<li><a href="#">4</a></li>
+													<li><a href="#">5</a></li>
+													<li class="next"><a href="#">下页 → </a></li>
+												</ul>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

@@ -20,7 +20,7 @@ public class MatchFight extends BaseUUIDEntity {
 	private int matchType;
 
 	/**
-	 * 1 未开始 0待应战 2已结束
+	 * 1 未开始 0待应战 2已结束 
 	 */
 	@Column
 	private int status;
@@ -281,9 +281,7 @@ public class MatchFight extends BaseUUIDEntity {
 	}
 
 
-	public void setHostScore(int hostScore) {
-		this.hostScore = hostScore;
-	}
+ 
 
 
 	public void setIsPay(int isPay) {

@@ -16,7 +16,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/sysconfig_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/arena_left.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10">
 
@@ -34,38 +34,31 @@
 						</c:if>
 						<div class="panel panel-default bootstrap-admin-no-table-panel">
 							<div class="panel-heading">
-								<div class="text-muted bootstrap-admin-box-title">新增配置</div>
+								<div class="text-muted bootstrap-admin-box-title">新增文章</div>
 							</div>
 							<div
 								class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
-								<form action="${pageContext.request.contextPath}/arena/add"
+								<form
+									action="${pageContext.request.contextPath}/article/action/add"
 									name="form1" method="post" class="form-horizontal">
 									<fieldset>
+ 
 										<div class="form-group">
-											<label class="col-lg-2 control-label" for="typeahead">配置名称</label>
+											<label class="col-lg-2 control-label" for="typeahead">标题</label>
 											<div class="col-lg-10">
-												<input name="info" type="text" class="form-control col-md-6"
-													id="info" />
+												<input name="title" type="text"
+													class="form-control col-md-6" id="" title"" />
 												<p class="help-block"></p>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="col-lg-2 control-label" for="typeahead">英文缩写</label>
+											<label class="col-lg-2 control-label" for="typeahead">内容</label>
 											<div class="col-lg-10">
-												<input name="key" type="text" class="form-control col-md-6"
-													id="key" />
+												<input name="content" type="text"
+													class="form-control col-md-6" id="content" />
 												<p class="help-block"></p>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="col-lg-2 control-label" for="typeahead">值</label>
-											<div class="col-lg-10">
-												<input name="value" type="text"
-													class="form-control col-md-6" id=""value"" />
-												<p class="help-block"></p>
-											</div>
-										</div>
-
 
 
 

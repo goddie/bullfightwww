@@ -336,7 +336,6 @@ public abstract class BaseService<T, ID extends Serializable> {
 	 */
 	@Transactional
 	public T save(T entity) {
-
 		return getEntityDao().save(entity);
 	}
 

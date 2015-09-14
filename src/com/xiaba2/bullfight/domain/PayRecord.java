@@ -72,6 +72,22 @@ public class PayRecord extends BaseUUIDEntity {
 
 	@ManyToOne
 	private Coupon coupon;
+	
+	/**
+	 * 订单编号
+	 */
+	@Column
+	private String tradeNo;
+	
+	
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
 
 	public float getArenaFee() {
 		return arenaFee;
