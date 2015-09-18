@@ -75,6 +75,10 @@ public class ArenaController {
 		
 		DetachedCriteria criteria = arenaService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		HttpUtil.addSearchLike(criteria, mv, request, "name");
+		HttpUtil.addSearchLike(criteria, mv, request, "address");
+		
 		page = arenaService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());

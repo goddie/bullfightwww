@@ -32,11 +32,8 @@
 									role="grid">
 									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_filter" id="example_filter">
-												<label>Search: <input type="text"
-													aria-controls="example"></label>
-											</div>
+										<div class="col-md-12">
+											
 										</div>
 									</div>
 									<table class="table table-striped table-bordered dataTable"
@@ -85,10 +82,7 @@
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
-
-										${pageHtml }
-									</div>
+									<div class="row">${pageHtml }</div>
 								</div>
 							</div>
 						</div>
@@ -104,12 +98,11 @@
 
 <script type="text/javascript">
 	function finish(mfid) {
-		
-		if(!confirm('确定要结束比赛吗?'))
-		{
-			return ;
+
+		if (!confirm('确定要结束比赛吗?')) {
+			return;
 		}
-		
+
 		$.getJSON("${pageContext.request.contextPath}/matchfight/json/finish",
 				{
 					mfid : mfid,

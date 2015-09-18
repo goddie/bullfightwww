@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.web.servlet.ModelAndView;
 
 public class HttpUtil {
 
@@ -133,6 +137,43 @@ public class HttpUtil {
 		Logger.getLogger(HttpUtil.class).info(
 				"图片转换成功: 从[" + srcFormat + "]到[" + destFormat + "]");
 		return flag;
+	}
+	
+	
+	/**
+	 * 模糊查询条件
+	 * @param criteria
+	 * @param mv
+	 * @param request
+	 * @param key
+	 */
+	public static void addSearchLike(DetachedCriteria criteria, ModelAndView mv, HttpServletRequest request,String key)
+	{
+		String value = request.getParameter(key);
+		if(!StringUtils.isEmpty(value))
+		{
+			criteria.add(Restrictions.like(key, value,MatchMode.ANYWHERE));
+			mv.addObject(key,value);
+		}
+		
+	}
+	
+	/**
+	 * 精确查询
+	 * @param criteria
+	 * @param mv
+	 * @param request
+	 * @param key
+	 */
+	public static void addSearchEq(DetachedCriteria criteria, ModelAndView mv, HttpServletRequest request,String key)
+	{
+		String value = request.getParameter(key);
+		if(!StringUtils.isEmpty(value))
+		{
+			criteria.add(Restrictions.eq(key, value));
+			mv.addObject(key,value);
+		}
+		
 	}
 
 }

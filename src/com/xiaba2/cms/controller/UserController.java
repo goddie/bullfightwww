@@ -158,6 +158,15 @@ public class UserController {
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		
+		HttpUtil.addSearchLike(criteria, mv, request, "username");
+		HttpUtil.addSearchLike(criteria, mv, request, "nickname");
+		HttpUtil.addSearchLike(criteria, mv, request, "phone");
+ 
+		
+		
+		
 		page = userService.findPageByCriteria(criteria, page);
 
 		mv.addObject("list", page.getResult());
@@ -188,7 +197,6 @@ public class UserController {
 
 		mv.addObject("teamList", list);
 		mv.addObject("pageHtml",page.genPageHtml(request));
-		
 
 		return mv;
 	}
@@ -810,4 +818,64 @@ public class UserController {
 	
 		return rs;
 	}
+	
+	
+	
+	/**
+	 * 查询
+	 * @param nickname
+	 * @return
+	 */
+	@RequestMapping(value = "/json/list")
+	public JsonResult jsonList(@RequestParam("p") int p) 
+	{
+		JsonResult rs = new JsonResult();
+		DetachedCriteria criteria = userService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		
+		Page<User> page = new Page<User>();
+		page.setPageSize(15);
+		page.setPageNo(p);
+		page.addOrder("createdDate", "desc");
+		
+		
+		page = userService.findPageByCriteria(criteria, page);
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(page.getResult());
+		
+		return rs;
+		
+	}
+	
+	
+	/**
+	 * 查询
+	 * @param nickname
+	 * @return
+	 */
+	@RequestMapping(value = "/json/searchuser")
+	public JsonResult jsonSearchUser(@RequestParam("nickname") String nickname,@RequestParam("p") int p) 
+	{
+		JsonResult rs = new JsonResult();
+		DetachedCriteria criteria = userService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.like("nickname", nickname,MatchMode.ANYWHERE));
+		
+		Page<User> page = new Page<User>();
+		page.setPageSize(15);
+		page.setPageNo(p);
+		page.addOrder("createdDate", "desc");
+		
+		page = userService.findPageByCriteria(criteria, page);
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(page.getResult());
+		return rs;
+		
+	}
+	
+	
+	
 }

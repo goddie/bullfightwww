@@ -66,7 +66,14 @@
 												<p class="help-block"></p>
 											</div>
 										</div>
-
+<div class="form-group">
+											<label class="col-lg-2 control-label" for="typeahead">手机</label>
+											<div class="col-lg-10">
+												<input name="phone" type="text" class="form-control col-md-6"
+													id="city" />
+												<p class="help-block"></p>
+											</div>
+										</div>
 										<div class="form-group">
 											<label class="col-lg-2 control-label" for="typeahead">城市</label>
 											<div class="col-lg-10">
@@ -87,7 +94,7 @@
 											<label class="col-lg-2 control-label" for="fileInput">上传头像</label>
 											<div class="col-lg-10">
 												<iframe
-													src="${pageContext.request.contextPath}/page/upfile.jsp"
+													src="${pageContext.request.contextPath}/album/page/upload"
 													style="height: 34px; width: 100%;" frameborder="0"
 													marginheight="0" marginwidth="0" scrolling="no"></iframe>
 											</div>

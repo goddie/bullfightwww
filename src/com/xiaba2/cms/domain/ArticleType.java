@@ -2,6 +2,7 @@ package com.xiaba2.cms.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.xiaba2.core.BaseUUIDEntity;
@@ -15,6 +16,13 @@ import com.xiaba2.core.BaseUUIDEntity;
 @Table(name = "db_cms_article_type")
 public class ArticleType extends BaseUUIDEntity {
 
+	
+	/**
+	 * 父级分类
+	 */
+	@ManyToOne
+	private ArticleType parent;
+	
 	/**
 	 * 名称
 	 */
@@ -33,6 +41,17 @@ public class ArticleType extends BaseUUIDEntity {
 	 */
 	@Column
 	private String description;
+
+	
+
+	public ArticleType getParent() {
+		return parent;
+	}
+
+
+	public void setParent(ArticleType parent) {
+		this.parent = parent;
+	}
 
 
 	public String getName() {

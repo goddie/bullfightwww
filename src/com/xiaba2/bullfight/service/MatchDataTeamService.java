@@ -62,7 +62,7 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 		
 		Team t = teamService.get(matchDataUser.getTeam().getId()) ;
 		
-		t.setScoring(rs.get(0));
+		t.setScoringAvg(rs.get(0));
 		t.setRebound(rs.get(1));
 		t.setAssist(rs.get(2));
 		t.setBlock(rs.get(3));
@@ -73,7 +73,7 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 		t.setFreeGoalPercent(rs.get(8));
 		t.setThreeGoalPercent(rs.get(9));
 		t.setPlayCount(rs.get(10));
-		
+		t.setScoring(rs.get(11));
 		teamService.save(t);
 	}
 	

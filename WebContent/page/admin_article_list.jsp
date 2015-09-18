@@ -5,26 +5,25 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<jsp:include page="/resource/inc/admin_style.jsp"></jsp:include>
 <title></title>
+<jsp:include page="/resource/inc/admin_style.jsp"></jsp:include>
 </head>
 <body class="bootstrap-admin-with-small-navbar">
-
 	<jsp:include page="/resource/inc/top_nav.jsp"></jsp:include>
-
 
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/arena_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/article_left.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10">
+
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<div class="text-muted bootstrap-admin-box-title">场地列表</div>
-								</a>
+								<div class="text-muted bootstrap-admin-box-title">文章列表</div>
+
 							</div>
 
 							<div class="bootstrap-admin-panel-content">
@@ -33,15 +32,12 @@
 									<div class="row">
 
 										<div class="col-md-12">
-											<form
-												action="${pageContext.request.contextPath}/arena/admin/list"
-												method="get">
+											<form action="${pageContext.request.contextPath}/article/admin/list" method="get">
 												<div class="dataTables_filter" id="example_filter">
-													<input name="p" value="1" type="hidden" /> <label>名称:
-														<input type="text" name="name" aria-controls="example"
-														value="${name }">
-													</label><label>地址: <input type="text" name="address"
-														aria-controls="example" value="${address }"></label>
+													<input name="p" value="1" type="hidden" />
+													<label>标题: <input type="text" name="title"
+														aria-controls="example" value="${title }"></label>
+											 
 													<button type="submit" class="btn btn-sm btn-default">搜索</button>
 												</div>
 											</form>
@@ -51,14 +47,12 @@
 										id="example" aria-describedby="example_info">
 										<thead>
 											<tr role="row">
-												<th role="columnheader" style="width: 80px;">序号</th>
-												<th role="columnheader" style="width: 15%;">名称</th>
-												<th role="columnheader" style="width: 10%;">地址</th>
-												<th role="columnheader" style="width: 10%;">费用</th>
-												<th role="columnheader" style="width: 10%;">创建人</th>
+												<th role="columnheader" style="width: 10%;">序号</th>
 
-												<th role="columnheader" style="width: 10%;">状态</th>
-												<th role="columnheader">成立时间</th>
+												
+												<th role="columnheader">标题</th>
+												<th role="columnheader">分类</th>
+												<th role="columnheader">发布日期</th>
 												<th role="columnheader" style="width: 20%;">操作</th>
 											</tr>
 										</thead>
@@ -69,32 +63,35 @@
 
 												<tr class="gradeA odd">
 													<td class="sorting_1">${status.index+1}</td>
-													<td class="">${m.name}</td>
-													<td class="">${m.address}</td>
-													<td class="">${m.price}</td>
-													<td class="center ">${m.user.nickname}</td>
-													<td class="center ">${m.status}</td>
-
-													<td class="center ">${m.createdDate}</td>
+													
+													<td class=""><a
+														href="${pageContext.request.contextPath}/article/page/newsdetail?uuid=${m.id}" target="_blank">${m.title}</a></td>
+													<td class="">${m.type.name}</td>
+													<td class="">${m.createdDate}</td>
 													<td class="action"><a
-														href="${pageContext.request.contextPath}/team/edit/${m.id}">
-															编辑 </a> <a
-														href="${pageContext.request.contextPath}/team/del/${m.id}">
+														href="${pageContext.request.contextPath}/article/page/newsdetail?uuid=${m.id}" target="_blank">
+															查看 </a><a
+														href="${pageContext.request.contextPath}/article/action/del?id=${m.id}">
 															删除 </a></td>
 												</tr>
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">${pageHtml }</div>
+									<div class="row">
+
+										${pageHtml }
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
+
+
 	<jsp:include page="/resource/inc/admin_script.jsp"></jsp:include>
 </body>
+
 </html>

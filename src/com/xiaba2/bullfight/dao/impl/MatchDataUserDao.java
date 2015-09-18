@@ -40,6 +40,7 @@ public class MatchDataUserDao extends AbstractHibernateDao<MatchDataUser, UUID>
 		projList.add(Projections.avg("freeGoalPercent"));
 		projList.add(Projections.avg("threeGoalPercent"));
 		projList.add(Projections.count("id"));
+		projList.add(Projections.sum("scoring"));
 		criteria.setProjection(projList);
 
 		Criteria criteriaExecute = criteria.getExecutableCriteria(getSession());

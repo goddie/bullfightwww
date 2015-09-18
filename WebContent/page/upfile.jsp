@@ -7,9 +7,16 @@
 <title></title>
 </head>
 <body>
-	<form action="${pageContext.request.contextPath}/album/upload"
+	<form action="${pageContext.request.contextPath}/album/uploadFile"
 		method="post" enctype="multipart/form-data">
-		<input type="file" name="file" /> <input type="submit" value="上传文件" />
+		<table>
+			<tr>
+				<td
+					style="text-align: center; vertical-align: middle; font-size: 9pt;"><input
+					type="file" name="file" /> <input type="submit" value="上传文件" /></td>
+			</tr>
+		</table>
+
 	</form>
 </body>
 </html>

@@ -50,11 +50,19 @@
 									role="grid">
 									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_filter" id="example_filter">
-												<label>Search: <input type="text"
-													aria-controls="example"></label>
-											</div>
+
+										<div class="col-md-12">
+											<form action="${pageContext.request.contextPath}/user/admin/list" method="get">
+												<div class="dataTables_filter" id="example_filter">
+													<input name="p" value="1" type="hidden" />
+													<label>用户名: <input type="text" name="username"
+														aria-controls="example" value="${username }"></label><label>昵称: <input
+														type="text" name="nickname" aria-controls="example" value="${nickname }"></label><label>手机号:
+														<input type="text" name="phone" aria-controls="example" value="${phone }">
+													</label>
+													<button type="submit" class="btn btn-sm btn-default">搜索</button>
+												</div>
+											</form>
 										</div>
 									</div>
 									<table class="table table-striped table-bordered dataTable"
@@ -65,7 +73,7 @@
 												<th role="columnheader" style="width: 10%;">头像</th>
 												<th role="columnheader" style="width: 15%;">用户名</th>
 												<th role="columnheader" style="width: 10%;">昵称</th>
-
+												<th role="columnheader" style="">电话</th>
 												<th role="columnheader" style="width: 10%;">城市</th>
 
 
@@ -85,6 +93,7 @@
 														height="30" /></td>
 													<td class="">${m.username}</td>
 													<td class="center ">${m.nickname}</td>
+													<td class="center ">${m.phone}</td>
 													<td class="">${m.city}</td>
 
 
@@ -103,10 +112,7 @@
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
-
-										${pageHtml }
-									</div>
+									<div class="row">${pageHtml }</div>
 								</div>
 							</div>
 						</div>

@@ -32,11 +32,18 @@
 									role="grid">
 									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_filter" id="example_filter">
-												<label>Search: <input type="text"
-													aria-controls="example"></label>
-											</div>
+										<div class="col-md-12">
+											<form
+												action="${pageContext.request.contextPath}/team/admin/list"
+												method="get">
+												<div class="dataTables_filter" id="example_filter">
+													<input name="p" value="1" type="hidden" /> <label>队名:
+														<input type="text" name="name" aria-controls="example"
+														value="${name }">
+													</label>
+													<button type="submit" class="btn btn-sm btn-default">搜索</button>
+												</div>
+											</form>
 										</div>
 									</div>
 									<table class="table table-striped table-bordered dataTable"
@@ -71,22 +78,21 @@
 
 													<td class="center ">${m.createdDate}</td>
 													<td class="action">
-													<div style="display:none">
-													<a
-														href="${pageContext.request.contextPath}/team/edit/${m.id}">
-															编辑 </a> <a
-														href="${pageContext.request.contextPath}/team/del/${m.id}">
-															删除 </a> <a
-														href="${pageContext.request.contextPath}/team/member/">
-															查看成员 </a></div></td>
+														<div style="display: none">
+															<a
+																href="${pageContext.request.contextPath}/team/edit/${m.id}">
+																编辑 </a> <a
+																href="${pageContext.request.contextPath}/team/del/${m.id}">
+																删除 </a> <a
+																href="${pageContext.request.contextPath}/team/member/">
+																查看成员 </a>
+														</div>
+													</td>
 												</tr>
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row">
-
-										${pageHtml }
-									</div>
+									<div class="row">${pageHtml }</div>
 								</div>
 							</div>
 						</div>

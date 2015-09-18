@@ -63,6 +63,7 @@ public class TeamController {
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete",0));
+		HttpUtil.addSearchLike(criteria, mv, request, "name");
 		
 		page = teamService.findPageByCriteria(criteria, page);
 		

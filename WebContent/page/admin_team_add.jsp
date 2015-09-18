@@ -112,7 +112,7 @@
 											<label class="col-lg-2 control-label" for="fileInput">上传队标</label>
 											<div class="col-lg-10">
 												<iframe
-													src="${pageContext.request.contextPath}/page/upfile.jsp"
+													src="${pageContext.request.contextPath}/album/page/upload"
 													style="height: 34px; width: 100%;" frameborder="0"
 													marginheight="0" marginwidth="0" scrolling="no"></iframe>
 											</div>

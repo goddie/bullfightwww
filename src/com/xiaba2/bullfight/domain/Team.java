@@ -53,6 +53,13 @@ public class Team extends BaseUUIDEntity {
 	 */
 	@Column
 	private float scoring;
+	
+	
+	/**
+	 * 场均得分
+	 */
+	@Column
+	private float scoringAvg;
 
 	/**
 	 * 篮板
@@ -136,6 +143,14 @@ public class Team extends BaseUUIDEntity {
  
 	
 	
+	public float getScoringAvg() {
+		return scoringAvg;
+	}
+
+	public void setScoringAvg(float scoringAvg) {
+		this.scoringAvg = scoringAvg;
+	}
+
 	public float getFreeGoalPercent() {
 		return freeGoalPercent;
 	}
