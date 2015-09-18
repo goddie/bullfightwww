@@ -34,18 +34,20 @@
 						</c:if>
 						<div class="panel panel-default bootstrap-admin-no-table-panel">
 							<div class="panel-heading">
-								<div class="text-muted bootstrap-admin-box-title">新增球员</div>
+								<div class="text-muted bootstrap-admin-box-title">修改资料</div>
 							</div>
 							<div
 								class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
-								<form action="${pageContext.request.contextPath}/user/action/add"
+								<form action="${pageContext.request.contextPath}/user/action/edit"
 									name="form1" method="post" class="form-horizontal">
+									<input type="hidden" name="id" value="${entity.id }" />
 									<fieldset>
 										<div class="form-group">
 											<label class="col-lg-2 control-label" for="typeahead">用户名</label>
 											<div class="col-lg-10">
 												<input name="username" type="text"
-													class="form-control col-md-6" id="city" />
+													class="form-control col-md-6" id="username"
+													value="${entity.username }" />
 												<p class="help-block"></p>
 											</div>
 										</div>
@@ -53,7 +55,8 @@
 											<label class="col-lg-2 control-label" for="typeahead">密码</label>
 											<div class="col-lg-10">
 												<input name="password" type="text"
-													class="form-control col-md-6" id="city" />
+													class="form-control col-md-6" id="password"
+													value="${entity.username }" />
 												<p class="help-block"></p>
 											</div>
 										</div>
@@ -62,15 +65,15 @@
 											<label class="col-lg-2 control-label" for="typeahead">姓名</label>
 											<div class="col-lg-10">
 												<input name="nickname" type="text"
-													class="form-control col-md-6" id="nickname" />
+													class="form-control col-md-6" id="nickname" value="${entity.nickname }"/>
 												<p class="help-block"></p>
 											</div>
 										</div>
-<div class="form-group">
+										<div class="form-group">
 											<label class="col-lg-2 control-label" for="typeahead">手机</label>
 											<div class="col-lg-10">
-												<input name="phone" type="text" class="form-control col-md-6"
-													id="city" />
+												<input name="phone" type="text"
+													class="form-control col-md-6" id="phone" value="${entity.phone }"/>
 												<p class="help-block"></p>
 											</div>
 										</div>
@@ -78,7 +81,7 @@
 											<label class="col-lg-2 control-label" for="typeahead">城市</label>
 											<div class="col-lg-10">
 												<input name="city" type="text" class="form-control col-md-6"
-													id="city" />
+													id="city" value="${entity.city }"/>
 												<p class="help-block"></p>
 											</div>
 										</div>
@@ -86,8 +89,8 @@
 										<div class="form-group">
 											<label class="col-lg-2 control-label" for="typeahead">头像</label>
 											<div class="col-lg-10">
-												<img id="upimage" src="" alt="" width="100" height="100" />
-												<input name="avatar" id="avatar" value="" type="hidden" />
+												<img id="upimage" src="${pageContext.request.contextPath}${entity.avatar }" alt="" width="100" height="100" />
+												<input name="avatar" id="avatar" value="${entity.avatar }" type="hidden" />
 											</div>
 										</div>
 										<div class="form-group">
@@ -104,7 +107,7 @@
 											<label class="col-lg-2 control-label" for="typeahead">擅长位置</label>
 											<div class="col-lg-10">
 												<input name="position" type="text"
-													class="form-control col-md-6" id="position" />
+													class="form-control col-md-6" id="position" value="${entity.position }"/>
 												<p class="help-block"></p>
 											</div>
 										</div>

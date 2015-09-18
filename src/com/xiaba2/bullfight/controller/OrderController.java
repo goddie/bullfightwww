@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.Order;
+import com.xiaba2.bullfight.domain.PayRecord;
 import com.xiaba2.bullfight.service.MatchFightService;
 import com.xiaba2.bullfight.service.OrderService;
 import com.xiaba2.cms.domain.User;
@@ -98,6 +99,10 @@ public class OrderController {
 		order.setPayDate(new Date());
 		order.setAlipayServer(request.getQueryString());
 		orderService.saveOrUpdate(order);
+		
+		PayRecord payRecord=new PayRecord();
+		
+		
 		
 		
 //		//用户财富增加

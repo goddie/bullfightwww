@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import sun.swing.StringUIClientPropertyKey;
 
@@ -60,9 +62,15 @@ public class UserController {
 	@Resource
 	private TeamService teamService;
 
-	@RequestMapping(value = "/admin/{name}")
-	public ModelAndView getPage(@PathVariable String name) {
-		return new ModelAndView("admin_user_" + name);
+//	@RequestMapping(value = "/admin/{name}")
+//	public ModelAndView getPage(@PathVariable String name) {
+//		return new ModelAndView("admin_user_" + name);
+//	}
+	
+	
+	@RequestMapping(value = "/admin/add")
+	public ModelAndView adminAdd() {
+		return new ModelAndView("admin_user_add");
 	}
 
 	/**
@@ -115,18 +123,18 @@ public class UserController {
 
 	}
 
-	@RequestMapping(value = "/adminadd")
-	public ModelAndView adminAdd(User entity, HttpServletRequest request) {
+	@RequestMapping(value = "/action/add")
+	public ModelAndView actionAdd(User entity, HttpServletRequest request,RedirectAttributes attr) {
 
-		ModelAndView mv = new ModelAndView("redirect:/page/admin_user_add.jsp");
+		ModelAndView mv = new ModelAndView("admin_user_add");
 
-		Member member = new Member();
-
-		member.setUsername(entity.getUsername());
-		member.setPassword(entity.getPassword());
-		member.setRegIp(HttpUtil.getIpAddr(request));
-		member.setRegTime(new Date());
-		memberService.save(member);
+//		Member member = new Member();
+//
+//		member.setUsername(entity.getUsername());
+//		member.setPassword(entity.getPassword());
+//		member.setRegIp(HttpUtil.getIpAddr(request));
+//		member.setRegTime(new Date());
+//		memberService.save(member);
 
 //		User regUser = new User();
 //
@@ -135,13 +143,72 @@ public class UserController {
 //		regUser.setPosition(entity.getPosition());
 //		regUser.setAvatar(entity.getAvatar());
 		
+		DetachedCriteria criteria = userService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("username", entity.getUsername()));
+		
+		List<User> list = userService.findByCriteria(criteria);
+		if(!list.isEmpty())
+		{
+			attr.addFlashAttribute("msg", "用户名已存在");
+			return mv;
+		}
+		
+		
 		entity.setCreatedDate(new Date());
 		
 		// entity = member.getUser();
 
 		// entity.setCreatedDate(new Date());
-		// userService.save(entity);
-		userService.saveOrUpdate(entity);
+		userService.save(entity);
+//		userService.saveOrUpdate(entity);
+
+		return mv;
+	}
+	
+	@RequestMapping(value = "/admin/edit")
+	public ModelAndView adminEdit(@RequestParam("uid") UUID uid, HttpServletRequest request) {
+
+		ModelAndView mv = new ModelAndView("admin_user_edit");
+
+		User entity = userService.get(uid);
+		mv.addObject("entity",entity);
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/action/edit")
+	public ModelAndView actionEdit(User entity, HttpServletRequest request,RedirectAttributes attr) {
+
+		ModelAndView mv = new ModelAndView("redirect:/user/admin/list?p=1");
+		
+//		DetachedCriteria criteria = userService.createDetachedCriteria();
+//		criteria.add(Restrictions.eq("isDelete", 0));
+//		criteria.add(Restrictions.eq("username", entity.getUsername()));
+//
+//		
+//		List<User> list = userService.findByCriteria(criteria);
+//		if(!list.isEmpty())
+//		{
+//			attr.addFlashAttribute("msg", "用户名已存在");
+//			return mv;
+//		}
+		
+		
+		User user = userService.get(entity.getId());
+		
+//		user.setUsername(entity.getUsername());
+		user.setPassword(entity.getPassword());
+		user.setAvatar(entity.getAvatar());
+		user.setPhone(entity.getPhone());
+		user.setPosition(entity.getPosition());
+		user.setNickname(entity.getNickname());
+		user.setCity(entity.getCity());
+		
+		
+		//BeanUtils.copyProperties(entity,user,new String[]{"id"});
+		
+		userService.saveOrUpdate(user);
 
 		return mv;
 	}

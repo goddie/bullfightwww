@@ -103,8 +103,8 @@
 														<button type="button" class="btn btn-primary"
 															data-toggle="modal" data-target="#myModal1"
 															onclick="setUser('${m.id}')">加队伍</button> <a
-														href="${pageContext.request.contextPath}/user/edit/${m.id}"
-														style="display: none;"> 修改 </a> <a
+														href="${pageContext.request.contextPath}/user/admin/edit?uid=${m.id}"
+														style=""> 修改 </a> <a
 														href="${pageContext.request.contextPath}/user/action/del?uid=${m.id}">
 															删除 </a>
 													</td>
