@@ -34,6 +34,7 @@ import com.xiaba2.bullfight.domain.Order;
 import com.xiaba2.bullfight.domain.PayRecord;
 import com.xiaba2.bullfight.service.MatchFightService;
 import com.xiaba2.bullfight.service.OrderService;
+import com.xiaba2.bullfight.service.PayRecordService;
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
@@ -50,6 +51,9 @@ public class OrderController {
 	
 	@Resource
 	private MatchFightService matchFightService;
+	
+	@Resource
+	private PayRecordService payRecordService;
 	
 	/**
 	 * 支付宝异步通知
@@ -101,6 +105,16 @@ public class OrderController {
 		orderService.saveOrUpdate(order);
 		
 		PayRecord payRecord=new PayRecord();
+		
+		payRecord.setTradeNo(order.getTradeNo());
+		payRecord.setTotal(order.getTotal());
+		payRecord.setPayType(order.getPayType());
+		payRecord.setUser(order.getUser());
+		payRecord.setCreatedDate(new Date());
+		payRecord.setMatchFight(order.getMatchFight());
+		payRecordService.save(payRecord);
+		
+		
 		
 		
 		

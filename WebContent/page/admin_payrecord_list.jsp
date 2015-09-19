@@ -32,23 +32,31 @@
 									role="grid">
 									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_filter" id="example_filter">
-												<label>Search: <input type="text"
-													aria-controls="example"></label>
-											</div>
+										<div class="col-md-12">
+											<form action="${pageContext.request.contextPath}/payrecord/admin/list" method="get">
+												<div class="dataTables_filter" id="example_filter">
+													<input name="p" value="1" type="hidden" />
+													<label>用户: <input type="text" name="username"
+														aria-controls="example" value="${username }"></label>
+											 
+													<button type="submit" class="btn btn-sm btn-default">搜索</button>
+												</div>
+											</form>
 										</div>
 									</div>
 									<table class="table table-striped table-bordered dataTable"
 										id="example" aria-describedby="example_info">
 										<thead>
 											<tr role="row">
-												<th role="columnheader" style="width: 80px;">序号</th>
+												<th role="columnheader" style="">序号</th>
 												<th role="columnheader" style="width: 15%;">日期</th>
 												<th role="columnheader" style="width: 10%;">金额</th>
 
-												<th role="columnheader" style="width: 10%;">用户</th>
-
+												<th role="columnheader" style="">比赛队伍</th>
+												<th role="columnheader" style="">场地</th>
+												<th role="columnheader" style="">裁判</th>
+												<th role="columnheader" style="">数据员</th>
+												<th role="columnheader" style="">用户</th>
 
 											</tr>
 										</thead>
@@ -60,28 +68,19 @@
 												<tr class="gradeA odd">
 													<td class="sorting_1">${status.index+1}</td>
 													<td class="">${m.createdDate}</td>
-													<td class="">${m.guest}</td>
-													<td class="center ">${m.arena.name}</td>
-
+													<td class="">${m.total}</td>
+													<td class="center ">${m.matchFight.host.name } vs ${m.matchFight.guest.name }</td>
+													<td class="center ">${m.matchFight.arena.name }</td>
+													<td class="center ">${m.matchFight.judge }</td>
+													<td class="center ">${m.matchFight.dataRecord }</td>
+													<td class="center ">${m.user.nickname} ${m.user.username}</td>
 												</tr>
 											</c:forEach>
 										</tbody>
 									</table>
-									<div class="row" style="display:none">
+									<div class="row">
 
-										<div class="col-md-6">
-											<div class="dataTables_paginate paging_bootstrap">
-												<ul class="pagination">
-													<li class="prev disabled"><a href="#">← 上页</a></li>
-													<li class="active"><a href="#">1</a></li>
-													<li><a href="#">2</a></li>
-													<li><a href="#">3</a></li>
-													<li><a href="#">4</a></li>
-													<li><a href="#">5</a></li>
-													<li class="next"><a href="#">下页 → </a></li>
-												</ul>
-											</div>
-										</div>
+										${pageHtml }
 									</div>
 								</div>
 							</div>
