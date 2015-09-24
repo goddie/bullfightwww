@@ -13,6 +13,16 @@ body {
 	color: #fff;
 	line-height: 2em;
 }
+
+img { 
+    width:100%;
+    max-width: 640px;
+    min-width: 320px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+img:parent { text-align: center; } 
 </style>
 </head>
 <body>
