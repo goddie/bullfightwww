@@ -7,7 +7,9 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
 import com.xiaba2.core.Page;
+import com.xiaba2.util.HttpUtil;
 
 /**
  * @author goddie 6p4t58mkqxtfyso57xr3mvl161uxfjcl 2088911907194201
@@ -47,25 +50,43 @@ public class PayRecordController {
 	@Resource
 	private TeamService teamService;
 
-	@RequestMapping(value = "/admin/{name}")
-	public ModelAndView getPage(@PathVariable String name) {
-		return new ModelAndView("admin_payrecord_" + name);
-	}
+//	@RequestMapping(value = "/admin/{name}")
+//	public ModelAndView getPage(@PathVariable String name) {
+//		return new ModelAndView("admin_payrecord_" + name);
+//	}
 
 	@RequestMapping(value = "/admin/list")
-	public ModelAndView pageList(PayRecord entity, HttpServletRequest request) {
+	public ModelAndView pageList(@RequestParam("p") int p, PayRecord entity, HttpServletRequest request) {
 
 		ModelAndView mv = new ModelAndView("admin_payrecord_list");
 
 		Page<PayRecord> page = new Page<PayRecord>();
-		page.setPageSize(10);
-		page.setPageNo(1);
+		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.setPageNo(p);
+		page.addOrder("createdDate", "desc");
+ 
+		
+		
 
 		DetachedCriteria criteria = payRecordService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		
+		String username = request.getParameter("username");
+		if(!StringUtils.isEmpty(username))
+		{
+			criteria.add(Restrictions.like("user.username", username,MatchMode.ANYWHERE));
+			mv.addObject("username",username);
+		}
+		
+		HttpUtil.addSearchLike(criteria, mv, request, "title");
+		
 		page = payRecordService.findPageByCriteria(criteria, page);
 
+ 
 		mv.addObject("list", page.getResult());
+		mv.addObject("pageHtml",page.genPageHtml(request));
+		
 
 		return mv;
 	}

@@ -24,7 +24,7 @@
                                 <li><a href="${pageContext.request.contextPath}/team/admin/list?p=1">球队管理</a></li>
                                 <li><a href="${pageContext.request.contextPath}/arena/admin/list?p=1">场地管理</a></li>
                                 <li><a href="${pageContext.request.contextPath}/matchfight/admin/list?p=1">对战管理</a></li>
-                                <li><a href="${pageContext.request.contextPath}/article/admin/add">文章管理</a></li>
+                                <li><a href="${pageContext.request.contextPath}/article/admin/list?p=1">文章管理</a></li>
                                 <li><a href="${pageContext.request.contextPath}/payrecord/admin/list?p=1">交易记录</a></li>
                                 <li><a href="${pageContext.request.contextPath}/page/ucenter_userconfig.jsp">账户设置</a></li>
                             </ul>
