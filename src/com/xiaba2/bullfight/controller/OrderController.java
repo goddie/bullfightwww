@@ -143,6 +143,60 @@ public class OrderController {
 	
 	
 	/**
+	 * 支付宝异步通知
+	 * 
+	 * @param from
+	 * @param sendTo
+	 * @param content
+	 */
+	@RequestMapping(value = "/notice/alipayguest")
+	public String noticeAlipayGuest(HttpServletRequest request) {
+		Logger.getLogger("========================");
+		Logger.getLogger(this.getClass().getName()).log(Level.INFO, request.getQueryString());
+		Logger.getLogger(this.getClass().getName()).log(Level.INFO, "out_trade_no"+request.getParameter("out_trade_no"));
+		
+		
+		String msg = "success";
+		
+		String partner = "2088911907194201";
+		
+		String out_trade_no = request.getParameter("out_trade_no");
+		
+		String notify_id = request.getParameter("notify_id");
+		
+		String verifyUrl = "https://mapi.alipay.com/gateway.do?service=notify_verify&partner="+partner+"&notify_id="+notify_id;
+		
+		String rs =post(verifyUrl,null);
+		
+		if(!rs.equals("true"))
+		{
+			return "";
+		}
+		
+		DetachedCriteria criteria = orderService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("tradeNo", out_trade_no));
+		
+		List<Order> list = orderService.findByCriteria(criteria);
+		if(list.isEmpty())
+		{
+			return "";
+		}
+		
+		//订单状态修改
+		Order order = orderService.get(list.get(0).getId());
+		order.setStatus(1);
+		order.setLastModifiedBy("alipay");
+		order.setPayDate(new Date());
+		order.setAlipayServer(request.getQueryString());
+		orderService.saveOrUpdate(order);
+		
+		return msg;
+	}
+	
+	
+	
+	/**
 	 * 基于HttpClient 4.3的通用POST方法
 	 *
 	 * @param url

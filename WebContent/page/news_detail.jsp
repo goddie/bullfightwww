@@ -27,6 +27,7 @@ img:parent { text-align: center; }
 </head>
 <body>
 <h2>${article.title }</h2>
+<h3>${article.createdDate }</h3>
 ${body.body }
 </body>
 </html>

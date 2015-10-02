@@ -187,6 +187,7 @@ public class TeamController {
 			return js;
 		}
 		
+		//自动加入
 		TeamUser teamUser = new TeamUser();
 		teamUser.setTeam(entity);
 		teamUser.setUser(u);
@@ -197,7 +198,11 @@ public class TeamController {
 
 		js.setCode(JsonResult.SUCCESS);
 		js.setMsg("创建成功");
-
+		
+		
+		
+ 
+ 
 		return js;
 	}
 
@@ -398,9 +403,23 @@ public class TeamController {
 		
 		teamService.save(team);
 
+
+		
+		
+		//自动加入
+		TeamUser teamUser = new TeamUser();
+		teamUser.setTeam(team);
+		teamUser.setUser(user);
+		teamUser.setCreatedDate(new Date());
+ 
+		teamUserService.save(teamUser);				
+		
+		
 		js.setMsg("创建成功，快去邀请成员加入队伍吧!");
 		js.setData(team);
 		js.setCode(JsonResult.SUCCESS);
+		
+		
 		return js;
 	}
 	

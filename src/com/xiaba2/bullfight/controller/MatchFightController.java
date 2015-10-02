@@ -32,6 +32,7 @@ import com.xiaba2.bullfight.service.ArenaService;
 import com.xiaba2.bullfight.service.KeyValueService;
 import com.xiaba2.bullfight.service.MatchDataTeamService;
 import com.xiaba2.bullfight.service.MatchFightService;
+import com.xiaba2.bullfight.service.MatchFightUserService;
 import com.xiaba2.bullfight.service.PayRecordService;
 import com.xiaba2.bullfight.service.TeamService;
 import com.xiaba2.cms.domain.User;
@@ -63,6 +64,9 @@ public class MatchFightController {
 
 	@Resource
 	private MatchDataTeamService matchDataTeamService;
+	
+	@Resource
+	private MatchFightUserService  matchFightUserService ;
 
 	@RequestMapping(value = "/admin/{name}")
 	public ModelAndView getPage(@PathVariable String name) {
@@ -145,8 +149,10 @@ public class MatchFightController {
 		entity.setHost(host);
 
 		entity.setCreatedDate(new Date());
-		// entity.setStatus(0);
-		entity.setIsPay(0);
+		entity.setStatus(1);
+//		entity.setIsPay(1);
+		//后台创建不再支付
+		entity.setIsPay(2);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
@@ -181,7 +187,7 @@ public class MatchFightController {
 	 */
 	@RequestMapping("/json/add")
 	public JsonResult jsonAdd(MatchFight entity,
-			@RequestParam("aid") String aid, HttpServletRequest request) {
+			@RequestParam("aid") String aid,@RequestParam("uid") UUID uid, HttpServletRequest request) {
 		JsonResult js = new JsonResult();
 		String tid = request.getParameter("tid");
 		Arena arena = arenaService.get(UUID.fromString(aid));
@@ -199,7 +205,7 @@ public class MatchFightController {
 		entity.setArena(arena);
 		entity.setCreatedDate(new Date());
 
-		entity.setStatus(0);
+		//entity.setStatus(0);
 		entity.setIsPay(0);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -228,7 +234,14 @@ public class MatchFightController {
 
 		// 野球娱乐自动加入
 		if (entity.getMatchType() == 2) {
-			// joinMatchFight(entity);
+			User user = userService.get(uid);
+			MatchFightUser matchFightUser = new MatchFightUser();
+			matchFightUser.setUser(user);
+			matchFightUser.setMatchFight(entity);
+			//matchFightUser.setTeam(entity.getHost());
+			matchFightUser.setCreatedDate(new Date());
+			
+			matchFightUserService.save(matchFightUser);
 		}
 
 		js.setData(entity);
@@ -238,10 +251,7 @@ public class MatchFightController {
 		return js;
 	}
 
-	void joinMatchFight(MatchFight matchFight) {
-		MatchFightUser matchFightUser = new MatchFightUser();
-
-	}
+ 
 
 	/**
 	 * 创建2个待支付记录
@@ -320,7 +330,8 @@ public class MatchFightController {
 			criteria.add(Restrictions.eq("matchType", matchType));
 
 			if (matchType == 1) {
-				criteria.add(Restrictions.eq("isPay", 1));
+				//1 已支付  2后台创建
+				criteria.add(Restrictions.gt("isPay", 0));
 			}
 
 		}

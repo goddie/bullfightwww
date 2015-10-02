@@ -202,7 +202,7 @@ public class PayRecordController {
 		criteria.add(Restrictions.eq("isDelete", 0));
 		criteria.add(Restrictions.eq("matchFight", matchFight));
 		criteria.add(Restrictions.isNull("user"));
-		// criteria.add(Restrictions.eq("status", 0));
+		//criteria.add(Restrictions.eq("status", 0));
 
 		List<PayRecord> list = payRecordService.findByCriteria(criteria);
 

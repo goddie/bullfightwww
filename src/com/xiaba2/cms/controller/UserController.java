@@ -465,7 +465,8 @@ public class UserController {
 	@RequestMapping(value = "/json/regtwo")
 	public JsonResult jsonRegTwo(@RequestParam("uid") String uid,
 			@RequestParam("username") String username,
-			@RequestParam("password") String password) {
+			@RequestParam("password") String password,
+			@RequestParam("nickname") String nickname) {
 		JsonResult rs = new JsonResult();
 
 		if (StringUtils.isEmpty(uid)) {
@@ -482,6 +483,13 @@ public class UserController {
 		if (!StringUtils.isEmpty(password)) {
 			entity.setPassword(password);
 		}
+		
+		
+		if (!StringUtils.isEmpty(nickname)) {
+			entity.setNickname(nickname);
+		}
+		
+		entity.setIsDelete(0);
 
 		userService.saveOrUpdate(entity);
 
@@ -569,6 +577,7 @@ public class UserController {
 		user.setPassword(sb.toString());
 		user.setCreatedDate(new Date());
 		user.setLastModifiedBy(sb.toString());
+		user.setIsDelete(1);
 
 		userService.saveOrUpdate(user);
 
@@ -697,12 +706,27 @@ public class UserController {
 		//测试用的数字串
 		if(code.equals("19491001"))
 		{
+
 			DetachedCriteria criteria = userService.createDetachedCriteria();
 			criteria.add(Restrictions.eq("isDelete", 0));
  			criteria.add(Restrictions.eq("phone", phone));
 			List<User> list = userService.findByCriteria(criteria);
 			if (list.isEmpty()) {
-				return rs;
+				
+				User user = new User();
+
+				user.setNickname("来斗牛玩家");
+				user.setPhone(phone);
+				user.setUsername(phone);
+				user.setPassword("19491001");
+				user.setCreatedDate(new Date());
+
+
+				userService.saveOrUpdate(user);
+				
+				list = new ArrayList<User>();
+				list.add(user);
+				
 			}
 	 		User entity = list.get(0);
 			rs.setData(entity);
