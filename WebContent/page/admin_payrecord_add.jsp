@@ -16,7 +16,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/traderecord_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/payrecord_left.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10"></div>
 		</div>
