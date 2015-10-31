@@ -56,7 +56,7 @@
 											<div class="col-lg-10">
 												<input name="password" type="text"
 													class="form-control col-md-6" id="password"
-													value="${entity.username }" />
+													value="${entity.password }" />
 												<p class="help-block"></p>
 											</div>
 										</div>

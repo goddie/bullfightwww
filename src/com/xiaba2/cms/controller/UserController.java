@@ -532,20 +532,37 @@ public class UserController {
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("username", phone));
 		criteria.add(Restrictions.eq("phone", phone));
+		
+		
+		Page<User> page = new Page<User>();
+		page.setPageSize(1);
+		page.setPageNo(1);
+		page.addOrder("createdDate", "desc");
+		
+		
+		page = userService.findPageByCriteria(criteria, page);
 
-		List<User> list = userService.findByCriteria(criteria);
-		if (!list.isEmpty()) {
-			
-			
+		List<User> list = page.getResult();
+
+		if (list!=null && list.size()>0) {
 			if(!list.get(0).getUsername().equals(phone))
 			{
 				rs.setMsg("该手机已注册");
 				return rs;
 				
 			}
+//			else
+//			{
+//				user = list.get(0);
+//			}
 
 		}
+//		else
+//		{
+//			user = new User();
+//		}
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(SendSMS.getRand());
@@ -569,7 +586,7 @@ public class UserController {
 			return rs;
 		}
 		
-		User user = new User();
+		User user  = new User();
 
 		user.setNickname("来斗牛玩家");
 		user.setPhone(phone);
@@ -577,7 +594,7 @@ public class UserController {
 		user.setPassword(sb.toString());
 		user.setCreatedDate(new Date());
 		user.setLastModifiedBy(sb.toString());
-		user.setIsDelete(1);
+		user.setIsDelete(0);
 
 		userService.saveOrUpdate(user);
 
@@ -739,8 +756,18 @@ public class UserController {
 		criteria.add(Restrictions.eq("username", phone));
 		criteria.add(Restrictions.eq("phone", phone));
 		criteria.add(Restrictions.eq("password", code));
+		
+		
+		Page<User> page = new Page<User>();
+		page.setPageSize(1);
+		page.setPageNo(1);
+		page.addOrder("createdDate", "desc");
+		
+		
+		page = userService.findPageByCriteria(criteria, page);
 
-		List<User> list = userService.findByCriteria(criteria);
+		List<User> list = page.getResult();
+		
 		if (list.isEmpty()) {
 			rs.setMsg("验证码有误");
 			return rs;

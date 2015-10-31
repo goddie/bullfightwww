@@ -77,9 +77,9 @@
 
 													<td class="center ">${m.createdDate}</td>
 													<td class="action"><a
-														href="${pageContext.request.contextPath}/team/edit/${m.id}">
+														href="${pageContext.request.contextPath}/arena/edit?id=${m.id}">
 															编辑 </a> <a
-														href="${pageContext.request.contextPath}/team/del/${m.id}">
+														href="${pageContext.request.contextPath}/arena/del?id=${m.id}">
 															删除 </a></td>
 												</tr>
 											</c:forEach>

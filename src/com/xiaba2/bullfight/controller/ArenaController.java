@@ -50,6 +50,19 @@ public class ArenaController {
 	}
 	
 	
+	@RequestMapping(value = "/del")
+	public ModelAndView del(@RequestParam("id") UUID id, HttpServletRequest request) {
+		
+		
+		ModelAndView mv=new ModelAndView("redirect:/arena/admin/list?p=1");
+		
+		Arena entity = arenaService.get(id);
+		entity.setIsDelete(1);
+		arenaService.saveOrUpdate(entity);
+		
+		return mv;
+	}
+	
 	@RequestMapping(value = "/add")
 	public ModelAndView add(Arena entity, HttpServletRequest request) {
 		
