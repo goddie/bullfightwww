@@ -51,11 +51,13 @@ public class Page<T> {
         StringBuffer sb = new StringBuffer();
         
         
-		sb.append("<div class=\"col-md-6\">");
+		sb.append("<div class=\"col-md-12\">");
 		sb.append("<div class=\"dataTables_paginate paging_bootstrap\">");
 		sb.append("<ul class=\"pagination\">");
  
 
+		sb.append("<li class=\"\"><a href=\""+updateQueryStringItem(request,"p", "1")+"\">首页</a></li>");
+		
         // 判断是否有上一页
         if ( this.isHasPre()) {
         	
@@ -66,7 +68,7 @@ public class Page<T> {
         }
 
         // 中间显示
-        for (int i = 1; i <= this.getTotalPages(); i++) {
+        for (int i = Math.max(getPageNo()-5,1); i <= Math.min(getPageNo()+5,this.getTotalPages()); i++) {
             //String spanClzz = "<a href=\"javascript:void(0)\" onclick=\"findDistResult('" + String.valueOf(i) + "');return false;\">" + i + "</a>";
 
         	String spanClzz = "<li class=\"\"><a href=\""+updateQueryStringItem(request,"p", String.valueOf(i))+"\">"+i+"</a></li>";
@@ -78,12 +80,12 @@ public class Page<T> {
             sb.append(spanClzz);
 
             // 当大于9页数的时候才进行分页显示
-            if (this.getTotalPages() - 2 > 7) {
-                if (i == 5) {
-                    i = (int)this.getTotalCount() - 2;
-                    sb.append("...");
-                }
-            }
+//            if (this.getTotalPages() - 2 > 7) {
+//                if (i == 5) {
+//                    i = (int)this.getTotalCount() - 2;
+//                    sb.append("...");
+//                }
+//            }
         }
         // 判断是否有下一页
         if (this.isHasNext()) {
@@ -92,6 +94,8 @@ public class Page<T> {
         } else {
         	sb.append("<li class=\"next disabled\"><a href=\"#\">下页 → </a></li>");
         }
+        
+        sb.append("<li class=\"\"><a href=\""+updateQueryStringItem(request,"p", String.valueOf((int)getTotalPages()))+"\">尾页</a></li>");
         
 		sb.append("</ul>");
 		sb.append("</div>");

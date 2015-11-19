@@ -327,7 +327,7 @@ public class UserController {
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
-		criteria.add(Restrictions.eq("username", phone));
+		criteria.add(Restrictions.eq("phone", phone));
 
 		List<User> list = userService.findByCriteria(criteria);
 		if (!list.isEmpty()) {
