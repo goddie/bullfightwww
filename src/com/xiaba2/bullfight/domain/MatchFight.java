@@ -123,8 +123,34 @@ public class MatchFight extends BaseUUIDEntity {
 	@Column
 	private float fee;
 
+	/**
+	 * 对战说明
+	 */
+	@Column(length=1000)
+	private String content;
 	
 	
+	
+	public float getFee() {
+		return fee;
+	}
+
+
+	public void setFee(float fee) {
+		this.fee = fee;
+	}
+
+
+	public String getContent() {
+		return content;
+	}
+
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+
 	public String getCity() {
 		return city;
 	}

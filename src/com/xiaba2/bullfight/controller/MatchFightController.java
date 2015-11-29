@@ -206,7 +206,11 @@ public class MatchFightController {
 		entity.setCreatedDate(new Date());
 
 		//entity.setStatus(0);
-		entity.setIsPay(0);
+		if(entity.getFee()>0)
+		{
+			entity.setIsPay(0);
+		}
+		
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -228,7 +232,7 @@ public class MatchFightController {
 		matchFightService.save(entity);
 
 		// 团队约战要收钱
-		if (entity.getMatchType() == 1) {
+		if (entity.getMatchType() == 1 && entity.getIsPay()==0) {
 			createPayRecord(entity);
 		}
 

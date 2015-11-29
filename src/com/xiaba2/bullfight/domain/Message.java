@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.xiaba2.cms.domain.Article;
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.core.BaseUUIDEntity;
 
@@ -39,6 +40,9 @@ public class Message extends BaseUUIDEntity {
 	 * 消息类型 
 	 * 1 通知队长
 	 * 2 邀请入会
+	 * 3 新闻回复
+	 * 4 约战回复
+	 * 5 约战评论
 	 */
 	@Column
 	private int type;
@@ -49,9 +53,33 @@ public class Message extends BaseUUIDEntity {
 	@ManyToOne
 	private Team team;
 	
+	/**
+	 * 是否推送
+	 */
+	@Column
+	private int isPush;
+	
+	/**
+	 * 评论
+	 */
+	@ManyToOne
+	private Commet commet;
+	
 	
 	
  
+	public int getIsPush() {
+		return isPush;
+	}
+	public void setIsPush(int isPush) {
+		this.isPush = isPush;
+	}
+	public Commet getCommet() {
+		return commet;
+	}
+	public void setCommet(Commet commet) {
+		this.commet = commet;
+	}
 	public int getType() {
 		return type;
 	}

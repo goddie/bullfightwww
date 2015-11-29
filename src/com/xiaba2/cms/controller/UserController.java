@@ -490,6 +490,7 @@ public class UserController {
 		}
 		
 		entity.setIsDelete(0);
+		entity.setFinishReg(1);
 
 		userService.saveOrUpdate(entity);
 
@@ -532,9 +533,10 @@ public class UserController {
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+//		criteria.add(Restrictions.or(Restrictions.eq("username", phone), Restrictions.eq("phone", phone)));
 		criteria.add(Restrictions.eq("username", phone));
 		criteria.add(Restrictions.eq("phone", phone));
-		
+		criteria.add(Restrictions.eq("finishReg", 1));
 		
 		Page<User> page = new Page<User>();
 		page.setPageSize(1);
@@ -591,10 +593,12 @@ public class UserController {
 		user.setNickname("来斗牛玩家");
 		user.setPhone(phone);
 		user.setUsername(phone);
+		//验证码
 		user.setPassword(sb.toString());
 		user.setCreatedDate(new Date());
 		user.setLastModifiedBy(sb.toString());
-		user.setIsDelete(0);
+		user.setIsDelete(1);
+		user.setFinishReg(0);
 
 		userService.saveOrUpdate(user);
 
@@ -752,11 +756,11 @@ public class UserController {
 		}
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
-		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("isDelete", 1));
 		criteria.add(Restrictions.eq("username", phone));
 		criteria.add(Restrictions.eq("phone", phone));
 		criteria.add(Restrictions.eq("password", code));
-		
+		criteria.add(Restrictions.eq("finishReg", 0));
 		
 		Page<User> page = new Page<User>();
 		page.setPageSize(1);

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.xiaba2.cms.domain.Article;
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.core.BaseUUIDEntity;
 
@@ -26,9 +27,15 @@ public class Commet extends BaseUUIDEntity {
 	@Column
 	private String title;
 	
+	/**
+	 * 发送方
+	 */
 	@ManyToOne
 	private User from;
 	
+	/**
+	 * 接收方
+	 */
 	@ManyToOne
 	private User reply;
 	
@@ -49,6 +56,23 @@ public class Commet extends BaseUUIDEntity {
 	
 	@Column
 	private String pic6;
+	
+	/**
+	 * 新闻
+	 */
+	@ManyToOne
+	private Article article;
+	
+	
+	
+
+	public Article getArticle() {
+		return article;
+	}
+
+	public void setArticle(Article article) {
+		this.article = article;
+	}
 
 	public MatchFight getMatchFight() {
 		return matchFight;

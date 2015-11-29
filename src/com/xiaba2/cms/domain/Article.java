@@ -208,6 +208,23 @@ public class Article extends BaseUUIDEntity {
 	@Column
 	private String userIp;
 
+	/**
+	 * 置顶
+	 */
+	@Column
+	private int isTop;
+	
+	
+	
+	
+	public int getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(int isTop) {
+		this.isTop = isTop;
+	}
+
 	public int getAccessRank() {
 		return accessRank;
 	}

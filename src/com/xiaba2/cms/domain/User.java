@@ -181,8 +181,14 @@ public class User extends BaseUUIDEntity {
 	@Column
 	private float turnover;
 	
-	
+	/**
+	 * 完成注册
+	 */
+	@Column
+	private int finishReg;
 
+	
+	
 //	public float getThreeGoal() {
 //		return threeGoal;
 //	}
@@ -190,6 +196,14 @@ public class User extends BaseUUIDEntity {
 //	public void setThreeGoal(float threeGoal) {
 //		this.threeGoal = threeGoal;
 //	}
+
+	public int getFinishReg() {
+		return finishReg;
+	}
+
+	public void setFinishReg(int finishReg) {
+		this.finishReg = finishReg;
+	}
 
 	public float getFreeGoalPercent() {
 		return freeGoalPercent;
