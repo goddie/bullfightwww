@@ -530,12 +530,12 @@ public class UserController {
 		}
 
 
-
+		//注册成功了的
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
-//		criteria.add(Restrictions.or(Restrictions.eq("username", phone), Restrictions.eq("phone", phone)));
-		criteria.add(Restrictions.eq("username", phone));
-		criteria.add(Restrictions.eq("phone", phone));
+		criteria.add(Restrictions.or(Restrictions.eq("username", phone), Restrictions.eq("phone", phone)));
+//		criteria.add(Restrictions.eq("username", phone));
+//		criteria.add(Restrictions.eq("phone", phone));
 		criteria.add(Restrictions.eq("finishReg", 1));
 		
 		Page<User> page = new Page<User>();
@@ -549,18 +549,19 @@ public class UserController {
 		List<User> list = page.getResult();
 
 		if (list!=null && list.size()>0) {
-			if(!list.get(0).getUsername().equals(phone))
-			{
-				rs.setMsg("该手机已注册");
-				return rs;
-				
-			}
+			rs.setMsg("该手机已注册");
+			return rs;
 //			else
 //			{
 //				user = list.get(0);
 //			}
 
 		}
+		
+		
+		
+		//尚未注册成功
+		
 //		else
 //		{
 //			user = new User();
