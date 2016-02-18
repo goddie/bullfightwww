@@ -14,7 +14,7 @@ import com.xiaba2.core.BaseUUIDEntity;
 public class MatchFight extends BaseUUIDEntity {
 
 	/**
-	 * 1 团队 2野战
+	 * 1 团队 2野战 3联赛
 	 */
 	@Column
 	private int matchType;
