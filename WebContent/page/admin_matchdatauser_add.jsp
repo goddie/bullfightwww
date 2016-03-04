@@ -21,7 +21,7 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">选择队伍</h4>
+					<h4 class="modal-title" id="myModalLabel">选择球员</h4>
 				</div>
 				<div class="modal-body">
 					<iframe marginheight="0" marginwidth="0" frameborder="0"

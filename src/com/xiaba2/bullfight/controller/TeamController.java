@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xiaba2.bullfight.domain.Order;
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.domain.TeamUser;
 import com.xiaba2.bullfight.service.TeamService;
@@ -59,6 +60,7 @@ public class TeamController {
 		
 		Page<Team> page = new Page<Team>();
 		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.addOrder("createdDate", "desc");
 		page.setPageNo(p);
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
@@ -101,6 +103,7 @@ public class TeamController {
 		
 		Page<Team> page = new Page<Team>();
 		page.setPageSize(999);
+		page.addOrder("createdDate", "desc");
 		page.setPageNo(1);
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
@@ -111,6 +114,9 @@ public class TeamController {
 		
 		return mv;
 	}
+	
+	
+	
 	
 	
 	

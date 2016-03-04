@@ -1,10 +1,15 @@
 package com.xiaba2.bullfight.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.xiaba2.core.BaseUUIDEntity;
 
+
+@Entity
+@Table(name = "db_bullfight_leaguematch")
 public class LeagueRecord extends BaseUUIDEntity {
 
 	/**
@@ -34,7 +39,7 @@ public class LeagueRecord extends BaseUUIDEntity {
 	/**
 	 * 联赛
 	 */
-	@Column
+	@ManyToOne
 	private League league;
 
 	public Team getTeam() {

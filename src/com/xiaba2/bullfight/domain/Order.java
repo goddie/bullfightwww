@@ -34,6 +34,12 @@ public class Order extends BaseUUIDEntity{
 	@ManyToOne
 	private MatchFight matchFight;
 	
+	/**
+	 * 报名联赛
+	 */
+	@ManyToOne
+	private LeagueTeam leagueTeam;
+	
 	
 	/**
 	 * 支付状态
@@ -91,6 +97,15 @@ public class Order extends BaseUUIDEntity{
 	 */
 	@Column
 	private String info;
+	
+
+	public LeagueTeam getLeagueTeam() {
+		return leagueTeam;
+	}
+
+	public void setLeagueTeam(LeagueTeam leagueTeam) {
+		this.leagueTeam = leagueTeam;
+	}
 
 	public User getUser() {
 		return user;

@@ -174,6 +174,40 @@ public class HttpUtil {
 			mv.addObject(key,value);
 		}
 		
+	
+	}
+	
+	
+	/**
+	 * 返回引用页面
+	 * @param request
+	 * @param response
+	 */
+	public static String getReferView(HttpServletRequest request)
+	{
+ 
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		String url = requestUri.substring(contextPath.length());
+ 
+		String fullURL = url+"?" + request.getQueryString();	
+ 
+		return fullURL;
+		//request.getRequestDispatcher(fullURL).forward(request,response);
+	}
+	
+	
+	/**
+	 * 引用页面
+	 * @param request
+	 * @return
+	 */
+	public static String getHeaderRef(HttpServletRequest request)
+	{
+		String referer = request.getHeader("Referer");
+		referer = "redirect:" + referer;
+
+	    return referer;
 	}
 
 }

@@ -129,8 +129,21 @@ public class MatchFight extends BaseUUIDEntity {
 	@Column(length=1000)
 	private String content;
 	
+	@ManyToOne
+	private League league;
 	
 	
+	
+	public League getLeague() {
+		return league;
+	}
+
+
+	public void setLeague(League league) {
+		this.league = league;
+	}
+
+
 	public float getFee() {
 		return fee;
 	}

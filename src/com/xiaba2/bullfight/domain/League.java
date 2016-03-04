@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.xiaba2.core.BaseUUIDEntity;
@@ -14,6 +15,10 @@ import com.xiaba2.core.BaseUUIDEntity;
  *
  */
 
+/**
+ * @author goddie
+ *
+ */
 @Entity
 @Table(name = "db_bullfight_league")
 public class League extends BaseUUIDEntity {
@@ -26,6 +31,7 @@ public class League extends BaseUUIDEntity {
 	
 	/**
 	 * 状态
+	 * 0 未开始 1未结束 2已结束 
 	 */
 	@Column
 	private int status;
@@ -64,15 +70,62 @@ public class League extends BaseUUIDEntity {
 	/**
 	 * 比赛场馆
 	 */
-	@Column
-	private Arena arean;
+	@ManyToOne
+	private Arena arena;
 	
-	public Arena getArean() {
-		return arean;
+	/**
+	 * 头像
+	 */
+	@Column
+	private String avatar;
+	
+	
+	/**
+	 * 是否公开报名
+	 */
+	@Column
+	private int isOpen;
+	
+	/**
+	 * 报名费
+	 */
+	@Column
+	private float fee;
+	
+	
+	
+	public float getFee() {
+		return fee;
 	}
 
-	public void setArean(Arena arean) {
-		this.arean = arean;
+	public void setFee(float fee) {
+		this.fee = fee;
+	}
+
+	public int getIsOpen() {
+		return isOpen;
+	}
+
+	public void setIsOpen(int isOpen) {
+		this.isOpen = isOpen;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+ 
+
+	public Arena getArena() {
+		return arena;
+	}
+
+	public void setArena(Arena arena) {
+		this.arena = arena;
 	}
 
 	public String getName() {

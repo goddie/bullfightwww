@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xiaba2.bullfight.domain.Arena;
+import com.xiaba2.bullfight.domain.League;
 import com.xiaba2.bullfight.domain.MatchDataTeam;
 import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.MatchFightUser;
@@ -30,6 +31,7 @@ import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.domain.TeamUser;
 import com.xiaba2.bullfight.service.ArenaService;
 import com.xiaba2.bullfight.service.KeyValueService;
+import com.xiaba2.bullfight.service.LeagueService;
 import com.xiaba2.bullfight.service.MatchDataTeamService;
 import com.xiaba2.bullfight.service.MatchFightService;
 import com.xiaba2.bullfight.service.MatchFightUserService;
@@ -67,6 +69,8 @@ public class MatchFightController {
 	
 	@Resource
 	private MatchFightUserService  matchFightUserService ;
+	@Resource
+	private LeagueService leagueService;
 
 	@RequestMapping(value = "/admin/{name}")
 	public ModelAndView getPage(@PathVariable String name) {
@@ -74,7 +78,7 @@ public class MatchFightController {
 	}
 
 	@RequestMapping(value = "/admin/list")
-	public ModelAndView pageList(MatchFight entity, @RequestParam("p") int p,
+	public ModelAndView pageList(@RequestParam("p") int p,
 			HttpServletRequest request) {
 
 		ModelAndView mv = new ModelAndView("admin_matchfight_list");
@@ -86,6 +90,39 @@ public class MatchFightController {
 
 		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.not(Restrictions.eq("matchType", 3)));
+		page = matchFightService.findPageByCriteria(criteria, page);
+
+		mv.addObject("list", page.getResult());
+		mv.addObject("pageHtml", page.genPageHtml(request));
+
+		return mv;
+	}
+	
+	/**
+	 * 联赛比赛列表
+	 * @param p
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/leaguelist")
+	public ModelAndView pageLeagueList(@RequestParam("id") UUID leagueid, @RequestParam("p") int p,
+			HttpServletRequest request) {
+
+		ModelAndView mv = new ModelAndView("admin_league_fightlist");
+		
+		League league = leagueService.get(leagueid);
+
+		Page<MatchFight> page = new Page<MatchFight>();
+		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.setPageNo(p);
+		page.addOrder("createdDate", "desc");
+
+		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("matchType", 3));
+		criteria.add(Restrictions.eq("league", league));
+		
 		page = matchFightService.findPageByCriteria(criteria, page);
 
 		mv.addObject("list", page.getResult());
@@ -170,9 +207,24 @@ public class MatchFightController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
+		//联赛
+		if(entity.getMatchType()==3)
+		{
+			String leagueid = request.getParameter("leagueid");
+			if(!StringUtils.isEmpty(leagueid))
+			{
+				League league = leagueService.get(UUID.fromString(leagueid));
+				entity.setLeague(league);
+			}
+			
+		}
 
 		matchFightService.save(entity);
 
+		String s = HttpUtil.getHeaderRef(request);
+		mv.setViewName(s);
+		
 		return mv;
 	}
 
@@ -336,6 +388,19 @@ public class MatchFightController {
 			if (matchType == 1) {
 				//1 已支付  2后台创建
 				criteria.add(Restrictions.gt("isPay", 0));
+			}
+			
+			//联赛
+			if( matchType==3)
+			{
+				String leaguidstr = request.getParameter("leagueid");
+				if(!StringUtils.isEmpty(leaguidstr))
+				{
+					UUID leaguid = UUID.fromString(leaguidstr);
+					criteria.add(Restrictions.eq("league.id", leaguid));
+					
+				}
+				
 			}
 
 		}
