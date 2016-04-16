@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -208,6 +210,33 @@ public class HttpUtil {
 		referer = "redirect:" + referer;
 
 	    return referer;
+	}
+	
+	
+	public static UUID uuidMysqlString(String uuid)
+	{
+		String s = uuid.toLowerCase();
+		String s2 = s.substring(0, 8) +"-"+ s.substring(8, 12) +"-"+ s.substring(12, 16)  +"-"+ s.substring(16, 20)  +"-"+ s.substring(20);
+		return UUID.fromString(s2);
+	}
+	
+	
+	public static float toFloat(Object obj)
+	{
+		if(obj==null)
+		{
+			return 0;
+		}
+		
+		String s = obj.toString();
+		float f = 0;
+		try {
+			f = Float.parseFloat(s);
+		} catch (Exception e) {
+			f = 0;
+		}
+		
+		return f;
 	}
 
 }

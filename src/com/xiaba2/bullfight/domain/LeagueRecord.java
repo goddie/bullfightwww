@@ -9,7 +9,7 @@ import com.xiaba2.core.BaseUUIDEntity;
 
 
 @Entity
-@Table(name = "db_bullfight_leaguematch")
+@Table(name = "db_bullfight_leaguerecord")
 public class LeagueRecord extends BaseUUIDEntity {
 
 	/**
@@ -31,11 +31,58 @@ public class LeagueRecord extends BaseUUIDEntity {
 	private int lose;
 	
 	/**
-	 * 得分
+	 * 积分
 	 */
 	@Column
 	private int score;
 	
+	
+	/**
+	 * 总得分
+	 */
+	@Column
+	private  int pointSum;
+	
+	
+	/**
+	 * 场均得分
+	 */
+	@Column
+	private int pointAvg;
+	
+	
+	/**
+	 * 场次
+	 */
+	@Column
+	private int plays;
+	
+ 
+
+	public int getPointSum() {
+		return pointSum;
+	}
+
+	public void setPointSum(int pointSum) {
+		this.pointSum = pointSum;
+	}
+
+	public int getPointAvg() {
+		return pointAvg;
+	}
+
+	public void setPointAvg(int pointAvg) {
+		this.pointAvg = pointAvg;
+	}
+
+	public int getPlays() {
+		return plays;
+	}
+
+	public void setPlays(int plays) {
+		this.plays = plays;
+	}
+
 	/**
 	 * 联赛
 	 */

@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,10 +24,11 @@ import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.service.LeagueService;
 import com.xiaba2.bullfight.service.LeagueTeamService;
 import com.xiaba2.bullfight.service.TeamService;
+import com.xiaba2.core.JsonResult;
 import com.xiaba2.core.Page;
 import com.xiaba2.util.HttpUtil;
 
-@Controller
+@RestController
 @RequestMapping("/leagueteam")
 public class LeagueTeamController {
 	@Resource
@@ -144,6 +146,35 @@ public class LeagueTeamController {
 		mv.addObject("list", teams);
 		
 		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/json/add")
+	public JsonResult jsonAdd(@RequestParam("leagueid") UUID leagueid,@RequestParam("teamid") UUID teamid,HttpServletRequest request) {
+
+		JsonResult rs = new JsonResult();
+
+		LeagueTeam entity = new LeagueTeam();
+		
+		Team team = teamService.get(teamid);
+		League league = leagueService.get(leagueid);
+		
+		entity.setTeam(team);
+		entity.setLeague(league);
+		entity.setCreatedDate(new Date());
+		
+		entity.setContact(request.getParameter("contact"));
+		entity.setPhone(request.getParameter("phone"));
+		entity.setPay(Float.parseFloat(request.getParameter("pay")));
+		
+		entity.setIsPay(0);
+		
+		
+		leagueTeamService.save(entity);
+		
+		rs.setCode(JsonResult.SUCCESS);
+		
+		return rs;
 	}
 
 }

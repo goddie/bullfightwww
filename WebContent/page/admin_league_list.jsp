@@ -53,12 +53,12 @@
 												<th role="columnheader" style="width: 80px;">序号</th>
 												<th role="columnheader" style="width: 5%;">图标</th>
 												<th role="columnheader" style="">名称</th>
-												<th role="columnheader" style="width: 30%;">场地</th>
+												<th role="columnheader" style="">场地</th>
 
 												<th role="columnheader" style="width: 10%;">状态</th>
 												<th role="columnheader" style="width: 20%;">队伍</th>
 												<th role="columnheader" style="width: 20%;">比赛</th>
-												
+
 												<th role="columnheader" style="width: 20%;">操作</th>
 											</tr>
 										</thead>
@@ -77,19 +77,27 @@
 													<td class="center "><c:if test="${m.status==0 }">未开始</c:if>
 														<c:if test="${m.status==1 }">未结束</c:if> <c:if
 															test="${m.status==2 }">已结束</c:if></td>
-													<td class="action"> <a
+													<td class="action"><a
 														href="${pageContext.request.contextPath}/leagueteam/admin/add">
-															新增队伍 </a> <a
+															新增队伍 </a><br />
+													<a
 														href="${pageContext.request.contextPath}/leagueteam/admin/list?p=1">
-															队伍列表 </a>  </td>
-													<td class="action">  <a
+															队伍列表 </a></td>
+													<td class="action"><a
 														href="${pageContext.request.contextPath}/league/admin/addfight?id=${m.id}">
-															新增比赛 </a> <a
+															新增比赛 </a><br />
+													<a
 														href="${pageContext.request.contextPath}/matchfight/admin/leaguelist?id=${m.id}&p=1">
 															比赛列表 </a></td>
 													<td class="action"><a
+														href="${pageContext.request.contextPath}/league/action/updatestatus?id=${m.id}&s=1">
+															未结束 </a>
+															<a
+														href="${pageContext.request.contextPath}/league/action/updatestatus?id=${m.id}&s=2">
+															已结束 </a><br />
+													<a
 														href="${pageContext.request.contextPath}/league/action/del?id=${m.id}">
-															删除 </a>  </td>
+															删除 </a><br /></td>
 												</tr>
 											</c:forEach>
 										</tbody>

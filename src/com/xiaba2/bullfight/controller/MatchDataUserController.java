@@ -1,8 +1,10 @@
 package com.xiaba2.bullfight.controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +33,7 @@ import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
 import com.xiaba2.core.JsonResult;
 import com.xiaba2.core.Page;
+import com.xiaba2.util.HttpUtil;
 
 @RestController
 @RequestMapping("/matchdatauser")
@@ -61,7 +65,12 @@ public class MatchDataUserController {
 	 */
 	@RequestMapping(value = "/admin/add")
 	public ModelAndView adminAdd(@RequestParam("mfid") UUID mfid,
-			@RequestParam("tid") UUID tid) {
+			@RequestParam("tid") UUID tid,HttpServletRequest request) {
+		if(mfid==null||tid==null)
+		{
+			return new ModelAndView(HttpUtil.getHeaderRef(request));
+		}
+		
 		ModelAndView mv = new ModelAndView("admin_matchdatauser_add");
 
 		MatchFight matchFight = matchFightService.get(mfid);
@@ -98,6 +107,35 @@ public class MatchDataUserController {
 
 		return mv;
 	}
+	
+	
+	@RequestMapping(value = "/action/del")
+	public ModelAndView actionDel(@RequestParam("id") UUID id,HttpServletRequest request) {
+ 
+		ModelAndView mv = new ModelAndView();
+
+		MatchDataUser mdu = matchDataUserService.get(id);
+		
+		mdu.setIsDelete(1);
+ 
+		//保存球员单场数据
+		matchDataUserService.saveOrUpdate(mdu);
+		
+		//更新球员个人总体数据
+		userService.updateData(mdu.getUser());
+		
+		
+		//更新对战队伍单场数据
+		matchDataTeamService.updateMatchTeam(mdu.getMatchFight(),mdu.getTeam());
+		
+		//更新对战队伍总体数据
+		teamService.updateData(mdu.getTeam());
+		matchFightService.updateScore(mdu.getMatchFight());
+		
+		mv.setViewName(HttpUtil.getHeaderRef(request));
+		
+		return mv;
+	}
 
 	/**
 	 * 录入一个球员数据
@@ -113,14 +151,7 @@ public class MatchDataUserController {
 	public ModelAndView actionAdd(MatchDataUser entity,
 			@RequestParam("uid") UUID uid, @RequestParam("mfid") UUID mfid,
 			@RequestParam("tid") UUID tid, HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView(
-				"redirect:/matchdatauser/admin/add?mfid=" + mfid.toString()
-						+ "&tid=" + tid.toString());
-		
-
-
-
-		
+		ModelAndView mv = new ModelAndView(HttpUtil.getHeaderRef(request));
 
 		if (entity.getShot() > 0) {
 			entity.setGoalPercent(entity.getGoal() / entity.getShot());
@@ -146,21 +177,39 @@ public class MatchDataUserController {
 		
 		entity.setCreatedDate(new Date());
 		
-		DetachedCriteria criteria = matchDataUserService.createDetachedCriteria();
-		criteria.add(Restrictions.eq("isDelete", 0));
-		criteria.add(Restrictions.eq("matchFight", entity.getMatchFight()));
-		criteria.add(Restrictions.eq("user", entity.getUser()));
-		criteria.add(Restrictions.eq("team", entity.getTeam()));
-
-		List<MatchDataUser> list = matchDataUserService.findByCriteria(criteria);
-
-		if (list != null && list.size() > 0) {
-			matchDataUserService.deleteAndUpdate(list.get(0));
-		}
+//		DetachedCriteria criteria = matchDataUserService.createDetachedCriteria();
+//		criteria.add(Restrictions.eq("isDelete", 0));
+//		criteria.add(Restrictions.eq("matchFight", entity.getMatchFight()));
+//		criteria.add(Restrictions.eq("user", entity.getUser()));
+//		criteria.add(Restrictions.eq("team", entity.getTeam()));
+//
+//		List<MatchDataUser> list = matchDataUserService.findByCriteria(criteria);
+//
+//		if (list != null && list.size() > 0) {
+//			matchDataUserService.deleteAndUpdate(list.get(0));
+//		}
 		
-		matchDataUserService.saveUserData(entity);
+//		matchDataUserService.saveUserData(entity);
  
+//		recount(mfid);
 		
+		
+		
+		
+		//保存球员单场数据
+		matchDataUserService.saveOrUpdate(entity);
+		
+		//更新球员个人总体数据
+		userService.updateData(entity.getUser());
+		
+		//更新对战队伍单场数据
+		matchDataTeamService.updateMatchTeam(entity.getMatchFight(),entity.getTeam());
+		
+		//更新对战队伍总体数据
+		teamService.updateData(entity.getTeam());
+		
+		//更新对战比分
+		matchFightService.updateScore(entity.getMatchFight());
 
 //		List<MatchDataUser> list = matchDataUserService
 //				.findByCriteria(criteria);
@@ -189,6 +238,30 @@ public class MatchDataUserController {
 		
 		return mv;
 	}
+	
+	
+//	/**
+//	 * 重新统计某场比赛队伍数据
+//	 */
+//	public void recount (@RequestParam("mfid") UUID mfid)
+//	{
+//		MatchFight matchFight = matchFightService.get(mfid);
+//		
+//		DetachedCriteria criteria = matchDataUserService.createDetachedCriteria();
+//		criteria.add(Restrictions.eq("isDelete", 0));
+//		criteria.add(Restrictions.eq("matchFight", matchFight));
+//		
+//		List<MatchDataUser> list = matchDataUserService.findByCriteria(criteria);
+//		
+//
+//		
+//		for (MatchDataUser matchDataUser : list) {
+//			matchDataTeamService.updateMatchTeam(matchFight, matchDataUser.getTeam());
+//			teamService.updateData(matchDataUser.getTeam());
+//		}
+//		
+//		
+//	}
 
 	/**
 	 * 球员比赛
@@ -273,4 +346,211 @@ public class MatchDataUserController {
 		
 		return rs;
 	}
+	
+	/**
+	 * 得分
+	 * @param leagueid
+	 * @param p
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/json/leaguepoint")
+	public JsonResult getLeaguePoint(@RequestParam("leagueid") UUID leagueid,@RequestParam("p") int p,HttpServletRequest request)
+	{
+		JsonResult rs = new JsonResult();
+		
+		int start = Math.max((p - 1)*15-1,0);
+
+		String sql = "select hex(mu.user_id) userid,count(user_id) plays,sum(mu.rebound) rebound,sum(mu.assist) assist,sum(mu.scoring) scoring,"
+				+ "avg(mu.rebound) avgrebound,avg(mu.assist) avgassist,avg(scoring) avgscoring"
+				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+				+ "on mu.matchFight_id = mf.id where mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
+				+ "group by mu.user_id order by scoring desc limit "+start+",15;";
+		
+		List<Map<String, Object>> sqlrs = matchDataTeamService.findByNativeSQL(sql);
+		List<DataUser> list = new ArrayList<DataUser>();
+		DecimalFormat df=new DecimalFormat(".0");
+ 
+		
+		for (Map<String, Object> map : sqlrs) {
+			
+			DataUser du = new DataUser();
+			
+			du.setAssist(Float.parseFloat(df.format(map.get("assist"))));
+			du.setAvgassist(Float.parseFloat(df.format(map.get("avgassist"))));
+			du.setRebound(Float.parseFloat(df.format(map.get("rebound"))));
+			du.setAvgrebound(Float.parseFloat(df.format(map.get("avgrebound"))));
+			du.setPlays(Float.parseFloat(df.format(map.get("plays"))));
+			du.setScoring(Float.parseFloat(df.format(map.get("scoring"))));
+			du.setAvgscoring(Float.parseFloat(df.format(map.get("avgscoring"))));
+
+			UUID uuid = HttpUtil.uuidMysqlString(map.get("userid").toString());
+			du.setUser(userService.get(uuid));
+			
+			list.add(du);
+		}
+		
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(list);
+		
+		return rs;
+	}
+	
+	/**
+	 * 篮板
+	 * @param leagueid
+	 * @param p
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/json/leaguerebound")
+	public JsonResult getLeagueRebound(@RequestParam("leagueid") UUID leagueid,@RequestParam("p") int p,HttpServletRequest request)
+	{
+		JsonResult rs = new JsonResult();
+		
+		int start = Math.max((p - 1)*15-1,0);
+
+		String sql = "select hex(mu.user_id) userid,count(user_id) plays,sum(mu.rebound) rebound,sum(mu.assist) assist,sum(mu.scoring) scoring,"
+				+ "avg(mu.rebound) avgrebound,avg(mu.assist) avgassist,avg(scoring) avgscoring"
+				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+				+ "on mu.matchFight_id = mf.id where mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
+				+ "group by mu.user_id order by rebound desc limit "+start+",15;";
+		
+		List<Map<String, Object>> sqlrs = matchDataTeamService.findByNativeSQL(sql);
+		List<DataUser> list = new ArrayList<DataUser>();
+		DecimalFormat df=new DecimalFormat(".0");
+		for (Map<String, Object> map : sqlrs) {
+			
+			DataUser du = new DataUser();
+			
+			du.setAssist(Float.parseFloat(df.format(map.get("assist"))));
+			du.setAvgassist(Float.parseFloat(df.format(map.get("avgassist"))));
+			du.setRebound(Float.parseFloat(df.format(map.get("rebound"))));
+			du.setAvgrebound(Float.parseFloat(df.format(map.get("avgrebound"))));
+			du.setPlays(Float.parseFloat(df.format(map.get("plays"))));
+			du.setScoring(Float.parseFloat(df.format(map.get("scoring"))));
+			du.setAvgscoring(Float.parseFloat(df.format(map.get("avgscoring"))));
+
+			UUID uuid = HttpUtil.uuidMysqlString(map.get("userid").toString());
+			du.setUser(userService.get(uuid));
+			
+			list.add(du);
+		}
+		
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(list);
+		
+		
+		return rs;
+	}
+	
+	
+	@RequestMapping(value = "/json/leagueassist")
+	public JsonResult getLeagueAssist(@RequestParam("leagueid") UUID leagueid,@RequestParam("p") int p,HttpServletRequest request)
+	{
+		JsonResult rs = new JsonResult();
+		
+		
+		int start = Math.max((p - 1)*15-1,0);
+
+		String sql = "select hex(mu.user_id) userid,count(user_id) plays,sum(mu.rebound) rebound,sum(mu.assist) assist,sum(mu.scoring) scoring,"
+				+ "avg(mu.rebound) avgrebound,avg(mu.assist) avgassist,avg(scoring) avgscoring"
+				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+				+ "on mu.matchFight_id = mf.id where mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
+				+ "group by mu.user_id order by assist desc limit "+start+",15;";
+		
+		List<Map<String, Object>> sqlrs = matchDataTeamService.findByNativeSQL(sql);
+		List<DataUser> list = new ArrayList<DataUser>();
+		DecimalFormat df=new DecimalFormat(".0");
+		for (Map<String, Object> map : sqlrs) {
+			
+			DataUser du = new DataUser();
+			
+			du.setAssist(Float.parseFloat(df.format(map.get("assist"))));
+			du.setAvgassist(Float.parseFloat(df.format(map.get("avgassist"))));
+			du.setRebound(Float.parseFloat(df.format(map.get("rebound"))));
+			du.setAvgrebound(Float.parseFloat(df.format(map.get("avgrebound"))));
+			du.setPlays(Float.parseFloat(df.format(map.get("plays"))));
+			du.setScoring(Float.parseFloat(df.format(map.get("scoring"))));
+			du.setAvgscoring(Float.parseFloat(df.format(map.get("avgscoring"))));
+
+			UUID uuid = HttpUtil.uuidMysqlString(map.get("userid").toString());
+			du.setUser(userService.get(uuid));
+			
+			list.add(du);
+		}
+		
+		
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setData(list);
+		
+		return rs;
+	}
+	
+	public class DataUser
+	{
+	    private float rebound;
+	    private float assist;
+	    private float scoring;
+	    private float plays;
+	    private float avgrebound;
+	    private float avgassist;
+	    private float avgscoring;
+	    private User user;
+		public float getRebound() {
+			return rebound;
+		}
+		public void setRebound(float rebound) {
+			this.rebound = rebound;
+		}
+		public float getAssist() {
+			return assist;
+		}
+		public void setAssist(float assist) {
+			this.assist = assist;
+		}
+		public float getScoring() {
+			return scoring;
+		}
+		public void setScoring(float scoring) {
+			this.scoring = scoring;
+		}
+		public float getPlays() {
+			return plays;
+		}
+		public void setPlays(float plays) {
+			this.plays = plays;
+		}
+		public float getAvgrebound() {
+			return avgrebound;
+		}
+		public void setAvgrebound(float avgrebound) {
+			this.avgrebound = avgrebound;
+		}
+		public float getAvgassist() {
+			return avgassist;
+		}
+		public void setAvgassist(float avgassist) {
+			this.avgassist = avgassist;
+		}
+		public float getAvgscoring() {
+			return avgscoring;
+		}
+		public void setAvgscoring(float avgscoring) {
+			this.avgscoring = avgscoring;
+		}
+		public User getUser() {
+			return user;
+		}
+		public void setUser(User user) {
+			this.user = user;
+		}
+		 
+	    
+	}
+
+	
 }
+

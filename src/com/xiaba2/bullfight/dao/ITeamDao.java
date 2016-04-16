@@ -6,5 +6,6 @@ import com.xiaba2.core.IBaseDao;
 
 public interface ITeamDao extends IBaseDao<Team, UUID> {
 	
- 
+	void updateData(Team team);
+    void countWinLose(Team team);
 }

@@ -115,7 +115,21 @@ public class TeamController {
 		return mv;
 	}
 	
-	
+	@RequestMapping(value = "/action/del")
+	public ModelAndView actionDel(@RequestParam("id") UUID tid, HttpServletRequest request) {
+		
+		
+		ModelAndView mv=new ModelAndView();
+		
+		Team team = teamService.get(tid);
+		team.setIsDelete(1);
+		
+		teamService.saveOrUpdate(team);
+		
+		mv.setViewName(HttpUtil.getHeaderRef(request));
+		
+		return mv;
+	}
 	
 	
 	
@@ -136,7 +150,16 @@ public class TeamController {
 		return mv;
 	}
 	
-	
+	/** 
+	 *  统计工具
+	 * @param tid
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/count")
+	public ModelAndView adminCount() {
+		ModelAndView mv=new ModelAndView("admin_team_count");
+		return mv;
+	}
 	
 	
 	

@@ -60,4 +60,10 @@ public class UserService extends BaseService<User, UUID> {
 		Member member = memberService.get(id);
 		return getByMember(member);
 	}
+	
+	@Transactional
+	public void updateData(User user)
+	{
+		userDao.updateData(user);
+	}
 }

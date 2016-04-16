@@ -123,6 +123,30 @@ public class LeagueController {
 	
 	
 	/**
+	 * 修改联赛状态
+	 * @param id
+	 * @param s
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/action/updatestatus")
+	public ModelAndView updatestatus(@RequestParam("id") UUID id,@RequestParam("s") int s, HttpServletRequest request) {
+		
+		ModelAndView mv=new ModelAndView();
+		
+		League entity = leagueService.get(id);
+		entity.setStatus(s);
+		
+		leagueService.saveOrUpdate(entity);
+		
+		mv.setViewName(HttpUtil.getHeaderRef(request));
+		
+		return mv;
+	}
+	
+	
+	
+	/**
 	 * 选择
 	 * @return
 	 */

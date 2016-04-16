@@ -36,6 +36,8 @@ public class MatchDataUserService extends BaseService<MatchDataUser, UUID> {
 	@Resource
 	UserService userService;
  
+	@Resource
+	TeamService  teamService;
 
 	/**
 	 * 删除重复数据
@@ -45,54 +47,49 @@ public class MatchDataUserService extends BaseService<MatchDataUser, UUID> {
 	public void deleteAndUpdate(MatchDataUser entity)
 	{
 		delete(entity);
-		matchDataTeamService.updateTeamByUser(entity, -1);
-		matchDataTeamService.countTeam(entity);
+		matchDataTeamService.updateMatchTeam(entity.getMatchFight(),entity.getTeam());
+		teamService.updateData(entity.getTeam());
 		
 	}
 	
-	/**
-	 * 保存队员比赛数据，同时更新队伍，队员个人数据
-	 * @param entity
-	 */
-	@Transactional
-	public void saveUserData(MatchDataUser entity) {
-		matchDataUserDao.save(entity);
-	
-		// 2 更新队员场均
-		
-
-		// 3 更新队伍场均
-		matchDataTeamService.updateTeamByUser(entity, 1);
-		matchDataTeamService.countTeam(entity);
-		countUser(entity);
-		
-	}
-	
+//	/**
+//	 * 保存队员比赛数据，同时更新队伍，队员个人数据
+//	 * @param entity
+//	 */
+//	@Transactional
+//	public void saveUserData(MatchDataUser entity) {
+//		matchDataUserDao.save(entity);
+//		userService.updateData(entity.getUser());
+//		
+//		matchDataTeamService.updateMatchTeam(entity.getMatchFight(),entity.getTeam());
+//		teamService.updateData(entity.getTeam());
+//		
+////		countUser(entity);
+//		
+//	}
+//	
 	
 	
-	@Transactional
-	void countUser(MatchDataUser matchDataUser)
-	{
+//	@Transactional
+//	void countUser(MatchDataUser matchDataUser)
+//	{
+// 
+//		List<Float> rs = matchDataUserDao.countUser(matchDataUser);
+//		User t = userService.get(matchDataUser.getUser().getId());
+//		t.setScoringAvg(rs.get(0));
+//		t.setRebound(rs.get(1));
+//		t.setAssist(rs.get(2));
+//		t.setBlock(rs.get(3));
+//		t.setSteal(rs.get(4));
+//		t.setTurnover(rs.get(5));
+//		t.setFoul(rs.get(6));
+//		t.setGoalPercent(rs.get(7));
+//		t.setFreeGoalPercent(rs.get(8));
+//		t.setThreeGoalPercent(rs.get(9));
+//		t.setPlayCount(rs.get(10));
+//		t.setScoring(rs.get(11));
+//		userService.saveOrUpdate(t);
+//	}
  
-		List<Float> rs = matchDataUserDao.countUser(matchDataUser);
-		
-		
-		
-		User t = userService.get(matchDataUser.getUser().getId());
-		
-		t.setScoringAvg(rs.get(0));
-		t.setRebound(rs.get(1));
-		t.setAssist(rs.get(2));
-		t.setBlock(rs.get(3));
-		t.setSteal(rs.get(4));
-		t.setTurnover(rs.get(5));
-		t.setFoul(rs.get(6));
-		t.setGoalPercent(rs.get(7));
-		t.setFreeGoalPercent(rs.get(8));
-		t.setThreeGoalPercent(rs.get(9));
-		t.setPlayCount(rs.get(10));
-		t.setScoring(rs.get(11));
-		userService.saveOrUpdate(t);
-	}
 
 }

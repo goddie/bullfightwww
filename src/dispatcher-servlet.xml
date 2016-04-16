@@ -49,15 +49,15 @@
 		<property name="driverClassName">
 			<value>com.mysql.jdbc.Driver</value>
 		</property>
-		<!-- <property name="url">
-			<value>jdbc:mysql://101.200.235.199:3306/db_bullfight</value>
-		</property>
-		<property name="username">
-			<value>root</value>
-		</property>
-		<property name="password">
-			<value>goddie</value>
-		</property> -->
+<!-- 		<property name="url"> -->
+<!-- 			<value>jdbc:mysql://101.200.235.199:3306/db_bullfight</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="username"> -->
+<!-- 			<value>root</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="password"> -->
+<!-- 			<value>goddie</value> -->
+<!-- 		</property> -->
 		<property name="url">
 		<value>jdbc:mysql://localhost:3306/bullfight</value>
 

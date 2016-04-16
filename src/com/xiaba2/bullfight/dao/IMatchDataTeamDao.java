@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.xiaba2.bullfight.domain.MatchDataTeam;
 import com.xiaba2.bullfight.domain.MatchDataUser;
+import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.core.IBaseDao;
 
@@ -22,13 +23,23 @@ public interface IMatchDataTeamDao extends IBaseDao<MatchDataTeam, UUID> {
 	 * @param matchDataUser
 	 * @param add
 	 */
-	void updateTeamByUser(MatchDataUser matchDataUser,int add);
+//	void updateTeamByUser(MatchDataUser matchDataUser,int add);
 
  
+//	/**
+//	 * 根据一个球员数据变化，重新统计队伍的场均数据
+//	 * @param matchDataUser
+//	 * @return
+//	 */
+//	List<Float> countTeam(MatchDataUser matchDataUser);
+	
+	
 	/**
-	 * 根据一个球员数据变化，重新统计队伍的场均数据
-	 * @param matchDataUser
-	 * @return
+	 * 根据个人成绩统计队伍单场、整体成绩
+	 * @param matchFight
+	 * @param team
 	 */
-	List<Float> countTeam(MatchDataUser matchDataUser);
+	void updateMatchTeam(MatchFight matchFight,Team team);
+	
+
 }

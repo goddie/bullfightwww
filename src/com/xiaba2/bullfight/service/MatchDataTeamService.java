@@ -41,41 +41,54 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 		return matchDataTeamDao;
 	}
 
+//	/**
+//	 * 调整队伍的成绩
+//	 * 
+//	 * @param matchFight
+//	 * @param user
+//	 */
+//	@Transactional
+//	public void updateTeamByUser(MatchDataUser matchDataUser,int add)
+//	{
+//		matchDataTeamDao.updateTeamByUser(matchDataUser, add);
+//	}
+//	
 	/**
-	 * 调整队伍的成绩
-	 * 
+	 * 根据个人成绩统计队伍单场、整体成绩
 	 * @param matchFight
-	 * @param user
+	 * @param team
 	 */
 	@Transactional
-	public void updateTeamByUser(MatchDataUser matchDataUser,int add)
+	public void updateMatchTeam(MatchFight matchFight,Team team)
 	{
-		matchDataTeamDao.updateTeamByUser(matchDataUser, add);
+		matchDataTeamDao.updateMatchTeam(matchFight, team);
 	}
 	
-	@Transactional
-	void countTeam(MatchDataUser matchDataUser)
-	{
- 
-		List<Float> rs =  matchDataTeamDao.countTeam(matchDataUser);
- 
-		
-		Team t = teamService.get(matchDataUser.getTeam().getId()) ;
-		
-		t.setScoringAvg(rs.get(0));
-		t.setRebound(rs.get(1));
-		t.setAssist(rs.get(2));
-		t.setBlock(rs.get(3));
-		t.setSteal(rs.get(4));
-		t.setTurnover(rs.get(5));
-		t.setFoul(rs.get(6));
-		t.setGoalPercent(rs.get(7));
-		t.setFreeGoalPercent(rs.get(8));
-		t.setThreeGoalPercent(rs.get(9));
-		t.setPlayCount(rs.get(10));
-		t.setScoring(rs.get(11));
-		teamService.save(t);
-	}
+	
+	
+//	@Transactional
+//	public void countTeam(MatchDataUser matchDataUser)
+//	{
+// 
+//		List<Float> rs =  teamService.updateData(team);  matchDataTeamDao.countTeam(matchDataUser);
+// 
+//		
+//		Team t = teamService.get(matchDataUser.getTeam().getId()) ;
+//		
+//		t.setScoringAvg(rs.get(0));
+//		t.setRebound(rs.get(1));
+//		t.setAssist(rs.get(2));
+//		t.setBlock(rs.get(3));
+//		t.setSteal(rs.get(4));
+//		t.setTurnover(rs.get(5));
+//		t.setFoul(rs.get(6));
+//		t.setGoalPercent(rs.get(7));
+//		t.setFreeGoalPercent(rs.get(8));
+//		t.setThreeGoalPercent(rs.get(9));
+//		t.setPlayCount(rs.get(10));
+//		t.setScoring(rs.get(11));
+//		teamService.save(t);
+//	}
 	
 	
 	/**

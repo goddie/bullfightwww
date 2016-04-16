@@ -77,7 +77,11 @@
 													<td class="center ">${m.status}</td>
 
 													<td class="center ">${m.createdDate}</td>
-													<td class="action">
+													<td class="action"><a href="${pageContext.request.contextPath}/matchfight/admin/teamlist?teamid=${m.id}&p=1">
+																对战 </a> 
+													<a href="${pageContext.request.contextPath}/team/action/del?id=${m.id}">
+																删除 </a> 
+																
 														<div style="display: none">
 															<a
 																href="${pageContext.request.contextPath}/team/edit/${m.id}">

@@ -118,6 +118,7 @@ public class TeamUserController {
 		DetachedCriteria criteria = teamUserService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("user.id", UUID.fromString(uid)));
 		criteria.add(Restrictions.eq("team.id", UUID.fromString(tid)));
+		criteria.add(Restrictions.eq("isDelete",0));
 
 		List<TeamUser> list = teamUserService.findByCriteria(criteria);
 		if (list == null || list.size() == 0) {

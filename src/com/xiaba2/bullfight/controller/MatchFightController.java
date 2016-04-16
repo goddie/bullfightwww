@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -31,6 +32,7 @@ import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.domain.TeamUser;
 import com.xiaba2.bullfight.service.ArenaService;
 import com.xiaba2.bullfight.service.KeyValueService;
+import com.xiaba2.bullfight.service.LeagueRecordService;
 import com.xiaba2.bullfight.service.LeagueService;
 import com.xiaba2.bullfight.service.MatchDataTeamService;
 import com.xiaba2.bullfight.service.MatchFightService;
@@ -71,6 +73,9 @@ public class MatchFightController {
 	private MatchFightUserService  matchFightUserService ;
 	@Resource
 	private LeagueService leagueService;
+	
+	@Resource
+	private LeagueRecordService leagueRecordService;
 
 	@RequestMapping(value = "/admin/{name}")
 	public ModelAndView getPage(@PathVariable String name) {
@@ -91,6 +96,46 @@ public class MatchFightController {
 		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
 		criteria.add(Restrictions.not(Restrictions.eq("matchType", 3)));
+		
+		String name=request.getParameter("name");
+		if(!StringUtils.isEmpty(name))
+		{
+ 
+			DetachedCriteria criteria2= teamService.createDetachedCriteria();
+			criteria2.add(Restrictions.eq("name", name));
+			List<Team> list2= teamService.findByCriteria(criteria2);
+			if(list2!=null&&list2.size()>0)
+			{
+				criteria.add(Restrictions.or( Restrictions.eq("host", list2.get(0)),Restrictions.eq("guest", list2.get(0))));
+			}
+		}
+		
+		page = matchFightService.findPageByCriteria(criteria, page);
+
+		mv.addObject("list", page.getResult());
+		mv.addObject("pageHtml", page.genPageHtml(request));
+
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/admin/teamlist")
+	public ModelAndView adminTeamList(@RequestParam("p") int p,@RequestParam("teamid") UUID teamid,
+			HttpServletRequest request) {
+
+		ModelAndView mv = new ModelAndView("admin_matchfight_teamlist");
+
+		Team team = teamService.get(teamid);
+		
+		Page<MatchFight> page = new Page<MatchFight>();
+		page.setPageSize(HttpUtil.PAGE_SIZE);
+		page.setPageNo(p);
+		page.addOrder("createdDate", "desc");
+
+		DetachedCriteria criteria = matchFightService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.or(Restrictions.eq("host", team),Restrictions.eq("guest", team)));
+
 		page = matchFightService.findPageByCriteria(criteria, page);
 
 		mv.addObject("list", page.getResult());
@@ -467,44 +512,72 @@ public class MatchFightController {
 		// return rs;
 		// }
 
-		MatchDataTeam hostData = matchDataTeamService.getByMatchFight(
-				matchFight, host);
-		matchFight.setHostScore(hostData.getScoring());
-
-		MatchDataTeam guestData = matchDataTeamService.getByMatchFight(
-				matchFight, guest);
-		matchFight.setGuestScore(guestData.getScoring());
-
-		if (matchFight.getHostScore() > matchFight.getGuestScore()) {
-			matchFight.setWinner(matchFight.getHost());
-
-			host.setWin(host.getWin() + 1);
-			guest.setLose(guest.getLose() + 1);
-
-		}
-
-		if (matchFight.getHostScore() < matchFight.getGuestScore()) {
-			matchFight.setWinner(matchFight.getGuest());
-
-			guest.setWin(guest.getWin() + 1);
-			host.setLose(host.getLose() + 1);
-		}
-
-		if (matchFight.getHostScore() == matchFight.getGuestScore()) {
-			matchFight.setDraw(1);
-			guest.setDraw(guest.getDraw() + 1);
-			host.setDraw(host.getDraw() + 1);
-
-		}
+//		MatchDataTeam hostData = matchDataTeamService.getByMatchFight(
+//				matchFight, host);
+//		matchFight.setHostScore(hostData.getScoring());
+//
+//		MatchDataTeam guestData = matchDataTeamService.getByMatchFight(
+//				matchFight, guest);
+//		matchFight.setGuestScore(guestData.getScoring());
+//
+//		if (matchFight.getHostScore() > matchFight.getGuestScore()) {
+//			matchFight.setWinner(matchFight.getHost());
+//
+//			host.setWin(host.getWin() + 1);
+//			guest.setLose(guest.getLose() + 1);
+//
+//		}
+//
+//		if (matchFight.getHostScore() < matchFight.getGuestScore()) {
+//			matchFight.setWinner(matchFight.getGuest());
+//
+//			guest.setWin(guest.getWin() + 1);
+//			host.setLose(host.getLose() + 1);
+//		}
+//
+//		if (matchFight.getHostScore() == matchFight.getGuestScore()) {
+//			matchFight.setDraw(1);
+//			guest.setDraw(guest.getDraw() + 1);
+//			host.setDraw(host.getDraw() + 1);
+//
+//		}
 
 		// host.setPlayCount(host.getPlayCount()+1);
 		// guest.setPlayCount(guest.getPlayCount()+1);
+		
+		
+		
 
+//		//比赛场次
+//		String sql1 = "select count(id) played from db_bullfight_matchfight"
+//				+ " where isdelete=0 and ( host_id = unhex('"+host.getId().toString().replaceAll("-", "")+"') "
+//			    + " or guest_id = unhex('"+host.getId().toString().replaceAll("-", "")+"') )";
+//		
+//		Map<String,Object> map1 = teamService.findByNativeSQL(sql1).get(0);
+//		host.setPlayCount(HttpUtil.toFloat(map1.get("played")));
+//		
+//		
+//		String sql2 = "select count(id) played from db_bullfight_matchfight"
+//				+ " where isdelete=0 and ( host_id = unhex('"+guest.getId().toString().replaceAll("-", "")+"') "
+//			    + " or guest_id = unhex('"+guest.getId().toString().replaceAll("-", "")+"') )";
+//		Map<String,Object> map2 = teamService.findByNativeSQL(sql2).get(0);
+//		guest.setPlayCount(HttpUtil.toFloat(map2.get("played")));
+		
+		
+		teamService.countWinLose(host);
+		teamService.countWinLose(guest);
+		
 		teamService.saveOrUpdate(host);
 		teamService.saveOrUpdate(guest);
 
 		matchFight.setStatus(2);
 		matchFightService.saveOrUpdate(matchFight);
+		
+		//联赛积分
+		if(matchFight.getLeague()!=null)
+		{
+			leagueRecordService.countRecord(matchFight);
+		}
 
 		rs.setCode(JsonResult.SUCCESS);
 		rs.setMsg("操作成功");

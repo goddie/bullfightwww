@@ -892,9 +892,9 @@ public class UserController {
 		
 		user.setNickname(request.getParameter("nickname"));
 		user.setCity(request.getParameter("city"));
-		user.setAge(Integer.parseInt(request.getParameter("age")));
-		user.setHeight(Integer.parseInt(request.getParameter("height")));
-		user.setWeight(Integer.parseInt(request.getParameter("weight")));
+		user.setAge((int)Float.parseFloat(request.getParameter("age")));
+		user.setHeight((int)Float.parseFloat(request.getParameter("height")));
+		user.setWeight((int)Float.parseFloat(request.getParameter("weight")));
 		
 		String pos = request.getParameter("position");
 		

@@ -48,6 +48,24 @@ public class LeagueTeam extends BaseUUIDEntity{
 	@Column
 	private int isPay;
 	
+	/**
+	 * 联系人
+	 */
+	@Column
+	private String contact; 
+	
+	/**
+	 * 联系电话
+	 */
+	@Column
+	private String phone;
+	
+	/**
+	 * 付款
+	 */
+	@Column
+	private float pay;
+	
 
 	public int getIsPay() {
 		return isPay;
@@ -96,8 +114,29 @@ public class LeagueTeam extends BaseUUIDEntity{
 	public void setIsSeed(int isSeed) {
 		this.isSeed = isSeed;
 	}
-	
-	
-	
+
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public float getPay() {
+		return pay;
+	}
+
+	public void setPay(float pay) {
+		this.pay = pay;
+	}
 	
 }

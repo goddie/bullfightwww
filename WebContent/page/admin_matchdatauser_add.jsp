@@ -245,7 +245,7 @@
 													<td class="center ">${m.block}</td>
 													<td class="center ">${m.steal}</td>
 
-													<td class="center ">删除</td>
+													<td class="center "><a href="${pageContext.request.contextPath}/matchdatauser/action/del?id=${m.id}">删除</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>
