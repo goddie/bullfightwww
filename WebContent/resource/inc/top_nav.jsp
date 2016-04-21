@@ -27,7 +27,7 @@
                                  <li><a href="${pageContext.request.contextPath}/league/admin/list?p=1">联赛管理</a></li>
                                 <li><a href="${pageContext.request.contextPath}/article/admin/list?p=1">文章管理</a></li>
                                 <li><a href="${pageContext.request.contextPath}/payrecord/admin/list?p=1">交易记录</a></li>
-                                <li><a href="${pageContext.request.contextPath}/page/ucenter_userconfig.jsp">账户设置</a></li>
+                                <li><a href="${pageContext.request.contextPath}/page/ucenter_userconfig.jsp">系统设置</a></li>
                             </ul>
                         </div><!-- /.navbar-collapse -->
                     </div>

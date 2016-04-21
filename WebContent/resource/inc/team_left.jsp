@@ -11,9 +11,7 @@
 			<li><a
 				href="${pageContext.request.contextPath}/team/admin/recordlist?p=1"><i
 					class="glyphicon glyphicon-chevron-right"></i>球队数据</a></li>
-					<li><a
-				href="${pageContext.request.contextPath}/team/admin/count"><i
-					class="glyphicon glyphicon-chevron-right"></i>统计工具</a></li>
+					
 		</ul></li>
 
 

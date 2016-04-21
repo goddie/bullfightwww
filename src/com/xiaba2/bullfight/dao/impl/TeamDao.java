@@ -90,24 +90,30 @@ public class TeamDao extends AbstractHibernateDao<Team, UUID> implements
 	 * 统计胜负
 	 * @param team
 	 */
-	public void countWinLose(Team team)
+	public void countWinLose(Team entity)
 	{
+		
+		
+		Team team = get(entity.getId());
+		
+		String teamid = team.getId().toString().replaceAll("-", "");
+		
 		//比赛场次
 		String sql1 = "select count(id) played from db_bullfight_matchfight"
-				+ " where isdelete=0 and ( host_id = unhex('"+team.getId().toString().replaceAll("-", "")+"') "
-			    + " or guest_id = unhex('"+team.getId().toString().replaceAll("-", "")+"') )";
+				+ " where isdelete=0 and status=2 and ( host_id = unhex('"+teamid+"') "
+			    + " or guest_id = unhex('"+teamid+"') )";
 		
 		Map<String,Object> map1 = findByNativeSQL(sql1).get(0);
 		team.setPlayCount(HttpUtil.toFloat(map1.get("played")));
 		
 		
 		String sql2 = "select count(id) win from db_bullfight_matchfight"
-				+ " where isdelete=0 and hostScore>guestScore and host_id = unhex('"+team.getId().toString().replaceAll("-", "")+"')";
+				+ " where isdelete=0 and status=2 and hostScore>guestScore and host_id = unhex('"+teamid+"')";
 		Map<String,Object> map2 = findByNativeSQL(sql2).get(0);
 		float win1 = HttpUtil.toFloat(map2.get("win"));
 		
 		String sql3 = "select count(id) win from db_bullfight_matchfight"
-				+ " where isdelete=0 and hostScore<guestScore and guest_id = unhex('"+team.getId().toString().replaceAll("-", "")+"')";
+				+ " where isdelete=0 and status=2 and hostScore<guestScore and guest_id = unhex('"+teamid+"')";
 		Map<String,Object> map3= findByNativeSQL(sql3).get(0);
 		float win2 = HttpUtil.toFloat(map3.get("win"));
 		

@@ -54,7 +54,7 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 //	}
 //	
 	/**
-	 * 根据个人成绩统计队伍单场、整体成绩
+	 * 根据队伍成绩统计队伍单场、整体成绩
 	 * @param matchFight
 	 * @param team
 	 */
@@ -110,5 +110,29 @@ public class MatchDataTeamService extends BaseService<MatchDataTeam, UUID> {
 		return list.isEmpty()?null:list.get(0);
 	}
  
+	
+	/**
+	 * 删除对战
+	 * @param matchFight
+	 */
+	@Transactional
+	public void deleteByMatchFight(MatchFight matchFight)
+	{
+		DetachedCriteria criteria = matchDataTeamDao.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("matchFight", matchFight));
+		
+		List<MatchDataTeam> list = matchDataTeamDao.findByCriteria(criteria);
+		
+		for (MatchDataTeam matchDataTeam : list) {
+			matchDataTeam.setIsDelete(1);
+			saveOrUpdate(matchDataTeam);
+
+		}
+		
+		updateMatchTeam(matchFight, matchFight.getHost());
+		updateMatchTeam(matchFight, matchFight.getGuest());
+		
+	}
 	
 }

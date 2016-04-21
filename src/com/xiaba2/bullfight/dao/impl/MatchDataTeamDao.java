@@ -100,7 +100,7 @@ public class MatchDataTeamDao extends AbstractHibernateDao<MatchDataTeam, UUID>
 	
 	
 	/**
-	 * 根据个人成绩统计队伍单场、整体成绩
+	 * 根据成绩统计队伍单场、整体成绩
 	 * @param matchFight
 	 * @param team
 	 */

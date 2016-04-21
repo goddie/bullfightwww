@@ -38,6 +38,18 @@ public class MatchFightDao extends AbstractHibernateDao<MatchFight, UUID> implem
 		entity.setHostScore(scoring1);
 		entity.setGuestScore(scoring2);
 		
+		if(scoring1>scoring2)
+		{
+			entity.setWinner(entity.getHost());
+			entity.setLoser(entity.getGuest());
+		}
+		
+		
+		if(scoring1<scoring2)
+		{
+			entity.setWinner(entity.getGuest());
+			entity.setLoser(entity.getHost());
+		}
 
 		
 		saveOrUpdate(entity);

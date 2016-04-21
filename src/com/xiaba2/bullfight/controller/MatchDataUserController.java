@@ -124,7 +124,6 @@ public class MatchDataUserController {
 		//更新球员个人总体数据
 		userService.updateData(mdu.getUser());
 		
-		
 		//更新对战队伍单场数据
 		matchDataTeamService.updateMatchTeam(mdu.getMatchFight(),mdu.getTeam());
 		
@@ -240,9 +239,9 @@ public class MatchDataUserController {
 	}
 	
 	
-//	/**
-//	 * 重新统计某场比赛队伍数据
-//	 */
+	/**
+	 * 玩家数据
+	 */
 //	public void recount (@RequestParam("mfid") UUID mfid)
 //	{
 //		MatchFight matchFight = matchFightService.get(mfid);
@@ -253,11 +252,12 @@ public class MatchDataUserController {
 //		
 //		List<MatchDataUser> list = matchDataUserService.findByCriteria(criteria);
 //		
-//
-//		
 //		for (MatchDataUser matchDataUser : list) {
-//			matchDataTeamService.updateMatchTeam(matchFight, matchDataUser.getTeam());
-//			teamService.updateData(matchDataUser.getTeam());
+//			
+//
+//
+//			
+//
 //		}
 //		
 //		
@@ -488,6 +488,66 @@ public class MatchDataUserController {
 		
 		return rs;
 	}
+	
+	
+	/**
+	 * 玩家数据
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/count")
+	public ModelAndView countUserData(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView();
+
+		DetachedCriteria criteria1 = userService.createDetachedCriteria();
+		criteria1.add(Restrictions.eq("isDelete", 0));
+//		criteria1.add(Restrictions.eq("id",UUID.fromString("f644c4e6-6ae9-44e3-9faf-9ba3a3ebfbf6")));
+
+		List<User> list1 = userService.findByCriteria(criteria1);
+		
+		for (User user : list1) 
+		{
+//			DetachedCriteria criteria = matchFightService.createDetachedCriteria();
+//			criteria.add(Restrictions.eq("isDelete", 0));
+//			criteria.add(Restrictions.eq("user", user));
+// 
+//			List<MatchDataUser> list = matchDataUserService.findByCriteria(criteria);
+//
+//			for (MatchDataUser matchDataUser : list) {
+//
+//
+//				
+//				
+//			}
+			
+//			String sqlwin = "select count(mu.id) win from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+//					+ "on mu.matchfight_id = mf.id where user_id = unhex('"+user.getId().toString().replaceAll("-", "")+"') "
+//					+ "and mf.status=2 and mf.winner_id = mu.team_id";
+//			
+//			String sqllose = "select count(mu.id) lose from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+//					+ "on mu.matchfight_id = mf.id where user_id = unhex('"+user.getId().toString().replaceAll("-", "")+"') "
+//					+ "and mf.status=2 and mf.loser_id = mu.team_id";
+//			
+//			Map<String,Object> mapwin = matchDataUserService.findByNativeSQL(sqlwin).get(0);
+//			float win = HttpUtil.toFloat(mapwin.get("win"));
+//			
+//			Map<String,Object> maplose = matchDataUserService.findByNativeSQL(sqllose).get(0);
+//			float lose = HttpUtil.toFloat(maplose.get("lose"));
+//			
+//			
+//			user.setWin(win);
+//			user.setLose(lose);
+//			user.setPlayCount(win+lose);
+			
+			userService.updateData(user);
+
+		}
+
+		mv.setViewName(HttpUtil.getHeaderRef(request));
+		return mv;
+	}
+	
+	
 	
 	public class DataUser
 	{

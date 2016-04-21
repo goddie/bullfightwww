@@ -17,12 +17,38 @@ public class UserDao extends AbstractHibernateDao<User, UUID> implements IUserDa
 		
 		User entity =  get(user.getId());
 		
+		String uid = entity.getId().toString().replaceAll("-", "");
+		
+		
+		String sqlwin = "select count(mu.id) win from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+				+ "on mu.matchfight_id = mf.id where user_id = unhex('"+uid+"') and mu.isdelete=0 and mf.isdelete=0 "
+				+ "and mf.status=2 and mf.winner_id = mu.team_id";
+		
+		String sqllose = "select count(mu.id) lose from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
+				+ "on mu.matchfight_id = mf.id where user_id = unhex('"+uid+"') and mu.isdelete=0 and mf.isdelete=0 "
+				+ "and mf.status=2 and mf.loser_id = mu.team_id";
+		
+		Map<String,Object> mapwin = findByNativeSQL(sqlwin).get(0);
+		float win = HttpUtil.toFloat(mapwin.get("win"));
+		
+		Map<String,Object> maplose = findByNativeSQL(sqllose).get(0);
+		float lose = HttpUtil.toFloat(maplose.get("lose"));
+		
+		
+		entity.setWin(win);
+		entity.setLose(lose);
+		entity.setPlayCount(win+lose);
+		
+		
+		
+		
 		// TODO Auto-generated method stub
 		String sql = "select avg(goalPercent) goalPercent,avg(freeGoalPercent) freeGoalPercent,avg(threeGoalPercent) threeGoalPercent,"
 				+ "avg(shot) shot,avg(goal) goal,avg(threeShot) threeShot,avg(threeGoal) threeGoal,avg(free) free,avg(freeGoal) freeGoal,"
-				+ "sum(scoring) scoring,avg(rebound) rebound,avg(assist) assist,avg(block) block,avg(steal) steal,avg(turnover) turnover,avg(foul) foul,count(id) played"
-				+ " from db_bullfight_matchdatauser "
-				+ "where isdelete=0 and user_id = unhex('"+entity.getId().toString().replaceAll("-", "")+"')";
+				+ "sum(scoring) scoring,avg(scoring) avgscoring,avg(rebound) rebound,avg(assist) assist,avg(block) block,avg(steal) steal,"
+				+ "avg(turnover) turnover,avg(foul) foul,count(mu.id) played"
+				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf on mu.matchfight_id = mf.id"
+				+ " where mu.isdelete=0 and mf.isdelete=0 and mf.status=2 and mu.user_id = unhex('"+uid+"')";
 
 		List<Map<String, Object>> listMap = findByNativeSQL(sql);
 		
@@ -54,6 +80,7 @@ public class UserDao extends AbstractHibernateDao<User, UUID> implements IUserDa
 		entity.setFreeGoalPercent(HttpUtil.toFloat(map.get("freeGoalPercent")));
 		entity.setThreeGoalPercent(HttpUtil.toFloat(map.get("threeGoalPercent")));
 		
+		
 		entity.setScoring(HttpUtil.toFloat(map.get("scoring")));
 		entity.setRebound(HttpUtil.toFloat(map.get("rebound")));
 		entity.setAssist(HttpUtil.toFloat(map.get("assist")));
@@ -61,8 +88,12 @@ public class UserDao extends AbstractHibernateDao<User, UUID> implements IUserDa
 		entity.setSteal(HttpUtil.toFloat(map.get("steal")));
 		entity.setTurnover(HttpUtil.toFloat(map.get("turnover")));
 		entity.setFoul(HttpUtil.toFloat(map.get("foul")));
-		entity.setPlayCount(HttpUtil.toFloat(map.get("played")));
+		//entity.setPlayCount(HttpUtil.toFloat(map.get("played")));
+ 
+		entity.setScoringAvg(HttpUtil.toFloat(map.get("avgscoring")));
 		
+		
+
  
 		
 		saveOrUpdate(entity);

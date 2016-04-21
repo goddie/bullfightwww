@@ -34,7 +34,7 @@ public class LeagueRecordService extends BaseService<LeagueRecord, UUID> {
 		LeagueRecord host = fingEntity(matchFight.getHost(),matchFight.getLeague());
 		LeagueRecord guest = fingEntity(matchFight.getGuest(),matchFight.getLeague());
 		
-		
+		           
 		//胜
 		if(matchFight.getHostScore()>matchFight.getGuestScore())
 		{
@@ -76,13 +76,13 @@ public class LeagueRecordService extends BaseService<LeagueRecord, UUID> {
 		saveOrUpdate(guest);
 	}
 	
-	
-	private LeagueRecord fingEntity(Team team,League league)
+	@Transactional
+	public LeagueRecord fingEntity(Team team,League league)
 	{
 		DetachedCriteria criteria = createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
-		criteria.add(Restrictions.eq("league.id", league.getId()));
-		criteria.add(Restrictions.eq("team.id", team.getId()));
+		criteria.add(Restrictions.eq("league", league));
+		criteria.add(Restrictions.eq("team", team));
 
 		List<LeagueRecord> list = findByCriteria(criteria);
 		if(list==null||list.size()==0)

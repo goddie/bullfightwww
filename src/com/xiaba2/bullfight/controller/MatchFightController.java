@@ -194,12 +194,15 @@ public class MatchFightController {
 	}
 
 	@RequestMapping("/action/del")
-	public ModelAndView actionDel(@RequestParam("mfid") UUID mfid) {
-		ModelAndView mv = new ModelAndView("redirect:/matchfight/admin/list?p=1");
+	public ModelAndView actionDel(@RequestParam("mfid") UUID mfid,HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView(HttpUtil.getHeaderRef(request));
 
 		MatchFight entity = matchFightService.get(mfid);
 		entity.setIsDelete(1);
-
+		
+		
+		matchDataTeamService.deleteByMatchFight(entity);
+		
 		matchFightService.saveOrUpdate(entity);
 
 		return mv;
@@ -505,6 +508,42 @@ public class MatchFightController {
 			rs.setMsg("比赛双方不齐");
 			return rs;
 		}
+		
+		
+		matchFight.setStatus(2);
+		matchFightService.saveOrUpdate(matchFight);
+		
+		teamService.countWinLose(host);
+		teamService.countWinLose(guest);
+		
+		teamService.saveOrUpdate(host);
+		teamService.saveOrUpdate(guest);
+		
+		if(matchFight.getHostScore()>matchFight.getGuestScore())
+		{
+			matchFight.setWinner(host);
+			matchFight.setLoser(guest);
+			
+		}
+
+		if(matchFight.getHostScore()<matchFight.getGuestScore())
+		{
+			matchFight.setWinner(guest);
+			matchFight.setLoser(host);
+		}
+		
+		matchFightService.saveOrUpdate(matchFight);
+
+		
+		//联赛积分
+		if(matchFight.getLeague()!=null)
+		{
+			leagueRecordService.countRecord(matchFight);
+		}
+
+		rs.setCode(JsonResult.SUCCESS);
+		rs.setMsg("操作成功");
+		return rs;
 
 		// if (matchFight.getHostScore() == 0
 		// || matchFight.getGuestScore() == 0) {
@@ -564,24 +603,6 @@ public class MatchFightController {
 //		guest.setPlayCount(HttpUtil.toFloat(map2.get("played")));
 		
 		
-		teamService.countWinLose(host);
-		teamService.countWinLose(guest);
-		
-		teamService.saveOrUpdate(host);
-		teamService.saveOrUpdate(guest);
-
-		matchFight.setStatus(2);
-		matchFightService.saveOrUpdate(matchFight);
-		
-		//联赛积分
-		if(matchFight.getLeague()!=null)
-		{
-			leagueRecordService.countRecord(matchFight);
-		}
-
-		rs.setCode(JsonResult.SUCCESS);
-		rs.setMsg("操作成功");
-		return rs;
 	}
 
 	/**

@@ -13,6 +13,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.xiaba2.bullfight.domain.AppVersion;
@@ -26,6 +27,35 @@ import com.xiaba2.core.Page;
 public class AppVersionController {
 	@Resource
 	private AppVersionService appVersionService;
+	
+	
+	@RequestMapping("/admin/add")
+	public ModelAndView adminAdd()
+	{
+		return new ModelAndView("admin_appversion_add");	
+	}
+	
+	
+	@RequestMapping("/action/add")
+	public ModelAndView actionAdd(AppVersion entity,HttpServletRequest request)
+	{
+		ModelAndView mv = new ModelAndView("admin_appversion_add");
+		
+		if(StringUtils.isEmpty(entity.getApkUrl()))
+		{
+			mv.addObject("msg","添加失败");
+			return mv;
+		}
+		
+		entity.setCreatedDate(new Date());
+		
+		appVersionService.save(entity);
+		
+		mv.addObject("msg","添加成功");
+		
+		return mv;
+	}
+	
 	
 	@RequestMapping("/json/getlast")
 	public JsonResult jsonGetLast(HttpServletRequest request) {

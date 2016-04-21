@@ -428,6 +428,15 @@ public class TeamController {
 		}
 		
 		User user = userService.get(uid);
+		
+		if(user==null)
+		{
+			js.setMsg("创建失败!");
+			js.setCode(JsonResult.FAIL);
+			
+			return js;
+		}
+		
 		team.setAdmin(user);
 		
 		teamService.save(team);

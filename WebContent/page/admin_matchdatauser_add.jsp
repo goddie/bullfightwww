@@ -35,7 +35,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/user_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/matchfight_left.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10">
 

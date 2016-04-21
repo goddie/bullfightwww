@@ -39,6 +39,7 @@ public class MatchDataTeamController {
 
 	@Resource
 	private TeamService teamService;
+
 	/**
 	 * 球队比赛
 	 * 
@@ -46,21 +47,25 @@ public class MatchDataTeamController {
 	 * @return
 	 */
 	@RequestMapping(value = "/json/teammatch")
-	public JsonResult jsonTeamMatch(@RequestParam("tid") UUID tid) {
+	public JsonResult jsonTeamMatch(@RequestParam("tid") UUID tid,HttpServletRequest request) {
 		JsonResult rs = new JsonResult();
 
- 
+		int p = 1;
 		
-		Team team  = teamService.get(tid);
-		
+		Team team = teamService.get(tid);
 
-		DetachedCriteria criteria = matchDataTeamService
-				.createDetachedCriteria();
+		String str = request.getParameter("page");
+		if(!StringUtils.isEmpty(str))
+		{
+			p = Integer.parseInt(str);
+		}
+		
+		DetachedCriteria criteria = matchDataTeamService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
 		criteria.add(Restrictions.eq("team", team));
 
 		Page<MatchDataTeam> page = new Page<MatchDataTeam>();
-		page.setPageNo(1);
+		page.setPageNo(p);
 		page.setPageSize(20);
 		page.addOrder("createdDate", "desc");
 
@@ -79,8 +84,8 @@ public class MatchDataTeamController {
 	}
 
 	/**
-	 * 队伍数据
-	 * 会取出2个队伍的数据
+	 * 队伍数据 会取出2个队伍的数据
+	 * 
 	 * @param mfid
 	 * @return
 	 */
@@ -88,136 +93,79 @@ public class MatchDataTeamController {
 	public JsonResult jsonTeamData(@RequestParam("mfid") UUID mfid) {
 		JsonResult rs = new JsonResult();
 		MatchFight matchFight = matchFightService.get(mfid);
-		DetachedCriteria criteria = matchDataTeamService
-				.createDetachedCriteria();
+		DetachedCriteria criteria = matchDataTeamService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
 		criteria.add(Restrictions.eq("matchFight", matchFight));
 		List<MatchDataTeam> list = matchDataTeamService.findByCriteria(criteria);
-		if(list.isEmpty()||list.size()<2)
-		{
+		if (list.isEmpty() || list.size() < 2) {
 			return rs;
 		}
-		
-		List<MatchDataTeam> list2=new ArrayList<MatchDataTeam>();
+
+		List<MatchDataTeam> list2 = new ArrayList<MatchDataTeam>();
 		if (list.get(0).getId().equals(matchFight.getHost().getId())) {
 			list2.add(list.get(0));
 			list2.add(list.get(1));
-		}else
-		{
+		} else {
 			list2.add(list.get(1));
 			list2.add(list.get(0));
 		}
-		
+
 		rs.setCode(JsonResult.SUCCESS);
 		rs.setData(list2);
 
 		return rs;
 
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/admin/list")
 	public ModelAndView adminList(@RequestParam("mfid") UUID mfid) {
 		ModelAndView mv = new ModelAndView("admin_matchdatateam_list");
 		MatchFight matchFight = matchFightService.get(mfid);
-		DetachedCriteria criteria = matchDataTeamService
-				.createDetachedCriteria();
+		DetachedCriteria criteria = matchDataTeamService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
 		criteria.add(Restrictions.eq("matchFight", matchFight));
 		List<MatchDataTeam> list = matchDataTeamService.findByCriteria(criteria);
-		
+
 		mv.addObject("list", list);
 		return mv;
 
 	}
-	
-	
 
-	
-	
-	
 	@RequestMapping(value = "/admin/count")
-	public ModelAndView countTeamData(HttpServletRequest request)
-	{
+	public ModelAndView countTeamData(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-		
+
 		DetachedCriteria criteria1 = teamService.createDetachedCriteria();
 		criteria1.add(Restrictions.eq("isDelete", 0));
-		//criteria1.add(Restrictions.eq("id", UUID.fromString("46e6054a-dbd4-4a03-a13f-b5ed8b6eff90")));
-		
+//		criteria1.add(Restrictions.eq("id",UUID.fromString("f644c4e6-6ae9-44e3-9faf-9ba3a3ebfbf6")));
+
 		List<Team> list1 = teamService.findByCriteria(criteria1);
 		for (Team team : list1) {
-			
-			
-			DetachedCriteria criteria = matchFightService
-					.createDetachedCriteria();
+			DetachedCriteria criteria = matchFightService.createDetachedCriteria();
 			criteria.add(Restrictions.eq("isDelete", 0));
-			criteria.add(Restrictions.or(Restrictions.eq("host", team),Restrictions.eq("guest", team)));
-			
+			criteria.add(Restrictions.eq("status", 2));
+			criteria.add(Restrictions.or(Restrictions.eq("host", team), Restrictions.eq("guest", team)));
+
 			List<MatchFight> list = matchFightService.findByCriteria(criteria);
-			float win = 0;
-			float played = 0;
-			float lose = 0;
-			
+
 			for (MatchFight matchFight : list) {
 
+				// 更新对战队伍单场数据
+				matchDataTeamService.updateMatchTeam(matchFight, team);
+
+				// 更新对战队伍总体数据
+				teamService.updateData(team);
 				
-				if(matchFight.getHostScore()==0 && matchFight.getGuestScore()==0)
-				{
-					continue;
-				}
+				teamService.countWinLose(team);
 				
-				if(matchFight.getHost().getId().toString().equals(team.getId().toString()))
-				{
-					if(matchFight.getHostScore()>matchFight.getGuestScore())
-					{
-						win = win+1;
-					}
-					
-					if(matchFight.getHostScore()<matchFight.getGuestScore())
-					{
-						lose=lose+1;
-					}
-					
-					played = played+1;
-				}
+				matchFightService.updateScore(matchFight);
 				
-				if(matchFight.getGuest().getId().toString().equals(team.getId().toString()))
-				{
-					if(matchFight.getHostScore()>matchFight.getGuestScore())
-					{
-						lose=lose+1;
-					}
-					
-					if(matchFight.getHostScore()>matchFight.getGuestScore())
-					{
-						win =win+1;
-					}
-					
-					played=played+1;
-				}
 			}
-			
 
-			team.setWin(win);
-			team.setPlayCount(played);
-			team.setLose(lose);
-			
-			teamService.saveOrUpdate(team);
-			
-			
 		}
-		
-		
-		
-		
 
-		
-		
 		mv.setViewName(HttpUtil.getHeaderRef(request));
 		return mv;
 	}
-	
 
 }

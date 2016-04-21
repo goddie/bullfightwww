@@ -60,6 +60,8 @@
 												<th role="columnheader" style="width: 10%;">队伍人数</th>
 												<th role="columnheader">比赛时间</th>
 												<th role="columnheader" style="width: 10%;">比分</th>
+												<th role="columnheader" style="">胜</th>
+												<th role="columnheader" style="">负</th>
 												<th role="columnheader" style="width: 10%;">状态</th>
 												<th role="columnheader" style="width: 10%;">支付</th>
 												<th role="columnheader" style="width: 20%;">操作</th>
@@ -82,15 +84,21 @@
 
 													<td class="center ">${m.createdDate}</td>
 													<td class="center ">${m.hostScore}-${m.guestScore}</td>
-													<td class="center ">${m.status}</td>
+													<td class="center ">${m.winner.name}</td>
+													<td class="center ">${m.loser.name}</td>
+													<td class="center ">
+													<c:if test="${m.status==2 }">已结束</c:if>
+													<c:if test="${m.status==1 }">未开始</c:if>
+													<c:if test="${m.status==0 }">待接招</c:if>
+													 </td>
 													<td class="center ">${m.isPay}</td>
 													<td class="action"><a
 														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.host.id}">
-															主队员成绩 </a> <a
+															主个人数据 </a><br/> <a
 														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.guest.id}">
-															客队员成绩 </a><br/> <a href="${pageContext.request.contextPath}/matchdatateam/admin/list?mfid=${m.id}"
-														> 查看成绩 </a> <a href="javascript:void(0)"
-														onclick="finish('${m.id}')"> 统计成绩 </a><br/><a
+															客个人数据 </a><br/> <a href="${pageContext.request.contextPath}/matchdatateam/admin/list?mfid=${m.id}"
+														> 队伍数据 </a> <a href="javascript:void(0)"
+														onclick="finish('${m.id}')"> 计算成绩 </a><br/><a
 														href="${pageContext.request.contextPath}/team/edit/${m.id}">
 															编辑 </a> <a
 														href="${pageContext.request.contextPath}/matchfight/action/del?mfid=${m.id}">

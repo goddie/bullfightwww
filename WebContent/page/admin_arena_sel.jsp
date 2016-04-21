@@ -19,10 +19,14 @@
 					<div class="row">
 
 						<div class="col-md-6">
+						<form
+												action="${pageContext.request.contextPath}/arena/admin/sel"
+												method="get">
 							<div class="dataTables_filter" id="example_filter">
-								<label>Search: <input type="text"
-									aria-controls="example"></label>
+								<label>关键字: <input name="key" type="text"
+									aria-controls="example"></label><button type="submit" class="btn btn-sm btn-default">搜索</button>
 							</div>
+							</form>
 						</div>
 					</div>
 					<table class="table table-striped table-bordered dataTable"

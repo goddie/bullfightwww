@@ -19,7 +19,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2 bootstrap-admin-col-left">
-				<jsp:include page="/resource/inc/team_left.jsp"></jsp:include>
+				<jsp:include page="/resource/inc/leftmenu_userconfig.jsp"></jsp:include>
 			</div>
 			<div class="col-md-10">
 
@@ -42,6 +42,7 @@
 							<div
 								class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
 <a href="${pageContext.request.contextPath}/matchdatateam/admin/count" class="btn btn-primary">队伍总成绩</a>
+ <a href="${pageContext.request.contextPath}/matchdatauser/admin/count" class="btn btn-primary">个人成绩</a>
 							</div>
 						</div>
 					</div>

@@ -19,8 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.xiaba2.bullfight.domain.Arena;
 import com.xiaba2.bullfight.domain.League;
+import com.xiaba2.bullfight.domain.LeagueRecord;
 import com.xiaba2.bullfight.domain.LeagueTeam;
 import com.xiaba2.bullfight.domain.Team;
+import com.xiaba2.bullfight.service.LeagueRecordService;
 import com.xiaba2.bullfight.service.LeagueService;
 import com.xiaba2.bullfight.service.LeagueTeamService;
 import com.xiaba2.bullfight.service.TeamService;
@@ -39,6 +41,9 @@ public class LeagueTeamController {
 	
 	@Resource
 	private LeagueService leagueService;
+	
+	@Resource
+	private LeagueRecordService leagueRecordService;
 	
 	
 	@RequestMapping("/admin/add")
@@ -59,6 +64,12 @@ public class LeagueTeamController {
 		u.setIsDelete(1);
 		
 		leagueTeamService.saveOrUpdate(u);
+		
+		
+		LeagueRecord leagueRecord = leagueRecordService.fingEntity(u.getTeam(),u.getLeague());
+		leagueRecord.setIsDelete(1);
+		leagueRecordService.saveOrUpdate(leagueRecord);
+		
 		
 		String rf = HttpUtil.getHeaderRef(request);
 		mv.setViewName(rf);
@@ -84,6 +95,8 @@ public class LeagueTeamController {
 		attr.addFlashAttribute("msg", "操作成功!");
 
 		leagueTeamService.save(entity);
+		
+		LeagueRecord host = leagueRecordService.fingEntity(team,league);
 
 		return mv;
 	}

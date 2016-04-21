@@ -102,7 +102,7 @@ public class ArenaController {
 	
 	
 	@RequestMapping(value = "/admin/sel")
-	public ModelAndView pageSel() {
+	public ModelAndView pageSel(HttpServletRequest request) {
 		
 		
 		ModelAndView mv=new ModelAndView("admin_arena_sel");
@@ -113,6 +113,13 @@ public class ArenaController {
 		
 		DetachedCriteria criteria = arenaService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		String s = request.getParameter("key");
+		if(!StringUtils.isEmpty(s))
+		{
+			criteria.add(Restrictions.or(Restrictions.like("name", s, MatchMode.ANYWHERE),Restrictions.like("address", s, MatchMode.ANYWHERE)));
+		}
+		
 		page = arenaService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());

@@ -59,7 +59,7 @@
 <!-- 			<value>goddie</value> -->
 <!-- 		</property> -->
 		<property name="url">
-		<value>jdbc:mysql://localhost:3306/bullfight</value>
+		<value>jdbc:mysql://localhost:3306/db_bullfight</value>
 
 		</property>
 		<property name="username">

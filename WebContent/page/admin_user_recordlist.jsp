@@ -69,7 +69,7 @@
 
 												<tr class="gradeA odd">
 													<td class="sorting_1">${status.index+1}</td>
-													<td class=""><img src="${m.avatar }" width="30"
+													<td class="" title="${m.id }"><img src="${m.avatar }" width="30"
 														height="30" /></td>
 													<td class="center ">${m.nickname}</td>
 													<td class="center ">${m.height}</td>
