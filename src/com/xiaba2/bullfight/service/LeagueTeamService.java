@@ -1,5 +1,6 @@
 package com.xiaba2.bullfight.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -57,6 +58,30 @@ public class LeagueTeamService extends BaseService<LeagueTeam, UUID> {
 		}
 		
 		return null;
+	}
+	
+	
+	/**
+	 * 联赛所有的参赛队伍
+	 * @param league
+	 * @return
+	 */
+	@Transactional
+	public List<Team> getTeams(League league)
+	{
+		DetachedCriteria criteria = createDetachedCriteria();
+		criteria.add(Restrictions.eq("league",league));
+		criteria.add(Restrictions.eq("isDelete",0));
+		
+		List<LeagueTeam> list= findByCriteria(criteria);
+		
+		List<Team> list2 = new ArrayList<Team>();
+		
+		for (LeagueTeam leagueTeam : list) {
+			list2.add(leagueTeam.getTeam());
+		}
+		
+		return list2;
 	}
 	
 }

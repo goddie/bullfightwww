@@ -113,6 +113,11 @@ public class UserController {
 		criteria.add(Restrictions.eq("isDelete", 0));
 		
 		 
+		String key = request.getParameter("key");
+		if(!StringUtils.isEmpty(key))
+		{
+			criteria.add(Restrictions.like("nickname",key,MatchMode.ANYWHERE));
+		}
 		
 		page = userService.findPageByCriteria(criteria, page);
 
@@ -297,6 +302,13 @@ public class UserController {
 
 		DetachedCriteria criteria = userService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
+		
+		String key = request.getParameter("key");
+		if(!StringUtils.isEmpty(key))
+		{
+			criteria.add(Restrictions.like("nickname",key,MatchMode.ANYWHERE));
+		}
+		
 		page = userService.findPageByCriteria(criteria, page);
 
 		mv.addObject("list", page.getResult());

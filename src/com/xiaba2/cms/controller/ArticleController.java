@@ -54,6 +54,31 @@ public class ArticleController {
 	
 	
 	/**
+	 * 新增
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/edit")
+	public ModelAndView edit(@RequestParam("uuid") UUID id,HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("admin_article_edit");
+		
+		Article entity = articleService.get(id);
+		
+		mv.addObject("entity", entity);
+		
+		
+		DetachedCriteria criteria = articleBodyService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("article", entity));
+		
+		List<ArticleBody> list = articleBodyService.findByCriteria(criteria);
+		
+		ArticleBody body = articleBodyService.get(id);
+		mv.addObject("body",list.get(0));
+		
+		return mv;
+	}
+	
+	/**
 	 * 管理
 	 * @return
 	 */
@@ -120,6 +145,55 @@ public class ArticleController {
 		body.setCreatedDate(new Date());
 		
 		articleBodyService.save(body);
+		
+		
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/action/update")
+	public ModelAndView update(@RequestParam("id") UUID id,Article newArticle,HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("redirect:/article/admin/add");
+		
+		Article entity = articleService.get(id);
+		
+		String pid = request.getParameter("parentTypeId");
+		if (!StringUtils.isEmpty(pid)) {
+			entity.setType(articleTypeService.get(UUID.fromString(pid)));
+		}
+		
+		
+		String sid = request.getParameter("subTypeId");
+		if (!StringUtils.isEmpty(sid)) {
+			entity.setSubType(articleTypeService.get(UUID.fromString(sid)));
+		}
+		
+		entity.setTitle(newArticle.getTitle());
+		entity.setThumb(newArticle.getThumb());
+//		entity.setType(newArticle.getType());
+//		entity.setSubType(newArticle.getSubType());
+		entity.setDescription(newArticle.getDescription());
+		
+		articleService.saveOrUpdate(entity);
+		//entity.setAuthor(author);
+	
+		
+		DetachedCriteria criteria = articleBodyService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("article", entity));
+		
+		List<ArticleBody> list = articleBodyService.findByCriteria(criteria);
+		
+		ArticleBody body = list.get(0);
+		
+		if(body==null)
+		{
+			body = new ArticleBody();
+		}
+
+		body.setBody(request.getParameter("content"));
+		
+		articleBodyService.saveOrUpdate(body);
 		
 		
 		return mv;

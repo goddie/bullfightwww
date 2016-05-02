@@ -71,6 +71,8 @@
 													<td class="action"><a
 														href="${pageContext.request.contextPath}/article/page/newsdetail?uuid=${m.id}" target="_blank">
 															查看 </a><a
+														href="${pageContext.request.contextPath}/article/admin/edit?uuid=${m.id}" target="_blank">
+															编辑 </a><a
 														href="${pageContext.request.contextPath}/article/action/del?id=${m.id}">
 															删除 </a></td>
 												</tr>

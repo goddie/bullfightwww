@@ -82,7 +82,7 @@
 
 													<td class="center ">${m.createdDate}</td>
 													<td class="center ">${m.hostScore}-${m.guestScore}</td>
-													<td class="center ">${m.status}</td>
+													<td class="center "><c:if test="${m.status==0}">未开始</c:if><c:if test="${m.status==1}">未结束</c:if><c:if test="${m.status==2}">已结束</c:if></td>
 													<td class="center ">${m.isPay}</td>
 													<td class="action"><a
 														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.host.id}">

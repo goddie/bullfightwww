@@ -17,10 +17,14 @@
 					role="grid">
 					<div class="row">
 						<div class="col-md-6">
+							<form
+												action="${pageContext.request.contextPath}/user/admin/sel"
+												method="get">
 							<div class="dataTables_filter" id="example_filter">
-								<label>Search: <input type="text"
-									aria-controls="example"></label>
+								<label>昵称: <input name="key" type="text"
+									aria-controls="example"></label><button type="submit" class="btn btn-sm btn-default">搜索</button>
 							</div>
+							</form>
 						</div>
 					</div>
 					<table class="table table-striped table-bordered dataTable"
@@ -34,9 +38,7 @@
 
 								<th role="columnheader" style="width: 10%;">电话</th>
 
-
-								<th role="columnheader">注册时间</th>
-								<th role="columnheader" style="width: 20%;">操作</th>
+								<th role="columnheader" style="">操作</th>
 							</tr>
 						</thead>
 
@@ -49,10 +51,10 @@
 									<td class=""><img src="${m.avatar }" width="30"
 										height="30" /></td>
 									<td class="">${m.username}</td>
-									<td class="">${m.city}</td>
+									
 									<td class="center ">${m.nickname}</td>
 
-									<td class="center ">${m.createdDate}</td>
+									<td class="center ">${m.phone}</td>
 									<td class="action">
 										<button type="button" class="btn btn-primary"
 											onclick='parent.onsel("user","${m.nickname}","${m.id}")'>选择</button>

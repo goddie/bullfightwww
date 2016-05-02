@@ -81,7 +81,7 @@
 														href="${pageContext.request.contextPath}/leagueteam/admin/add">
 															新增队伍 </a><br />
 													<a
-														href="${pageContext.request.contextPath}/leagueteam/admin/list?p=1">
+														href="${pageContext.request.contextPath}/leagueteam/admin/list?p=1&leagueid=${m.id}">
 															队伍列表 </a></td>
 													<td class="action"><a
 														href="${pageContext.request.contextPath}/league/admin/addfight?id=${m.id}">
@@ -95,7 +95,8 @@
 															<a
 														href="${pageContext.request.contextPath}/league/action/updatestatus?id=${m.id}&s=2">
 															已结束 </a><br />
-													<a
+													<a href="${pageContext.request.contextPath}/leaguerecord/admin/list?leagueid=${m.id}">
+															查看积分</a><a
 														href="${pageContext.request.contextPath}/league/action/del?id=${m.id}">
 															删除 </a><br /></td>
 												</tr>

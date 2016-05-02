@@ -364,8 +364,8 @@ public class MatchDataUserController {
 		String sql = "select hex(mu.user_id) userid,count(user_id) plays,sum(mu.rebound) rebound,sum(mu.assist) assist,sum(mu.scoring) scoring,"
 				+ "avg(mu.rebound) avgrebound,avg(mu.assist) avgassist,avg(scoring) avgscoring"
 				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
-				+ "on mu.matchFight_id = mf.id where mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
-				+ "group by mu.user_id order by scoring desc limit "+start+",15;";
+				+ "on mu.matchFight_id = mf.id where mu.isdelete=0 and mf.isdelete=0 and mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
+				+ "group by mu.user_id order by avgscoring desc limit "+start+",15;";
 		
 		List<Map<String, Object>> sqlrs = matchDataTeamService.findByNativeSQL(sql);
 		List<DataUser> list = new ArrayList<DataUser>();
@@ -414,8 +414,8 @@ public class MatchDataUserController {
 		String sql = "select hex(mu.user_id) userid,count(user_id) plays,sum(mu.rebound) rebound,sum(mu.assist) assist,sum(mu.scoring) scoring,"
 				+ "avg(mu.rebound) avgrebound,avg(mu.assist) avgassist,avg(scoring) avgscoring"
 				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
-				+ "on mu.matchFight_id = mf.id where mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
-				+ "group by mu.user_id order by rebound desc limit "+start+",15;";
+				+ "on mu.matchFight_id = mf.id where  mu.isdelete=0 and mf.isdelete=0 and mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
+				+ "group by mu.user_id order by avgrebound desc limit "+start+",15;";
 		
 		List<Map<String, Object>> sqlrs = matchDataTeamService.findByNativeSQL(sql);
 		List<DataUser> list = new ArrayList<DataUser>();
@@ -458,8 +458,8 @@ public class MatchDataUserController {
 		String sql = "select hex(mu.user_id) userid,count(user_id) plays,sum(mu.rebound) rebound,sum(mu.assist) assist,sum(mu.scoring) scoring,"
 				+ "avg(mu.rebound) avgrebound,avg(mu.assist) avgassist,avg(scoring) avgscoring"
 				+ " from db_bullfight_matchdatauser mu left join db_bullfight_matchfight mf "
-				+ "on mu.matchFight_id = mf.id where mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
-				+ "group by mu.user_id order by assist desc limit "+start+",15;";
+				+ "on mu.matchFight_id = mf.id where  mu.isdelete=0 and mf.isdelete=0 and mf.league_id = unhex('"+leagueid.toString().replaceAll("-", "")+"') "
+				+ "group by mu.user_id order by avgassist desc limit "+start+",15;";
 		
 		List<Map<String, Object>> sqlrs = matchDataTeamService.findByNativeSQL(sql);
 		List<DataUser> list = new ArrayList<DataUser>();

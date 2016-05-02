@@ -2,6 +2,7 @@ package com.xiaba2.bullfight.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 import com.xiaba2.bullfight.dao.ILeagueRecordDao;
 import com.xiaba2.bullfight.domain.League;
 import com.xiaba2.bullfight.domain.LeagueRecord;
+import com.xiaba2.bullfight.domain.LeagueTeam;
 import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.core.BaseService;
 import com.xiaba2.core.IBaseDao;
+import com.xiaba2.util.HttpUtil;
 
 @Service
 public class LeagueRecordService extends BaseService<LeagueRecord, UUID> {
@@ -27,12 +30,19 @@ public class LeagueRecordService extends BaseService<LeagueRecord, UUID> {
 		return leagueRecordDao;
 	}
 	
+	@Resource
+	private LeagueTeamService leagueTeamService;
 	
+	/**
+	 * 计算联赛积分
+	 * @param matchFight
+	 */
 	@Transactional
 	public void countRecord(MatchFight matchFight)
 	{
-		LeagueRecord host = fingEntity(matchFight.getHost(),matchFight.getLeague());
-		LeagueRecord guest = fingEntity(matchFight.getGuest(),matchFight.getLeague());
+		LeagueRecord host = findEntity(matchFight.getHost(),matchFight.getLeague());
+		LeagueRecord guest = findEntity(matchFight.getGuest(),matchFight.getLeague());
+		
 		
 		           
 		//胜
@@ -76,8 +86,65 @@ public class LeagueRecordService extends BaseService<LeagueRecord, UUID> {
 		saveOrUpdate(guest);
 	}
 	
+	
+	/**
+	 * 计算整个联赛各队伍的积分
+	 * @param league
+	 */
 	@Transactional
-	public LeagueRecord fingEntity(Team team,League league)
+	public void countLeagueRecord(League league)
+	{
+		
+		String leagueId = league.getId().toString().replaceAll("-", "");
+		
+		List<Team> list = leagueTeamService.getTeams(league);
+		
+		for (Team team : list) {
+			
+			String teamId = team.getId().toString().replaceAll("-", "");
+			
+			String win1 ="select count(id) win1,sum(hostScore) sum1 from db_bullfight_matchfight "
+					+ " where isdelete=0 and status=2 and league_id = unhex('"+leagueId+"') "
+					+ " and hostScore>guestScore and host_id = unhex('"+teamId+"');";
+			List<Map<String, Object>> rs1 = findByNativeSQL(win1);
+			
+			String win2 = "select count(id) win2,sum(guestScore) sum2 from db_bullfight_matchfight "
+					+ " where isdelete=0 and status=2 and league_id = unhex('"+leagueId+"') "
+					+ " and hostScore<guestScore and guest_id = unhex('"+teamId+"');";
+			List<Map<String, Object>> rs2 = findByNativeSQL(win2);
+			
+			String plays = "select count(id) plays from db_bullfight_matchfight "
+					+ " where isdelete=0 and status=2 and league_id = unhex('"+leagueId+"') "
+					+ " and ( host_id = unhex('"+teamId+"') "
+					+ " or guest_id=unhex('"+teamId+"'));";
+			List<Map<String, Object>> rsPlays = findByNativeSQL(plays);
+			
+			
+			float winCount = HttpUtil.toFloat(rs1.get(0).get("win1")) + HttpUtil.toFloat(rs2.get(0).get("win2"));
+			float playsCount = HttpUtil.toFloat(rsPlays.get(0).get("plays"));
+			float loseCount = playsCount - winCount;
+			
+			float sumCount = HttpUtil.toFloat(rs1.get(0).get("sum1")) + HttpUtil.toFloat(rs2.get(0).get("sum2"));
+			
+			LeagueRecord entity = findEntity(team, league);
+			entity.setWin((int)winCount);
+			entity.setLose((int)loseCount);
+			entity.setPlays((int)playsCount);
+			
+			entity.setScore(entity.getWin()*3+entity.getLose()*1);
+			entity.setPointSum((int)sumCount);
+			entity.setPointAvg((int)(sumCount/playsCount));
+			
+			saveOrUpdate(entity);
+		}
+		
+
+		
+		
+	}
+	
+	@Transactional
+	public LeagueRecord findEntity(Team team,League league)
 	{
 		DetachedCriteria criteria = createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));

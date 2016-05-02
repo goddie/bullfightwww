@@ -495,8 +495,7 @@ public class MatchFightController {
 	 * @return
 	 */
 	@RequestMapping("/json/finish")
-	public JsonResult jsonFinish(@RequestParam("mfid") UUID mfid,
-			HttpServletRequest request) {
+	public JsonResult jsonFinish(@RequestParam("mfid") UUID mfid, HttpServletRequest request) {
 		JsonResult rs = new JsonResult();
 
 		MatchFight matchFight = matchFightService.get(mfid);
@@ -538,7 +537,7 @@ public class MatchFightController {
 		//联赛积分
 		if(matchFight.getLeague()!=null)
 		{
-			leagueRecordService.countRecord(matchFight);
+			leagueRecordService.countLeagueRecord(matchFight.getLeague());
 		}
 
 		rs.setCode(JsonResult.SUCCESS);

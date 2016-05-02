@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
@@ -66,7 +67,7 @@ public class LeagueTeamController {
 		leagueTeamService.saveOrUpdate(u);
 		
 		
-		LeagueRecord leagueRecord = leagueRecordService.fingEntity(u.getTeam(),u.getLeague());
+		LeagueRecord leagueRecord = leagueRecordService.findEntity(u.getTeam(),u.getLeague());
 		leagueRecord.setIsDelete(1);
 		leagueRecordService.saveOrUpdate(leagueRecord);
 		
@@ -96,7 +97,7 @@ public class LeagueTeamController {
 
 		leagueTeamService.save(entity);
 		
-		LeagueRecord host = leagueRecordService.fingEntity(team,league);
+		LeagueRecord host = leagueRecordService.findEntity(team,league);
 
 		return mv;
 	}
@@ -120,8 +121,17 @@ public class LeagueTeamController {
 		
 		DetachedCriteria criteria = leagueTeamService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete",0));
-		criteria.add(Restrictions.not(Restrictions.eq("isPay",2)));
+//		criteria.add(Restrictions.not(Restrictions.eq("isPay",2)));
+		
+		
 		HttpUtil.addSearchLike(criteria, mv, request, "name");
+		
+		
+		String leagueid = request.getParameter("leagueid");
+		if(!StringUtils.isEmpty(leagueid))
+		{
+			criteria.add(Restrictions.eq("league.id",UUID.fromString(leagueid)));
+		}
 		
 		page = leagueTeamService.findPageByCriteria(criteria, page);
 		

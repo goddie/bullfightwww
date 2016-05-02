@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.xiaba2.bullfight.domain.League;
 import com.xiaba2.bullfight.domain.LeagueRecord;
 import com.xiaba2.bullfight.domain.MatchFight;
+import com.xiaba2.bullfight.domain.Order;
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.bullfight.service.LeagueRecordService;
 import com.xiaba2.bullfight.service.LeagueService;
@@ -134,7 +135,7 @@ public class LeagueRecordController {
 		Page<LeagueRecord> page = new Page<LeagueRecord>();
 		page.setPageSize(15);
 		page.setPageNo(p);
-		page.addOrder("pointSum", "desc");
+		page.addOrder("score", "desc");
 
 
 
@@ -144,6 +145,34 @@ public class LeagueRecordController {
 		rs.setData(page.getResult());
 
 		return rs;
+	}
+	
+	
+	/**
+	 * 积分查看
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/admin/list")
+	public ModelAndView adminList(@RequestParam("leagueid") UUID leagueid,
+			HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("admin_leaguerecord_list");
+
+		DetachedCriteria criteria = leagueRecordService.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("league.id", leagueid));
+
+		Page<LeagueRecord> page = new Page<LeagueRecord>();
+		page.setPageSize(9999);
+		page.setPageNo(1);
+		page.addOrder("score", "desc");
+
+		page = leagueRecordService.findPageByCriteria(criteria, page);
+
+		mv.addObject("list", page.getResult());
+
+		return mv;
 	}
 	
 	@RequestMapping("/json/count")
@@ -184,8 +213,8 @@ public class LeagueRecordController {
 		List<MatchFight> list = matchFightService.findByCriteria(criteria);
 		for (MatchFight matchFight : list) {
 		
-			LeagueRecord host = fingEntity(matchFight.getHost(),league);
-			LeagueRecord guest = fingEntity(matchFight.getGuest(),league);
+			LeagueRecord host = findEntity(matchFight.getHost(),league);
+			LeagueRecord guest = findEntity(matchFight.getGuest(),league);
 			
 			
 			//胜
@@ -232,7 +261,7 @@ public class LeagueRecordController {
 	}
 	
 	
-	private LeagueRecord fingEntity(Team team,League league)
+	private LeagueRecord findEntity(Team team,League league)
 	{
 		DetachedCriteria criteria = leagueRecordService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));

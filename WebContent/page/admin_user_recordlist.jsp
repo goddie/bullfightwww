@@ -33,10 +33,15 @@
 									<div class="row">
 
 										<div class="col-md-6">
-											<div class="dataTables_filter" id="example_filter">
-												<label>Search: <input type="text"
-													aria-controls="example"></label>
-											</div>
+											<form
+												action="${pageContext.request.contextPath}/user/admin/recordlist"
+												method="post">
+							<div class="dataTables_filter" id="example_filter">
+							 <input name="p" value="1" type="hidden" />
+								<label>昵称: <input name="key" type="text"
+									aria-controls="example"></label><button type="submit" class="btn btn-sm btn-default">搜索</button>
+							</div>
+							</form>
 										</div>
 									</div>
 									<table class="table table-striped table-bordered dataTable"

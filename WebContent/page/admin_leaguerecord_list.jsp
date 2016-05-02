@@ -23,17 +23,27 @@
 					<div class="col-lg-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<div class="text-muted bootstrap-admin-box-title">联赛比赛列表</div>
+								<div class="text-muted bootstrap-admin-box-title">联赛积分</div>
 								</a>
 							</div>
 
 							<div class="bootstrap-admin-panel-content">
 								<div id="example_wrapper" class="dataTables_wrapper form-inline"
 									role="grid">
-									<div class="row">
+									<div class="row" style="display:none">
 
 										<div class="col-md-12">
-											
+											<form
+												action="${pageContext.request.contextPath}/team/admin/list"
+												method="get">
+												<div class="dataTables_filter" id="example_filter">
+													<input name="p" value="1" type="hidden" /> <label>队名:
+														<input type="text" name="name" aria-controls="example"
+														value="${name }">
+													</label>
+													<button type="submit" class="btn btn-sm btn-default">搜索</button>
+												</div>
+											</form>
 										</div>
 									</div>
 									<table class="table table-striped table-bordered dataTable"
@@ -41,16 +51,14 @@
 										<thead>
 											<tr role="row">
 												<th role="columnheader" style="width: 80px;">序号</th>
-												<th role="columnheader" style="width: 10%;">主队</th>
-												<th role="columnheader" style="width: 10%;">客队</th>
- 
 
-												
-												<th role="columnheader">比赛时间</th>
-												<th role="columnheader" style="width: 10%;">比分</th>
-												<th role="columnheader" style="width: 10%;">状态</th>
-												
-												<th role="columnheader" style="width: 20%;">操作</th>
+												<th role="columnheader" style="width: 30%;">联赛</th>
+												<th role="columnheader" style="width: 30%;">队伍</th>
+
+												<th role="columnheader" style="width: 10%;">胜</th>
+												<th role="columnheader" style="width: 10%;">负</th>
+												<th role="columnheader" style="width: 10%;">积分</th>
+												 
 											</tr>
 										</thead>
 
@@ -60,23 +68,19 @@
 
 												<tr class="gradeA odd">
 													<td class="sorting_1">${status.index+1}</td>
-													<td class="">${m.host.name}</td>
-													<td class="">${m.guest.name}</td>
-											 
-													
 
-													<td class="center ">${m.createdDate}</td>
-													<td class="center ">${m.hostScore}-${m.guestScore}</td>
-													<td class="center "><c:if test="${m.status==0}">未开始</c:if><c:if test="${m.status==1}">未结束</c:if><c:if test="${m.status==2}">已结束</c:if></td>
-													
-													<td class="action"><a
-														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.host.id}">
-															主队成绩 </a> <a
-														href="${pageContext.request.contextPath}/matchdatauser/admin/add?mfid=${m.id}&tid=${m.guest.id}">
-															客队成绩 </a> <a href="javascript:void(0)"
-														onclick="finish('${m.id}')"> 结束比赛 </a>  <a
-														href="${pageContext.request.contextPath}/matchfight/action/del?mfid=${m.id}">
-															删除 </a></td>
+													<td class=""><img src="${m.league.avatar }" width="30"
+														height="30" />${m.league.name}</td>
+
+													<td class="center "><img src="${m.team.avatar }"
+														width="30" height="30" />${m.team.name}</td>
+
+
+													<td class="center ">${m.win}</td>
+													<td class="center ">${m.lose}</td>
+													<td class="action">
+														${m.score}
+													</td>
 												</tr>
 											</c:forEach>
 										</tbody>
@@ -94,20 +98,3 @@
 	<jsp:include page="/resource/inc/admin_script.jsp"></jsp:include>
 </body>
 </html>
-
-<script type="text/javascript">
-	function finish(mfid) {
-
-		if (!confirm('确定要结束比赛吗?')) {
-			return;
-		}
-
-		$.getJSON("${pageContext.request.contextPath}/matchfight/json/finish",
-				{
-					mfid : mfid,
-					t : new Date()
-				}, function(json) {
-					alert(json.msg);
-				});
-	}
-</script>
