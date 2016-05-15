@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mysql.fabric.xmlrpc.base.Array;
+import com.xiaba2.bullfight.dao.impl.MatchDataUserDao;
+import com.xiaba2.bullfight.domain.MatchDataTeam;
 import com.xiaba2.bullfight.domain.MatchDataUser;
 import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.Team;
@@ -546,6 +549,7 @@ public class MatchDataUserController {
 		mv.setViewName(HttpUtil.getHeaderRef(request));
 		return mv;
 	}
+	
 	
 	
 	

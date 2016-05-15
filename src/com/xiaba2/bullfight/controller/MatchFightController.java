@@ -35,6 +35,7 @@ import com.xiaba2.bullfight.service.KeyValueService;
 import com.xiaba2.bullfight.service.LeagueRecordService;
 import com.xiaba2.bullfight.service.LeagueService;
 import com.xiaba2.bullfight.service.MatchDataTeamService;
+import com.xiaba2.bullfight.service.MatchDataUserService;
 import com.xiaba2.bullfight.service.MatchFightService;
 import com.xiaba2.bullfight.service.MatchFightUserService;
 import com.xiaba2.bullfight.service.PayRecordService;
@@ -68,6 +69,9 @@ public class MatchFightController {
 
 	@Resource
 	private MatchDataTeamService matchDataTeamService;
+	
+	@Resource
+	private MatchDataUserService matchDataUserService;
 	
 	@Resource
 	private MatchFightUserService  matchFightUserService ;
@@ -202,8 +206,55 @@ public class MatchFightController {
 		
 		
 		matchDataTeamService.deleteByMatchFight(entity);
+		matchDataUserService.deleteByMatchFight(entity);
 		
 		matchFightService.saveOrUpdate(entity);
+		
+		
+		
+		//更新队伍数据
+		DetachedCriteria criteria1 = teamService.createDetachedCriteria();
+		criteria1.add(Restrictions.eq("isDelete", 0));
+//		criteria1.add(Restrictions.eq("id",UUID.fromString("f644c4e6-6ae9-44e3-9faf-9ba3a3ebfbf6")));
+
+		List<Team> list1 = teamService.findByCriteria(criteria1);
+		for (Team team : list1) {
+			DetachedCriteria criteria = matchFightService.createDetachedCriteria();
+			criteria.add(Restrictions.eq("isDelete", 0));
+			criteria.add(Restrictions.eq("status", 2));
+			criteria.add(Restrictions.or(Restrictions.eq("host", team), Restrictions.eq("guest", team)));
+
+			List<MatchFight> list = matchFightService.findByCriteria(criteria);
+
+			for (MatchFight matchFight : list) {
+
+				// 更新对战队伍单场数据
+				matchDataTeamService.updateMatchTeam(matchFight, team);
+
+				// 更新对战队伍总体数据
+				teamService.updateData(team);
+				
+				teamService.countWinLose(team);
+				
+				matchFightService.updateScore(matchFight);
+				
+			}
+
+		}
+		
+		
+		
+		//更新个人数据
+		DetachedCriteria criteria2 = userService.createDetachedCriteria();
+		criteria1.add(Restrictions.eq("isDelete", 0));
+		List<User> list2 = userService.findByCriteria(criteria2);
+		
+		for (User user : list2) 
+		{
+			userService.updateData(user);
+		}
+		
+		
 
 		return mv;
 	}
@@ -512,26 +563,47 @@ public class MatchFightController {
 		matchFight.setStatus(2);
 		matchFightService.saveOrUpdate(matchFight);
 		
+		
+		
+		// 更新对战队伍单场数据
+		matchDataTeamService.updateMatchTeam(matchFight, host);
+		// 更新对战队伍总体数据
+		teamService.updateData(host);
 		teamService.countWinLose(host);
+		
+		// 更新对战队伍单场数据
+		matchDataTeamService.updateMatchTeam(matchFight, guest);
+		// 更新对战队伍总体数据
+		teamService.updateData(guest);
 		teamService.countWinLose(guest);
 		
-		teamService.saveOrUpdate(host);
-		teamService.saveOrUpdate(guest);
 		
-		if(matchFight.getHostScore()>matchFight.getGuestScore())
-		{
-			matchFight.setWinner(host);
-			matchFight.setLoser(guest);
-			
-		}
-
-		if(matchFight.getHostScore()<matchFight.getGuestScore())
-		{
-			matchFight.setWinner(guest);
-			matchFight.setLoser(host);
-		}
+		matchFightService.updateScore(matchFight);
 		
-		matchFightService.saveOrUpdate(matchFight);
+		
+		
+		
+//		
+//		teamService.countWinLose(host);
+//		teamService.countWinLose(guest);
+//		
+//		teamService.saveOrUpdate(host);
+//		teamService.saveOrUpdate(guest);
+//		
+//		if(matchFight.getHostScore()>matchFight.getGuestScore())
+//		{
+//			matchFight.setWinner(host);
+//			matchFight.setLoser(guest);
+//			
+//		}
+//
+//		if(matchFight.getHostScore()<matchFight.getGuestScore())
+//		{
+//			matchFight.setWinner(guest);
+//			matchFight.setLoser(host);
+//		}
+//		
+//		matchFightService.saveOrUpdate(matchFight);
 
 		
 		//联赛积分
@@ -624,22 +696,37 @@ public class MatchFightController {
 		if (matchFight == null || user == null) {
 			return rs;
 		}
+		
+		
+		
+		String teamid = request.getParameter("tid");
+		if(StringUtils.isEmpty(teamid))
+		{
+			DetachedCriteria criteria = teamService.createDetachedCriteria();
+			criteria.add(Restrictions.eq("admin.id", user.getId()));
+			criteria.add(Restrictions.eq("isDelete", 0));
+			List<Team> list = teamService.findByCriteria(criteria);
 
-		DetachedCriteria criteria = teamService.createDetachedCriteria();
-		criteria.add(Restrictions.eq("admin.id", user.getId()));
-		criteria.add(Restrictions.eq("isDelete", 0));
-		List<Team> list = teamService.findByCriteria(criteria);
-
-		if (list.isEmpty()) {
-			rs.setMsg("你不是队长");
-			return rs;
+			if (list.isEmpty()) {
+				rs.setMsg("你不是队长");
+				return rs;
+			}
+			
+			matchFight.setGuest(list.get(0));
+			matchFight.setStatus(1);
+			matchFight.setLastModifiedDate(new Date());
+			
+			matchFightService.saveOrUpdate(matchFight);
+		}else
+		{
+			Team team  = teamService.get(UUID.fromString(teamid));
+			matchFight.setGuest(team);
+			matchFight.setStatus(1);
+			matchFight.setLastModifiedDate(new Date());
+			
+			matchFightService.saveOrUpdate(matchFight);
 		}
-
-		matchFight.setGuest(list.get(0));
-		matchFight.setStatus(1);
-		matchFight.setLastModifiedDate(new Date());
-
-		matchFightService.saveOrUpdate(matchFight);
+		
 
 		rs.setCode(JsonResult.SUCCESS);
 		rs.setMsg("操作成功");

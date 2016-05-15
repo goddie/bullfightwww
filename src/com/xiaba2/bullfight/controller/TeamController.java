@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,6 +88,13 @@ public class TeamController {
 		
 		DetachedCriteria criteria = teamService.createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete",0));
+		
+		String key = request.getParameter("key");
+		if(!StringUtils.isEmpty(key))
+		{
+			criteria.add(Restrictions.like("name",key,MatchMode.ANYWHERE));
+		}
+		
 		page = teamService.findPageByCriteria(criteria, page);
 		
 		mv.addObject("list", page.getResult());

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import com.xiaba2.bullfight.dao.IMatchDataTeamDao;
 import com.xiaba2.bullfight.dao.IMatchDataUserDao;
 import com.xiaba2.bullfight.dao.ITeamDao;
+import com.xiaba2.bullfight.domain.MatchDataTeam;
 import com.xiaba2.bullfight.domain.MatchDataUser;
+import com.xiaba2.bullfight.domain.MatchFight;
 import com.xiaba2.bullfight.domain.Team;
 import com.xiaba2.cms.domain.User;
 import com.xiaba2.cms.service.UserService;
@@ -90,6 +92,25 @@ public class MatchDataUserService extends BaseService<MatchDataUser, UUID> {
 //		t.setScoring(rs.get(11));
 //		userService.saveOrUpdate(t);
 //	}
- 
+	/**
+	 * 删除对战
+	 * @param matchFight
+	 */
+	@Transactional
+	public void deleteByMatchFight(MatchFight matchFight)
+	{
+		DetachedCriteria criteria = matchDataUserDao.createDetachedCriteria();
+		criteria.add(Restrictions.eq("isDelete", 0));
+		criteria.add(Restrictions.eq("matchFight", matchFight));
+		
+		List<MatchDataUser> list = matchDataUserDao.findByCriteria(criteria);
+		
+		for (MatchDataUser matchDataUser : list) {
+			matchDataUser.setIsDelete(1);
+			saveOrUpdate(matchDataUser);
+
+		}
+		
+	}
 
 }

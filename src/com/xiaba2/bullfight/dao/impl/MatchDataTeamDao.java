@@ -106,6 +106,12 @@ public class MatchDataTeamDao extends AbstractHibernateDao<MatchDataTeam, UUID>
 	 */
 	@Override
 	public void updateMatchTeam(MatchFight matchFight,Team team) {
+		
+		if(matchFight.getStatus()!=2)
+		{
+			return;
+		}
+		
 		DetachedCriteria criteria = createDetachedCriteria();
 		criteria.add(Restrictions.eq("isDelete", 0));
 		criteria.add(Restrictions.eq("matchFight",matchFight));
